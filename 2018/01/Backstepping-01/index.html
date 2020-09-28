@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    
+
+    
+    <title>Backstepping（反步控制） | 理想国</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Backstepping" />
+    
+    <meta name="description" content="&amp;emsp;&amp;emsp;Backstepping（反步控制）是一种设计非线性系统控制器的方法。它通过对子系统的递归方便地求得能使系统稳定的输入。但大多数相关文献中并未考虑系统本身的可控性，因此首先我们假设需要控制的系统是可控的。 基本思想&amp;emsp;&amp;emsp;Backstepping针对的是能写成如下形式的系统：$$\begin{cases}\dot{x}_1&#x3D;x_2+f_1(x_1)\\dot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Backstepping（反步控制）">
+<meta property="og:url" content="https://haosutopia.github.io/2018/01/Backstepping-01/">
+<meta property="og:site_name" content="理想国">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;Backstepping（反步控制）是一种设计非线性系统控制器的方法。它通过对子系统的递归方便地求得能使系统稳定的输入。但大多数相关文献中并未考虑系统本身的可控性，因此首先我们假设需要控制的系统是可控的。 基本思想&amp;emsp;&amp;emsp;Backstepping针对的是能写成如下形式的系统：$$\begin{cases}\dot{x}_1&#x3D;x_2+f_1(x_1)\\dot">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://haosutopia.github.io/images/Backstepping.png">
+<meta property="article:published_time" content="2018-01-14T01:20:16.000Z">
+<meta property="article:modified_time" content="2018-03-01T13:46:40.000Z">
+<meta property="article:author" content="进击的学渣">
+<meta property="article:tag" content="Backstepping">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://haosutopia.github.io/images/Backstepping.png">
+    
+
+    
+        <link rel="alternate" href="/" title="理想国" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/titillium-web/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-115921256-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?fc799e8461d37896f29cc1ea74f75070";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">主页</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%8E%A7%E5%88%B6/">非线性控制</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></li></ul>
+                                
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%8E%A7%E5%88%B6/">非线性控制</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-Backstepping-01" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Backstepping（反步控制）
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2018/01/Backstepping-01/" class="article-date">
+       <time datetime="2018-01-14T01:20:16.000Z" itemprop="datePublished">2018-01-14</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2018/01/Backstepping-01/" class="article-date">
+     <time datetime="2018-03-01T13:46:40.000Z" itemprop="dateModified">2018-03-01</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Backstepping/" rel="tag">Backstepping</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p>&emsp;&emsp;Backstepping（反步控制）是一种设计非线性系统控制器的方法。它通过对子系统的递归方便地求得能使系统稳定的输入。但大多数相关文献中并未考虑系统本身的可控性，因此首先我们假设需要控制的系统是可控的。</p>
+<h3 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h3><p>&emsp;&emsp;Backstepping针对的是能写成如下形式的系统：<br>$$<br>\begin{cases}<br>\dot{x}_1=x_2+f_1(x_1)\<br>\dot{x}_2=x_3+f_2(x_1,x_2)\<br>\quad\vdots\<br>\dot{x}<em>i=x</em>{i+1}+f_i(x_1,x_2,…,x_i)\<br>\quad\vdots\<br>\dot{x}_n=u+f_n(x_1,x_2,…,x_n)<br>\end{cases}\tag{1}<br>$$</p>
+<p>&emsp;&emsp;可以发现该形式的系统有如下特征：状态$x_1$只由$x_1,x_2$决定；状态$x_2$由$x_1,x_2,x_3$决定…以此类推，状态$x_i$由$x_1,x_2…x_{i+1}$决定；而状态$x_n$则由系统的所有状态来决定。<br>&emsp;&emsp;这对我们就有了一定的启发。对于状态$x_1$来说，它只由本身与$x_2$决定，因此我们可以把它看作整个非线性系统的一个子系统。在这个系统中只需要控制$x_2$便可以使得$x_1$渐近稳定。再对于状态$x_2$来说，它由$x_1,x_2,x_3$决定，我们再将方程组的前两个方程看作一个子系统。此时$x_1$已经渐近稳定，因此我们只需要控制$x_3$便可以使得$x_2$渐近稳定。以此类推，最终我们就可以得到一个输入$u$，使得之前所有的状态$x_1,x_2…x_n$都渐近稳定，那么整个系统就稳定了。<br>&emsp;&emsp;为了使各个子系统都稳定，我们需要为每个系统设置一个虚拟的控制量，并以此定义一个Lyapunov函数，使得所有子系统的Lyapunov函数都满足渐近稳定条件。<br>&emsp;&emsp;概括来说，Backstepping的基本思想就是：将复杂的非线性系统分解成不超过系统阶数的子系统，然后为每个子系统设计部分Lyapunov函数和中间虚拟控制量，一直“后退”到整个系统，将它们集成起来完成整个控制律的设计。</p>
+<h3 id="基于Backstepping控制器设计"><a href="#基于Backstepping控制器设计" class="headerlink" title="基于Backstepping控制器设计"></a>基于Backstepping控制器设计</h3><p>&emsp;&emsp;在这里我们不直接给出控制器设计的公式，而是希望以探索的方式来得到并理解它。<br>&emsp;&emsp;对于任意一个子系统$\dot{x}<em>i=x</em>{i+1}+f_i(x_1,x_2,…,x_i)$来说，我们把$x_{i+1}$看作是这个系统的输入量，也就是模拟的控制量（实际上它只是整个系统的一个状态而已），再通过确定适当的虚拟反馈$\alpha_i(i=1,2,…,n-1)$来控制$x_{i+1}$，使得这个子系统达到渐近稳定。而正由于系统是渐近稳定，因此状态与反馈之间会存在着误差。在这里我们引入误差变量$z$，期望通过控制的作用，使得$x_{i+1}$与虚拟反馈$a_i$之间具有某种渐进特性，从而实现整个系统的渐近稳定。<br>&emsp;&emsp;误差变量$z$的设定如下：<br>$$<br>\begin{cases}<br>z_1=x_1\<br>z_2=x_2-\alpha_1(x_1)\<br>\quad\vdots\<br>z_i=x_i-\alpha_{i-1}(x_1,x_2,…,x_{i-1})\<br>\quad\vdots\<br>z_n=x_n-\alpha_{n-1}(x_1,x_2,…,x_{n-1})<br>\end{cases}\tag{2}<br>$$</p>
+<p>&emsp;&emsp;其中$\alpha_i$为虚拟反馈量，也是我们要求解的待定量。对于每一个子系统，我们都会构造一个Lyapunov函数，使得每一个状态分量具有适当的渐近稳定特性。在此我们注意到：对于任意一个误差变量$z_i=x_i-\alpha_{i-1}(x_1,x_2,…,x_{i-1})$，$x_i$与$z_i$的渐近稳定特性是相同的（因为我们在设定这个子系统前已经通过前边的子系统将$x_1$到$x_{i-1}$都控制为渐近稳定了）。因此为了渐近稳定原系统，我们只需要将误差变量$z$渐近稳定即可。而$x_1$由于是第一个子系统的状态量，并没有反馈，因此我们直接将其设为$z_1$。至此，我们设计目标就由$x$的渐近稳定转变为$z$的渐近稳定了。</p>
+<h4 id="分部推导"><a href="#分部推导" class="headerlink" title="分部推导"></a>分部推导</h4><p>&emsp;&emsp;首先看第一个子系统，将其以$z$为状态表示，得到：<br>$$<br>\begin{split}<br>\dot{z}_1&amp;=\dot{x}_1\<br>&amp;=x_2+f_1(x_1)\<br>&amp;=z_2+\alpha_1(x_1)+f_1(x_1)<br>\end{split}\tag{3}<br>$$</p>
+<p>&emsp;&emsp;定义该系统的Lyapunov方程：<br>$$<br>V_1=\frac{1}{2}z_1^2\tag{4}<br>$$</p>
+<p>&emsp;&emsp;$V_1$可以算是最简单直接，也是最常见的Lyapunov方程了，我们能够轻易看出它是正定的。但为了使该系统稳定，我们还需要使它的导数为一个负定的函数。将$V_1$求导：<br>$$<br>\dot{V}_1=z_1\dot{z}_1=z_1z_2+z_1(\alpha_1(x_1)+f_1(x_1))\tag{5}<br>$$</p>
+<p>&emsp;&emsp;为了使$\dot{V}_1$负定，我们取：<br>$$<br>\alpha_1(x_1)=-x_1-f_1(x_1)\tag{6}<br>$$</p>
+<p>&emsp;&emsp;由于$z_1=x_1$，因此虚拟反馈$\alpha_1(x_1)$可以使用$z_1$的函数$\tilde{\alpha}_1(z_1)$表示：<br>$$<br>\alpha_1(x_1)=-z_1-f_1(z_1)\tag{7}=\tilde{\alpha}_1(z_1)<br>$$</p>
+<p>&emsp;&emsp;此时：<br>$$<br>\begin{split}<br>\dot{z}_1&amp;=z_2+\tilde{\alpha}_1(z_1)+f_1(x_1)\<br>&amp;=z_2-z_1<br>\end{split}\tag{8}<br>$$</p>
+<p>&emsp;&emsp;将式(7)带入式(5)得到$\dot{V}_1$：<br>$$<br>\dot{V}_1=-z_1^2+z_1z_2\tag{9}<br>$$</p>
+<p>&emsp;&emsp;可以发现，$\dot{V}_1$在$z_2=0$，即$x_2=a_1(z_1)$的条件下为负定，此时该子系统渐近稳定。但一般情况下$z_2\not=0$，因此我们需要对下一个子系统进行设计，使得$z_2$具有期望的渐近特性。<br>&emsp;&emsp;因此将第二个子系统以$z$为状态表示，由式(2)与式(1)得到：<br>$$<br>\begin{split}<br>\dot{z}_2&amp;=\dot{x}_2-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1\<br>&amp;=x_3+f_2(x_1,x_2)-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1\<br>&amp;=z_3+\alpha_2(x_1,x_2)+f_2(x_1,x_2)-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1<br>\end{split}\tag{10}<br>$$</p>
+<p>&emsp;&emsp;由于：<br>$$<br>\begin{eqnarray}<br>x_1&amp;=&amp;z_1\tag{11}\<br>x_2&amp;=&amp;\tilde{\alpha}_1(z_1)+z_2\tag{12}\<br>\end{eqnarray}<br>$$</p>
+<p>&emsp;&emsp;因此$\alpha_2(x_1,x_2)$与$f_2(x_1,x_2)$可以完全用z1、z2表示。设：<br>$$<br>\begin{eqnarray}<br>\tilde{\alpha}_2(z_1,z_2)&amp;=&amp;\alpha_2(x_1,x_2)\tag{13}\<br>\tilde{f}_2(z_1,z_2)&amp;=&amp;f_2(x_1,x_2)-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1\tag{14}<br>\end{eqnarray}<br>$$</p>
+<p>&emsp;&emsp;带入式(10)得到：<br>$$<br>\dot{z}_2=z_3+\tilde{\alpha}_2(z_1,z_2)+\tilde{f}_2(z_1,z_2)\tag{15}<br>$$</p>
+<p>&emsp;&emsp;和第一个子系统一样，我们需要设置它的Lyapunov方程。该是子系统基于第一个子系统的，它包含了$z_1,z_2$两个状态，因此我们将该系统Lyapunov方程设为：<br>$$<br>V_2=V_1+\frac{1}{2}z_2^2=\frac{1}{2}z_1^2+\frac{1}{2}z_2^2\tag{16}<br>$$</p>
+<p>&emsp;&emsp;同样它也是一个正定函数。对其求导得到：<br>$$<br>\begin{split}<br>\dot{V}_2&amp;=\dot{V}_1+z_2\dot{z}_2\<br>&amp;=-z_1^2+z_1z_2+z_2z_3+z_2(\tilde{\alpha}_2(z_1,z_2)+\tilde{f}_2(z_1,z_2))<br>\end{split}\tag{17}<br>$$</p>
+<p>&emsp;&emsp;在这个子系统中我们使用$z_3$来控制$z_1,z_2$，因此需要将$z_1z_2$这项消去，并且增加一项$-z_2^2$。取：<br>$$<br>\tilde{\alpha}_2(z_1,z_2)=-z_1-z_2-\tilde{f}_2(z_1,z_2)\tag{18}<br>$$</p>
+<p>&emsp;&emsp;此时：<br>$$<br>\begin{split}<br>\dot{z}_2&amp;=z_3+\tilde{\alpha}_2(z_1,z_2)+\tilde{f}_2(z_1,z_2)\<br>&amp;=z_3-z_1-z_2<br>\end{split}\tag{19}<br>$$</p>
+<p>&emsp;&emsp;带入式(17)得到$\dot{V}_2$：<br>$$<br>\dot{V}_2=-z_1^2-z_2^2+z_2z_3\tag{20}<br>$$</p>
+<p>&emsp;&emsp;同样，它在$z_3=0$，即$x_3=\tilde{\alpha}_2(z_1,z_2)$的条件下为负定，此时该子系统渐近稳定。但一般情况下$z_3\not=0$，因此我们需要对下一个子系统进行设计，使得$z_3$具有期望的渐近特性。如此下去我们便得可以得到Backstepping控制器设计的一般公式。</p>
+<h4 id="一般形式"><a href="#一般形式" class="headerlink" title="一般形式"></a>一般形式</h4><p>&emsp;&emsp;对于第$i$个子系统，我们可以将它表示为：<br>$$<br>\begin{cases}<br>\tilde{\alpha}<em>i(z_1,z_2,…,z_i)=-z_{i-1}-z_i-\tilde{f}_i(z_1,z_2,…z_i)\\<br>\dot{z}_i=-z</em>{i-1}-z_i+z_{i+1}\\<br>\dot{V}<em>i=-(z_1^2+z_2^2+…+z_i^2)+z_iz</em>{i+1}<br>\end{cases}\tag{21}<br>$$</p>
+<p>&emsp;&emsp;此时我们只需要控制$z_{i+1}$渐进稳定于0就可以了。<br>&emsp;&emsp;一直重复这个过程，直到最终我们将系统“后退”到整个系统时：<br>$$<br>\begin{split}<br>\dot{z}<em>n&amp;=\dot{x}<em>n-\sum</em>{i=1}^{n-1}\frac{\partial\tilde{\alpha}</em>{n-1}}{\partial z_i}\dot{z}<em>i\<br>&amp;=u+f_n(x_1,x_2,…,x_n)-\sum</em>{i=1}^{n-1}\frac{\partial\tilde{\alpha}_{n-1}}{\partial z_i}\dot{z}_i\<br>&amp;=u+\tilde{f}_n(z_1,z_2,…z_n)<br>\end{split}\tag{22}<br>$$</p>
+<p>&emsp;&emsp;系统的Lyapunov方程为：<br>$$<br>V_n=V_{n-1}+\frac{1}{2}z_n^2\tag{23}<br>$$</p>
+<p>&emsp;&emsp;$V_{n-1}$为正定函数，因此$V_n$也为正定。将其求导得：<br>$$<br>\begin{split}<br>\dot{V}<em>n&amp;=\dot{V}</em>{n-1}+z_n\dot{z}<em>n\<br>&amp;=-(z_1^2+z_2^2+…+z</em>{n-1}^2)+z_{n-1}z_n+z_n[u+\tilde{f}_n(z_1,z_2,…z_n)]<br>\end{split}\tag{24}<br>$$</p>
+<p>&emsp;&emsp;选取整个系统的输入为：<br>$$<br>u=\tilde{\alpha}_n(z_1,z_2,…,z_n)=-z_{n-1}-z_n-\tilde{f}_n(z_1,z_2,…z_n)\tag{25}<br>$$</p>
+<p>&emsp;&emsp;则由上述关系式(22)、(24)及(25)得：<br>$$<br>\begin{cases}<br>\dot{z}<em>n=-z</em>{n-1}-z_n\\<br>\dot{V}_n=-(z_1^2+z_2^2+…+z_n^2)<br>\end{cases}\tag{26}<br>$$</p>
+<p>&emsp;&emsp;可以得到$\dot{V}<em>n$在$u=-z</em>{n-1}-z_n-\tilde{f}_n(z_1,z_2,…z_n)$的条件下是负定的，因此误差变量$z$是渐进稳定的，从而得出整个系统是渐近稳定的。至此我们就成功地使用Backstepping设计了一个非线性系统的控制器！</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
+<li>Backstepping用来控制结构为(1)的非线性系统。</li>
+<li>Backstepping是一种由前往后递推的设计方法，通过设置虚拟反馈控制子系统，并且前边的子系统必须通过后边子系统的虚拟控制才能达到稳定，以此层层递推。</li>
+<li>Backstepping使得控制器的设计过程系统化、结构化。</li>
+</ol>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://haosutopia.github.io/2018/01/Backstepping-01/" data-id="ckflt9wn10006eto90tqge8xk" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "进击的学渣"
+        },
+        "headline": "Backstepping（反步控制）",
+        "image": "https://haosutopia.github.io/images/Backstepping.png",
+        "keywords": "Backstepping",
+        "genre": "控制理论 非线性控制",
+        "datePublished": "2018-01-14",
+        "dateCreated": "2018-01-14",
+        "dateModified": "2018-03-01",
+        "url": "https://haosutopia.github.io/2018/01/Backstepping-01/",
+        "description": "&emsp;&emsp;Backstepping（反步控制）是一种设计非线性系统控制器的方法。它通过对子系统的递归方便地求得能使系统稳定的输入。但大多数相关文献中并未考虑系统本身的可控性，因此首先我们假设需要控制的系统是可控的。
+基本思想&emsp;&emsp;Backstepping针对的是能写成如下形式的系统：$$\begin{cases}\dot{x}_1=x_2+f_1(x_1)\\dot",
+        "wordCount": 27
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/people/%E7%8E%8B%E8%AF%9A%E7%9A%93/100004082464920" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="instagram" href="https://www.instagram.com/changhao_wang0809/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-instagram"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/HaosUtopia" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="weibo" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-weibo"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/01/RSVP-01/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            分布参数系统控制（一）：数学基础
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2018/01/Tensorflow-02/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Tensorflow学习（二）</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/08/Computer-Vision-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Computer_Vision.jpg)" alt="计算机视觉（一）：图像表示与梯度" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></p>
+                            <p class="item-title"><a href="/2018/08/Computer-Vision-01/" class="title">计算机视觉（一）：图像表示与梯度</a></p>
+                            <p class="item-date"><time datetime="2018-08-08T19:13:45.000Z" itemprop="datePublished">2018-08-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/05/Decision-Tree-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Decision_Tree.png)" alt="决策树" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></p>
+                            <p class="item-title"><a href="/2018/05/Decision-Tree-01/" class="title">决策树</a></p>
+                            <p class="item-date"><time datetime="2018-05-31T20:56:03.000Z" itemprop="datePublished">2018-05-31</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/K-Means-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/K_Means.png)" alt="K-Means聚类算法" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></p>
+                            <p class="item-title"><a href="/2018/04/K-Means-01/" class="title">K-Means聚类算法</a></p>
+                            <p class="item-date"><time datetime="2018-04-15T13:27:06.000Z" itemprop="datePublished">2018-04-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/RSVP-07/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/RSVP.png)" alt="分布参数系统控制（七）：边界输入" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></p>
+                            <p class="item-title"><a href="/2018/04/RSVP-07/" class="title">分布参数系统控制（七）：边界输入</a></p>
+                            <p class="item-date"><time datetime="2018-04-12T22:39:55.000Z" itemprop="datePublished">2018-04-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/RSVP-06/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/RSVP.png)" alt="分布参数系统控制（六）：反馈控制" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></p>
+                            <p class="item-title"><a href="/2018/04/RSVP-06/" class="title">分布参数系统控制（六）：反馈控制</a></p>
+                            <p class="item-date"><time datetime="2018-04-10T22:19:02.000Z" itemprop="datePublished">2018-04-11</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><span class="category-list-count">8</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%8E%A7%E5%88%B6/">非线性控制</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backstepping/" rel="tag">Backstepping</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CNN/" rel="tag">CNN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Caffe/" rel="tag">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVM/" rel="tag">SVM</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tensorflow/" rel="tag">Tensorflow</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F/" rel="tag">分布参数系统</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" rel="tag">数学建模</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E5%AD%90%E7%90%86%E8%AE%BA/" rel="tag">算子理论</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0/" rel="tag">迁移学习</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Backstepping/" style="font-size: 13.33px;">Backstepping</a> <a href="/tags/CNN/" style="font-size: 10px;">CNN</a> <a href="/tags/Caffe/" style="font-size: 10px;">Caffe</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/SVM/" style="font-size: 16.67px;">SVM</a> <a href="/tags/Tensorflow/" style="font-size: 13.33px;">Tensorflow</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F/" style="font-size: 20px;">分布参数系统</a> <a href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" style="font-size: 10px;">数学建模</a> <a href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">无监督学习</a> <a href="/tags/%E7%AE%97%E5%AD%90%E7%90%86%E8%AE%BA/" style="font-size: 10px;">算子理论</a> <a href="/tags/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">迁移学习</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="https://www.tensorflow.org/">TensorFlow</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 进击的学渣</p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'jin-ji-de-xue-zha';
+    
+    
+    var disqus_url = 'https://haosutopia.github.io/2018/01/Backstepping-01/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+        </script>
+        
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML.js"></script>
+
+    
+
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>

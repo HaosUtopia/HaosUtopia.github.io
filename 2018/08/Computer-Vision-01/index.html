@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    
+
+    
+    <title>计算机视觉（一）：图像表示与梯度 | 理想国</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="" />
+    
+    <meta name="description" content="&amp;emsp;&amp;emsp;计算机视觉，顾名思义就是使计算机能够像人眼一样“看”东西的科学。一张图片，人可以将它抽象并快速提取其中的有效信息。而对于计算机来说，图片就是一个特殊的矩阵，需要通过一系列算法来得到相关信息。本次学习材料主要是TUM Computer Vision课堂内容以及一些相关论文。 图像表示&amp;emsp;&amp;emsp;首先介绍一下图像的基本知识。图像一般可分为彩色图和灰度图：彩色图每个点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机视觉（一）：图像表示与梯度">
+<meta property="og:url" content="https://haosutopia.github.io/2018/08/Computer-Vision-01/">
+<meta property="og:site_name" content="理想国">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;计算机视觉，顾名思义就是使计算机能够像人眼一样“看”东西的科学。一张图片，人可以将它抽象并快速提取其中的有效信息。而对于计算机来说，图片就是一个特殊的矩阵，需要通过一系列算法来得到相关信息。本次学习材料主要是TUM Computer Vision课堂内容以及一些相关论文。 图像表示&amp;emsp;&amp;emsp;首先介绍一下图像的基本知识。图像一般可分为彩色图和灰度图：彩色图每个点">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://haosutopia.github.io/images/Computer_Vision.jpg">
+<meta property="article:published_time" content="2018-08-08T19:13:45.000Z">
+<meta property="article:modified_time" content="2018-08-08T19:45:58.000Z">
+<meta property="article:author" content="进击的学渣">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://haosutopia.github.io/images/Computer_Vision.jpg">
+    
+
+    
+        <link rel="alternate" href="/" title="理想国" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/titillium-web/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-115921256-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?fc799e8461d37896f29cc1ea74f75070";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">主页</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%8E%A7%E5%88%B6/">非线性控制</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></li></ul>
+                                
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-Computer-Vision-01" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        计算机视觉（一）：图像表示与梯度
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2018/08/Computer-Vision-01/" class="article-date">
+       <time datetime="2018-08-08T19:13:45.000Z" itemprop="datePublished">2018-08-08</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2018/08/Computer-Vision-01/" class="article-date">
+     <time datetime="2018-08-08T19:45:58.000Z" itemprop="dateModified">2018-08-08</time>
+  </a>
+</div>
+
+
+                
+
+                
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p>&emsp;&emsp;计算机视觉，顾名思义就是使计算机能够像人眼一样“看”东西的科学。一张图片，人可以将它抽象并快速提取其中的有效信息。而对于计算机来说，图片就是一个特殊的矩阵，需要通过一系列算法来得到相关信息。本次学习材料主要是TUM Computer Vision课堂内容以及一些相关论文。</p>
+<h3 id="图像表示"><a href="#图像表示" class="headerlink" title="图像表示"></a>图像表示</h3><p>&emsp;&emsp;首先介绍一下图像的基本知识。图像一般可分为彩色图和灰度图：彩色图每个点的颜色可以通过RGB三种颜色混合而成，因此彩色图通常有RGB三个通道；而灰度图每个点只有一个灰度值。</p>
+<p><img src="/images/Computer_Vision_Image.jpg" alt="彩色图与灰度图"><br>&emsp;&emsp;彩色图可以将三个通道合并，转化为灰度图，其公式如下：<br>$$<br>I=0.299R+0.587G+0.114B$$</p>
+<p>&emsp;&emsp;在现实中，人眼看到的东西都是连续的，但在计算机中我们需要将其离散化，并赋予每个点坐标与数值。其示意图如下：<br><img src="/images/Computer_Vision_Coordinate.jpg" alt="图像表示"><br>&emsp;&emsp;图像在计算机中的坐标原点为图像左上角，其$x,y$轴与通常坐标系不同，在将来的操作中需要格外注意。这里我们将图像的矩阵表示为$I$，而图中某点的数值表示为$I(x,y)$，其取值范围通常为$[0,1]$或$[0,255]$。在之后的讨论中，我们默认对灰度图进行操作。</p>
+<h3 id="梯度计算"><a href="#梯度计算" class="headerlink" title="梯度计算"></a>梯度计算</h3><p>&emsp;&emsp;梯度在连续函数中可以通过求导计算，但在离散函数中只能通过一些方法来近似。其中最直接的方法就是将离散点与相邻点的差值作为该点梯度：<br>$$<br>\nabla I(x,y)=\begin{bmatrix}{ {\Bbb d} \over {\Bbb d}x}I(x,y) \ { {\Bbb d} \over {\Bbb d}y}I(x,y) \end{bmatrix} = \begin{bmatrix}I(x+1,y)-I(x,y) \ I(x,y+1)-I(x,y)\end{bmatrix}$$</p>
+<p>&emsp;&emsp;这种方法虽然简单，但误差较大。在实际中，我们计算梯度的思路是：先将离散函数通过辅助函数连续化，再对连续化后的函数进行求导得到梯度。<br>&emsp;&emsp;其中连续化是将连续的辅助函数与离散函数卷积，得到一个重构的连续函数。在这里我们以一维数据为例，其中连续函数用$f(x)$表示，离散函数用$f[x]$表示：<br>$$<br>f(x)\approx\sum_{k=-\infty}^{\infty}f[k]h(x-k)=f[x]\ast h(x)$$</p>
+<p>&emsp;&emsp;对$f(x)$求导便可以得到函数的梯度：<br>$$<br>f’(x)\approx{ {\Bbb d} \over {\Bbb d}x}(f[x]\ast h(x))=\sum_{k=-\infty}^{\infty}f[k]h’(x-k)=f[x]\ast h’(x)$$</p>
+<p>&emsp;&emsp;则图像上每一点的梯度为：<br>$$<br>f’[x]=f[x]\ast h’[x]=\sum_{k=-\infty}^{\infty}f[x-k]h’[k]$$</p>
+<p>&emsp;&emsp;实际中我们无法做无穷次的累加，因此采用近似的方式得到函数及其导数：<br>$$<br>\begin{split}<br>f[x]&amp;=\sum_{k=-n}^{n}f[x-k]h[k]\<br>f’[x]&amp;=\sum_{k=-n}^{n}f[x-k]h’[k]<br>\end{split}$$</p>
+<p>&emsp;&emsp;其中辅助函数$h(x)$我们可以选择高斯函数或Sinc函数。</p>
+<h4 id="高斯函数"><a href="#高斯函数" class="headerlink" title="高斯函数"></a>高斯函数</h4><p>&emsp;&emsp;高斯函数一般表达式如下：<br>$$<br>g(x)=Ce^{-x^2 \over 2\sigma^2}$$</p>
+<p>&emsp;&emsp;其图像及导数图像如下：<br><img src="/images/Computer_Vision_Gauss.jpg" alt="高斯函数（左）及其导数（右）图像"></p>
+<p>&emsp;&emsp;图中红线表示相邻采样点的取值。可以发现，高斯函数会对相邻采样点取值有影响，从而产生一些偏差。</p>
+<h4 id="Sinc函数"><a href="#Sinc函数" class="headerlink" title="Sinc函数"></a>Sinc函数</h4><p>&emsp;&emsp;Sinc函数表达式如下：<br>$$<br>h(x)={\rm sinc}(x)={\sin(\pi x) \over \pi x}, {\rm sinc}(0)=1$$</p>
+<p>&emsp;&emsp;其图像及其导数图像如下：<br><img src="/images/Computer_Vision_Sinc.jpg" alt="Sinc函数（左）及其导数（右）图像"></p>
+<p>&emsp;&emsp;从图中可以发现，Sinc函数在相邻采样点取值均为0，克服了高斯函数的缺陷。但其导数图像衰弱程度比高斯函数慢很多。<br>&emsp;&emsp;因此通常我们在连续化原函数时使用Sinc函数，在计算梯度时使用高斯函数。</p>
+<h4 id="Sobel滤波器"><a href="#Sobel滤波器" class="headerlink" title="Sobel滤波器"></a>Sobel滤波器</h4><p>&emsp;&emsp;将上述一维的数据拓展为二维，使用高斯函数作为辅助函数，我们得到：<br>$$<br>\begin{split}<br>&amp;I(x,y)\approx I[x,y]\ast h(x,y)=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g(x-k)g(y-l)\<br>&amp;{ {\rm d} \over {\rm d}x}I(x,y) \approx I[x,y]\ast { {\rm d} \over {\rm d}x}h(x,y)=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g’(x-k)g(y-l)\<br>&amp;{ {\rm d} \over {\rm d}y}I(x,y) \approx I[x,y]\ast { {\rm d} \over {\rm d}y}h(x,y)=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g(x-k)g’(y-l)<br>\end{split}$$</p>
+<p>&emsp;&emsp;则图像上每一点的梯度为:<br>$$<br>\begin{split}<br>&amp;{ {\rm d} \over {\rm d}x}I[x,y]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g’[x-k]g[y-l]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x-k.y-l]g’[k]g[l]\<br>&amp;{ {\rm d} \over {\rm d}y}I[x,y]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g[x-k]g’[y-l]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x-k.y-l]g[k]g’[l]<br>\end{split}$$</p>
+<p>&emsp;&emsp;近似后得到：<br>$$<br>\begin{split}<br>{ {\rm d} \over {\rm d}x}I[x,y]=\sum_{k=-1}^{1}\sum_{l=-1}^{1}I[x-k.y-l]g’[k]g[l]\<br>{ {\rm d} \over {\rm d}y}I[x,y]=\sum_{k=-1}^{1}\sum_{l=-1}^{1}I[x-k.y-l]g[k]g’[l]<br>\end{split}$$</p>
+<p>&emsp;&emsp;上式可以发现，图像中点的梯度就相当于其相邻像素点取值分别乘以相应权重再相加，因此可以将这些权重表示为一个矩阵。为了使权重相加为1，我们取：<br>$$<br>C=(1+2e^{-{1 \over 2\sigma^2 } })^{-1}$$</p>
+<p>&emsp;&emsp;当$\sigma=\sqrt{1 \over 2\log2}$时：<br>$$<br>\begin{split}<br>&amp;g’[k]g[l]\Rightarrow {1 \over 8}\log2\begin{bmatrix}+1 &amp; \ \ 0\  &amp; -1\+2 &amp; \ \ 0\  &amp; -2\+1 &amp; \ \ 0\  &amp; -1\end{bmatrix}\<br>&amp;g[k]g’[l]\Rightarrow {1 \over 8}\log2\begin{bmatrix}+1 &amp; +2 &amp; +1\0 &amp; 0 &amp; 0\-1 &amp; -2 &amp; -1\end{bmatrix}<br>\end{split}$$</p>
+<p>&emsp;&emsp;为了方便计算，我们将上式整数化，得到横向与纵向Sobel滤波器分别为：<br>$$<br>\begin{split}<br>横向{\rm Sobel}滤波器：\begin{bmatrix}+1 &amp; \ \ 0\  &amp; -1\+2 &amp; \ \ 0\  &amp; -2\+1 &amp; \ \ 0\  &amp; -1\end{bmatrix}\<br>纵向{\rm Sobel}滤波器：\begin{bmatrix}+1 &amp; +2 &amp; +1\0 &amp; 0 &amp; 0\-1 &amp; -2 &amp; -1\end{bmatrix}<br>\end{split}$$</p>
+<p>&emsp;&emsp;在实际应用中我们只需要将图像矩阵与Sobel滤波器卷积就可以得到图像的梯度矩阵了。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
+<li>图像在计算机中表示为矩阵形式。</li>
+<li>图像梯度通过Sobel滤波器估计：横向滤波器计算$x$轴方向导数；纵向滤波器计算$y$轴方向导数。</li>
+</ol>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://haosutopia.github.io/2018/08/Computer-Vision-01/" data-id="ckflt9wn20007eto93ifsckfl" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "进击的学渣"
+        },
+        "headline": "计算机视觉（一）：图像表示与梯度",
+        "image": "https://haosutopia.github.io/images/Computer_Vision.jpg",
+        "keywords": "",
+        "genre": "计算机视觉",
+        "datePublished": "2018-08-08",
+        "dateCreated": "2018-08-08",
+        "dateModified": "2018-08-08",
+        "url": "https://haosutopia.github.io/2018/08/Computer-Vision-01/",
+        "description": "&emsp;&emsp;计算机视觉，顾名思义就是使计算机能够像人眼一样“看”东西的科学。一张图片，人可以将它抽象并快速提取其中的有效信息。而对于计算机来说，图片就是一个特殊的矩阵，需要通过一系列算法来得到相关信息。本次学习材料主要是TUM Computer Vision课堂内容以及一些相关论文。
+图像表示&emsp;&emsp;首先介绍一下图像的基本知识。图像一般可分为彩色图和灰度图：彩色图每个点",
+        "wordCount": 199
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/people/%E7%8E%8B%E8%AF%9A%E7%9A%93/100004082464920" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="instagram" href="https://www.instagram.com/changhao_wang0809/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-instagram"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/HaosUtopia" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="weibo" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-weibo"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2018/05/Decision-Tree-01/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">决策树</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/08/Computer-Vision-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Computer_Vision.jpg)" alt="计算机视觉（一）：图像表示与梯度" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></p>
+                            <p class="item-title"><a href="/2018/08/Computer-Vision-01/" class="title">计算机视觉（一）：图像表示与梯度</a></p>
+                            <p class="item-date"><time datetime="2018-08-08T19:13:45.000Z" itemprop="datePublished">2018-08-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/05/Decision-Tree-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Decision_Tree.png)" alt="决策树" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></p>
+                            <p class="item-title"><a href="/2018/05/Decision-Tree-01/" class="title">决策树</a></p>
+                            <p class="item-date"><time datetime="2018-05-31T20:56:03.000Z" itemprop="datePublished">2018-05-31</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/K-Means-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/K_Means.png)" alt="K-Means聚类算法" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></p>
+                            <p class="item-title"><a href="/2018/04/K-Means-01/" class="title">K-Means聚类算法</a></p>
+                            <p class="item-date"><time datetime="2018-04-15T13:27:06.000Z" itemprop="datePublished">2018-04-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/RSVP-07/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/RSVP.png)" alt="分布参数系统控制（七）：边界输入" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></p>
+                            <p class="item-title"><a href="/2018/04/RSVP-07/" class="title">分布参数系统控制（七）：边界输入</a></p>
+                            <p class="item-date"><time datetime="2018-04-12T22:39:55.000Z" itemprop="datePublished">2018-04-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/RSVP-06/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/RSVP.png)" alt="分布参数系统控制（六）：反馈控制" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></p>
+                            <p class="item-title"><a href="/2018/04/RSVP-06/" class="title">分布参数系统控制（六）：反馈控制</a></p>
+                            <p class="item-date"><time datetime="2018-04-10T22:19:02.000Z" itemprop="datePublished">2018-04-11</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><span class="category-list-count">8</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%8E%A7%E5%88%B6/">非线性控制</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backstepping/" rel="tag">Backstepping</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CNN/" rel="tag">CNN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Caffe/" rel="tag">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVM/" rel="tag">SVM</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tensorflow/" rel="tag">Tensorflow</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F/" rel="tag">分布参数系统</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" rel="tag">数学建模</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E5%AD%90%E7%90%86%E8%AE%BA/" rel="tag">算子理论</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0/" rel="tag">迁移学习</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Backstepping/" style="font-size: 13.33px;">Backstepping</a> <a href="/tags/CNN/" style="font-size: 10px;">CNN</a> <a href="/tags/Caffe/" style="font-size: 10px;">Caffe</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/SVM/" style="font-size: 16.67px;">SVM</a> <a href="/tags/Tensorflow/" style="font-size: 13.33px;">Tensorflow</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F/" style="font-size: 20px;">分布参数系统</a> <a href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" style="font-size: 10px;">数学建模</a> <a href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">无监督学习</a> <a href="/tags/%E7%AE%97%E5%AD%90%E7%90%86%E8%AE%BA/" style="font-size: 10px;">算子理论</a> <a href="/tags/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">迁移学习</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="https://www.tensorflow.org/">TensorFlow</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 进击的学渣</p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'jin-ji-de-xue-zha';
+    
+    
+    var disqus_url = 'https://haosutopia.github.io/2018/08/Computer-Vision-01/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+        </script>
+        
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML.js"></script>
+
+    
+
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>

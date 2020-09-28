@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    
+
+    
+    <title>支持向量机（一） | 理想国</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="SVM" />
+    
+    <meta name="description" content="&amp;emsp;&amp;emsp;支持向量机（Support Vector Machine）是一种强大的监督式学习算法。尽管目前深度学习非常流行，但这种经典的机器学习算法仍然有着非常大的研究价值，并且它在机器学习领域仍占有着一席之地。本次学习材料主要是CS229课程以及一些网上的资料。 SVM目标&amp;emsp;&amp;emsp;为了引入SVM思想，我们来看一个二分类问题。假设我们有一组训练样本${(x_1,y_1)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="支持向量机（一）">
+<meta property="og:url" content="https://haosutopia.github.io/2018/03/SVM-01/">
+<meta property="og:site_name" content="理想国">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;支持向量机（Support Vector Machine）是一种强大的监督式学习算法。尽管目前深度学习非常流行，但这种经典的机器学习算法仍然有着非常大的研究价值，并且它在机器学习领域仍占有着一席之地。本次学习材料主要是CS229课程以及一些网上的资料。 SVM目标&amp;emsp;&amp;emsp;为了引入SVM思想，我们来看一个二分类问题。假设我们有一组训练样本${(x_1,y_1)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://haosutopia.github.io/images/SVM.png">
+<meta property="article:published_time" content="2018-03-12T23:48:13.000Z">
+<meta property="article:modified_time" content="2018-07-01T22:00:32.000Z">
+<meta property="article:author" content="进击的学渣">
+<meta property="article:tag" content="SVM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://haosutopia.github.io/images/SVM.png">
+    
+
+    
+        <link rel="alternate" href="/" title="理想国" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/titillium-web/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-115921256-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?fc799e8461d37896f29cc1ea74f75070";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">主页</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%8E%A7%E5%88%B6/">非线性控制</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></li></ul>
+                                
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-SVM-01" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        支持向量机（一）
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2018/03/SVM-01/" class="article-date">
+       <time datetime="2018-03-12T23:48:13.000Z" itemprop="datePublished">2018-03-13</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2018/03/SVM-01/" class="article-date">
+     <time datetime="2018-07-01T22:00:32.000Z" itemprop="dateModified">2018-07-02</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/SVM/" rel="tag">SVM</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p>&emsp;&emsp;支持向量机（Support Vector Machine）是一种强大的监督式学习算法。尽管目前深度学习非常流行，但这种经典的机器学习算法仍然有着非常大的研究价值，并且它在机器学习领域仍占有着一席之地。本次学习材料主要是CS229课程以及一些网上的资料。</p>
+<h3 id="SVM目标"><a href="#SVM目标" class="headerlink" title="SVM目标"></a><span id="1">SVM目标</span></h3><p>&emsp;&emsp;为了引入SVM思想，我们来看一个二分类问题。假设我们有一组训练样本${(x_1,y_1),…,(x_m,y_m)}$，其中$x_i\in\Bbb{R}^n$为第$i$个训练样本的特征，是一个$n$维向量；$y_i$为第$i$个训练样本的输出，由于这是个二分类问题，因此$y_i$只能取$1$或$0$，分别代表正负样本。<br>&emsp;&emsp;若使用逻辑线性回归模型（logistic regression）对样本进行分类，预测函数则为：<br>$$<br>h(x)={\rm sigmoid}(w^Tx+b)\tag{1}$$</p>
+<p>&emsp;&emsp;其中${\rm sigmoid}(z)$是一个特殊函数，它的定义如下：<br>$$<br>{\rm sigmoid}(z)={1 \over {1+e^{-z}}}\tag{2}$$</p>
+<p>&emsp;&emsp;我们可以将预测函数的输出看作是$y=1$的概率。若输入特征$x$使得$w^Tx+b\geq0$，预测函数$h(x)\geq0.5$，则预测输出$y=1$；若输入特征$x$使得$w^Tx+b&lt;0$，预测函数$h(x)&lt;0.5$，则预测输出$y=0$。我们发现，$w^Tx+b$越大，预测函数输出越接近$1$，我们就越有把握预测$y=1$；同样$w^Tx+b$越小，预测函数输出越接近$0$，我们就越有把握预测$y=0$。若一个模型能使得所有训练样本满足：<br>$$<br>\begin{cases}<br>w^Tx^{(i)}+b\gg0,\ 若y^{(i)}=1\<br>w^Tx^{(i)}+b\ll0,\ 若y^{(i)}=0<br>\end{cases}\tag{3}$$</p>
+<p>&emsp;&emsp;我们就认为该模型是个高可信度的模型，它的决策边界$w^Tx+b=0$能够将正负样本分开，且样本点距离决策边界足够远。换句话说，就是能够将正负样本分得足够开，这样它就不会因为微小的扰动将样本从其中一侧划到另一侧去，增加了模型抗扰动的能力。SVM的目标就是找到这样一组$(w,b)$，使得模型的可信度最高。</p>
+<h3 id="函数间隔与几何间隔"><a href="#函数间隔与几何间隔" class="headerlink" title="函数间隔与几何间隔"></a><span id="2">函数间隔与几何间隔</span></h3><p>&emsp;&emsp;在这里我们将二分类问题及模型稍微更改一下。取$y\in{1,-1}$，并且将预测函数更改为：<br>$$<br>h(x)={\rm sign}(w^Tx+b)\tag{4}$$</p>
+<p>&emsp;&emsp;其中${\rm sign}(z)$为符号函数，它的定义为：<br>$$<br>\begin{cases}<br>1&amp;,z\geq0\<br>-1&amp;,z&lt;0<br>\end{cases}\tag{5}$$</p>
+<p>&emsp;&emsp;实际上，更改前后的模型本质是一样的：$w^Tx+b\geq0$时，预测为正样本；$w^Tx+b&lt;0$时，预测为负样本。只是$y$的取值变了，并且预测函数输出不再是概率而是直接输出预测值。<br>&emsp;&emsp;为了描述正负样本分开的程度，我们引入函数间隔（functional margin）的概念。对于样本$(x^{(i)},y^{(i)})$来说，它的函数间隔定义为：<br>$$<br>\hat{\gamma}^{(i)}=y^{(i)}(w^Tx^{(i)}+b)\tag{6}$$</p>
+<p>&emsp;&emsp;若$y^{(i)}=1$，我们希望$w^Tx^{(i)}+b\gg0$；若$y^{(i)}=-1$，我们希望$w^Tx^{(i)}+b\ll0$。根据式(6)，我们可以用函数间隔的概念将这两种情况合并，即无论$y^{(i)}$取值，我们都希望训练样本的函数间隔$\hat{\gamma}^{(i)}\gg0$（若$\hat{\gamma}&lt;0$，则表示预测错误）。若所有训练样本均满足$\hat{\gamma}^{(i)}\gg0$，那么模型是一个高可信度的模型。因此我们使用所有训练样本函数间隔的最小值来定义模型$(w,b)$的函数间隔$\hat{\gamma}$：<br>$$<br>\hat{\gamma}=\min_{i=1,…,m}\hat{\gamma}^{(i)}\tag{7}$$</p>
+<p>&emsp;&emsp;$\hat{\gamma}$代表了一个模型的可信程度。但是这里存在一个问题：如果将$(w,b)$同时放大$k$倍，我们发现$w^Tx+b$的正负没有改变，但$\hat{\gamma}$却放大为了原来的$k$倍。这表示模型的本质没有变化但可信度却强行提高了。为了避免这种情况产生，需要对$(w,b)$的数值有一定的限制，因此我们利用$||w||$对参数$(w,b)$进行标准化：<br>$$<br>(w,b)\longrightarrow \left({w \over ||w||},{b \over ||w||}\right)\tag{8}$$</p>
+<p>&emsp;&emsp;由此我们可以定义样本$(x^{(i)},y^{(i)})$的几何间隔（geometric margin）：<br>$$<br>\gamma^{(i)}=y^{(i)}\left({w \over ||w||}^Tx^{(i)}+{b \over ||w||}\right)\tag{9}$$</p>
+<p>&emsp;&emsp;$\gamma^{(i)}$表示在$n$维空间中，样本与超平面之间的距离。考虑如下示意图：<br><img src="%5Cimages%5CSVM_01_SVM.PNG" alt="SVM示意图"></p>
+<p>&emsp;&emsp;图中的超平面为决策边界$w^Tx+b=0$，且向量$w$与该超平面垂直（可通过数学证明）。点$B$为样本$A$在超平面上的投影，因此点$A$到超平面的距离就是$AB$的长度，且向量$BA$方向与$w$相同或相反（相同时为正样本；相反时为负样本）。设$A$点坐标为$x^{(i)}，$$AB$长度为$\gamma^{(i)}$，则$B$点坐标可以表示为：<br>$$<br>\vec{OB}=\vec{OA}-\vec{BA}=x^{(i)}-\gamma^{(i)}{y^{(i)}w \over ||w||}\tag{10}$$</p>
+<p>&emsp;&emsp;而$B$在超平面上，因此满足超平面方程<br>$$<br>w^Tx+b=0\tag{11}$$</p>
+<p>&emsp;&emsp;将式(10)带入式(11)中得到：<br>$$<br>w^T\left(x^{(i)}-\gamma^{(i)}{y^{(i)}w \over ||w||}\right)+b=0\tag{12}$$</p>
+<p>&emsp;&emsp;其中$w^Tw=||w||$，化简后得到：<br>$$<br>\gamma^{(i)}=y^{(i)}\left({w^T \over ||w||}x^{(i)}+{b \over ||w||}\right)\tag{13}$$</p>
+<p>&emsp;&emsp;式(13)与式(9)一致，几何间隔就是样本与超平面之间的距离。与式(6)类似，我们也使用所有训练样本几何间隔的最小值来定义模型$(w,b)$的几何间隔$\gamma$：<br>$$<br>\gamma=\min_{i=1,…,m}\gamma^{(i)}\tag{14}$$</p>
+<p>&emsp;&emsp;我们可以发现函数间隔与几何间隔的关系为：<br>$$<br>\gamma={\hat{\gamma \over ||w||}}\tag{15}$$</p>
+<p>&emsp;&emsp;当$||w||=1$时，函数间隔与几何间隔相等。</p>
+<h3 id="最优间隔分类器"><a href="#最优间隔分类器" class="headerlink" title="最优间隔分类器"></a><span id="3">最优间隔分类器<span></h3><p>&emsp;&emsp;在<a href="#1">SVM目标</a>中我们希望得到一个高可信度的模型，它的决策边界能够将正负样本分开，并且样本点距离决策边界足够远。在这里，我们使用间隔的定义更加严谨地描述一下这个优化目标：假设训练数据是线性可分离的（linearly separable），那么我们希望得到一个模型，使得它对于训练样本的几何间隔尽可能大。数学表达如下：<br>$$<br>\begin{split}<br>\max_{\gamma ,w,b}\ &amp;\gamma\<br>{\rm s.t.}\ &amp;y^{(i)}(w^Tx^{(i)}+b)\geq \gamma,\ i=1,…,m\<br>&amp;||w||=1<br>\end{split}\tag{16}$$</p>
+<p>&emsp;&emsp;式(16)表明所有训练样本的几何间隔均大于等于$\gamma$，而条件$||w||=1$则确保函数间隔与几何间隔相等，而我们要做的就是使这个几何间隔$\gamma$取到最大。如果我们能解决这个问题，那么就已经可以了。但是由于条件$||w||=1$导致优化函数是非凸的，极值点不唯一，无法通过优化软件进行计算。因此我们将问题的数学描述更改一下：<br>$$<br>\begin{split}<br>\max_{\gamma,w,b}\ &amp;{\hat{\gamma} \over ||w||}\<br>{\rm s.t.}\ &amp;y^{(i)}(w^Tx^{(i)}+b)\geq \hat\gamma,\ i=1,…,m<br>\end{split}\tag{17}$$</p>
+<p>&emsp;&emsp;在这里我们舍弃了$||w||=1$这个条件，不再要求函数间隔等于几何间隔。同时让所有样本函数间隔均大于等于$\hat\gamma$，而最大化$\hat\gamma /||w||$。根据式(15)，$\hat\gamma /||w||$就是几何间隔，因此式(16)与式(17)实际是等价的。但由于$\hat\gamma /||w||$仍然是非凸的函数，还是无法通过优化软件进行计算。因此我们需要继续修改优化问题的数学描述。<br>&emsp;&emsp;我们发现，这个优化问题实质是最大化几何间隔，而函数间隔是多少我们并不关心，它随时可以通过给$(w,b)$乘以常数来改变。因此我们可以假设函数间隔$\hat\gamma=1$，而最大化几何间隔$1/||w||$即可。因此我们将优化问题转化为：</p>
+<p><span id="e18">$$<br>\begin{split}<br>\min_{\gamma,w,b}\ &amp;{1 \over 2}||w||^2\<br>{\rm s.t.}\ &amp;y^{(i)}(w^Tx^{(i)}+b)\geq1,\ i=1,…,m<br>\end{split}\tag{18}$$</span></p>
+<p>&emsp;&emsp;式(18)中最小化$||w||^2$与最大化$1/||w||$是等价的，并且$||w||^2$是个二次凸函数，因此可以使用优化软件来解决。通过它所得到的模型就是最优间隔分类器（optimal margin classifier）。为了更好地求解式(18)的优化问题，接下来的章节我们将介绍拉格朗日对偶并且导出式(18)的对偶形式，再由此引入支持向量以及核的概念。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
+<li>SVM目标是最大化模型决策边界与训练样本的几何间隔。</li>
+<li>利用式(18)将该目标转化为一个带约束条件的优化问题。</li>
+</ol>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://haosutopia.github.io/2018/03/SVM-01/" data-id="ckflt9wnd000seto953et83cp" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "进击的学渣"
+        },
+        "headline": "支持向量机（一）",
+        "image": "https://haosutopia.github.io/images/SVM.png",
+        "keywords": "SVM",
+        "genre": "机器学习",
+        "datePublished": "2018-03-13",
+        "dateCreated": "2018-03-13",
+        "dateModified": "2018-07-02",
+        "url": "https://haosutopia.github.io/2018/03/SVM-01/",
+        "description": "&emsp;&emsp;支持向量机（Support Vector Machine）是一种强大的监督式学习算法。尽管目前深度学习非常流行，但这种经典的机器学习算法仍然有着非常大的研究价值，并且它在机器学习领域仍占有着一席之地。本次学习材料主要是CS229课程以及一些网上的资料。
+SVM目标&emsp;&emsp;为了引入SVM思想，我们来看一个二分类问题。假设我们有一组训练样本${(x_1,y_1)",
+        "wordCount": 82
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/people/%E7%8E%8B%E8%AF%9A%E7%9A%93/100004082464920" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="instagram" href="https://www.instagram.com/changhao_wang0809/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-instagram"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/HaosUtopia" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="weibo" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-weibo"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/03/SVM-02/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            支持向量机（二）
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2018/03/Access-Web/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">利用爬虫搜集数据</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/08/Computer-Vision-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Computer_Vision.jpg)" alt="计算机视觉（一）：图像表示与梯度" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></p>
+                            <p class="item-title"><a href="/2018/08/Computer-Vision-01/" class="title">计算机视觉（一）：图像表示与梯度</a></p>
+                            <p class="item-date"><time datetime="2018-08-08T19:13:45.000Z" itemprop="datePublished">2018-08-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/05/Decision-Tree-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Decision_Tree.png)" alt="决策树" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></p>
+                            <p class="item-title"><a href="/2018/05/Decision-Tree-01/" class="title">决策树</a></p>
+                            <p class="item-date"><time datetime="2018-05-31T20:56:03.000Z" itemprop="datePublished">2018-05-31</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/K-Means-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/K_Means.png)" alt="K-Means聚类算法" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></p>
+                            <p class="item-title"><a href="/2018/04/K-Means-01/" class="title">K-Means聚类算法</a></p>
+                            <p class="item-date"><time datetime="2018-04-15T13:27:06.000Z" itemprop="datePublished">2018-04-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/RSVP-07/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/RSVP.png)" alt="分布参数系统控制（七）：边界输入" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></p>
+                            <p class="item-title"><a href="/2018/04/RSVP-07/" class="title">分布参数系统控制（七）：边界输入</a></p>
+                            <p class="item-date"><time datetime="2018-04-12T22:39:55.000Z" itemprop="datePublished">2018-04-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/RSVP-06/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/RSVP.png)" alt="分布参数系统控制（六）：反馈控制" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></p>
+                            <p class="item-title"><a href="/2018/04/RSVP-06/" class="title">分布参数系统控制（六）：反馈控制</a></p>
+                            <p class="item-date"><time datetime="2018-04-10T22:19:02.000Z" itemprop="datePublished">2018-04-11</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><span class="category-list-count">8</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%8E%A7%E5%88%B6/">非线性控制</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backstepping/" rel="tag">Backstepping</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CNN/" rel="tag">CNN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Caffe/" rel="tag">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVM/" rel="tag">SVM</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tensorflow/" rel="tag">Tensorflow</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F/" rel="tag">分布参数系统</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" rel="tag">数学建模</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E5%AD%90%E7%90%86%E8%AE%BA/" rel="tag">算子理论</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0/" rel="tag">迁移学习</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Backstepping/" style="font-size: 13.33px;">Backstepping</a> <a href="/tags/CNN/" style="font-size: 10px;">CNN</a> <a href="/tags/Caffe/" style="font-size: 10px;">Caffe</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/SVM/" style="font-size: 16.67px;">SVM</a> <a href="/tags/Tensorflow/" style="font-size: 13.33px;">Tensorflow</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F/" style="font-size: 20px;">分布参数系统</a> <a href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" style="font-size: 10px;">数学建模</a> <a href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">无监督学习</a> <a href="/tags/%E7%AE%97%E5%AD%90%E7%90%86%E8%AE%BA/" style="font-size: 10px;">算子理论</a> <a href="/tags/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">迁移学习</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="https://www.tensorflow.org/">TensorFlow</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 进击的学渣</p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'jin-ji-de-xue-zha';
+    
+    
+    var disqus_url = 'https://haosutopia.github.io/2018/03/SVM-01/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+        </script>
+        
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML.js"></script>
+
+    
+
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>

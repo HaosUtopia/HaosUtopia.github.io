@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    
+
+    
+    <title>Tensorflow学习（一） | 理想国</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Tensorflow" />
+    
+    <meta name="description" content="&amp;emsp;&amp;emsp;Tensorflow是一个强大的深度学习框架，通过它可以方便地配置、训练以及评估模型。本次学习材料主要是Tensorflow官方教程、Deeplearning.ai课程以及一些网上的资料，并会加上自己的一些理解及想法。此外，本次学习针对的是机器学习在Tensorflow中的应用，不会对其理论做过多的阐述。 理解Tensorflow&amp;emsp;&amp;emsp;Tensorflow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tensorflow学习（一）">
+<meta property="og:url" content="https://haosutopia.github.io/2018/01/Tensorflow-01/">
+<meta property="og:site_name" content="理想国">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;Tensorflow是一个强大的深度学习框架，通过它可以方便地配置、训练以及评估模型。本次学习材料主要是Tensorflow官方教程、Deeplearning.ai课程以及一些网上的资料，并会加上自己的一些理解及想法。此外，本次学习针对的是机器学习在Tensorflow中的应用，不会对其理论做过多的阐述。 理解Tensorflow&amp;emsp;&amp;emsp;Tensorflow">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://haosutopia.github.io/images/Tensorflow.png">
+<meta property="article:published_time" content="2018-01-05T21:23:35.000Z">
+<meta property="article:modified_time" content="2018-01-23T23:09:44.000Z">
+<meta property="article:author" content="进击的学渣">
+<meta property="article:tag" content="Tensorflow">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://haosutopia.github.io/images/Tensorflow.png">
+    
+
+    
+        <link rel="alternate" href="/" title="理想国" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/titillium-web/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-115921256-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?fc799e8461d37896f29cc1ea74f75070";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">主页</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%8E%A7%E5%88%B6/">非线性控制</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></li></ul>
+                                
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><i class="icon fa fa-angle-right"></i><a class="page-title-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-Tensorflow-01" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Tensorflow学习（一）
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2018/01/Tensorflow-01/" class="article-date">
+       <time datetime="2018-01-05T21:23:35.000Z" itemprop="datePublished">2018-01-05</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2018/01/Tensorflow-01/" class="article-date">
+     <time datetime="2018-01-23T23:09:44.000Z" itemprop="dateModified">2018-01-24</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/Tensorflow/" rel="tag">Tensorflow</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p>&emsp;&emsp;Tensorflow是一个强大的深度学习框架，通过它可以方便地配置、训练以及评估模型。本次学习材料主要是Tensorflow官方教程、Deeplearning.ai课程以及一些网上的资料，并会加上自己的一些理解及想法。此外，本次学习针对的是机器学习在Tensorflow中的应用，不会对其理论做过多的阐述。</p>
+<h3 id="理解Tensorflow"><a href="#理解Tensorflow" class="headerlink" title="理解Tensorflow"></a>理解Tensorflow</h3><p>&emsp;&emsp;Tensorflow这个词由Tensor与Flow组成。Tensor为张量，不用管维基百科上多么复杂的解释，在这里张量就相当于一个容器，数据的容器。它可以是一维、二维、三维乃至n维的向量，也可以是文字、图像或者视频。任何想要在框架中使用的数据都需要定义成Tensorflow的张量，之后框架才能对它们进行操作。<br>&emsp;&emsp;而flow为流动。以CNN模型为例，我们将图像看作一个n×n×3的矩阵，输入模型，通过前向传播，最终得出它的损失值。每一次运算就相当于一个节点（node），前向传播就好像数据流过各个节点的过程，而数据最终以损失值的形式输出。<br>&emsp;&emsp;Tensorflow的框架思想就是如此，在使用时有下列几个步骤：</p>
+<p>&emsp;&emsp;1. 创建张量（Tensor）<br>&emsp;&emsp;2. 写出张量的运算过程，构成一个计算网络（computational graph）<br>&emsp;&emsp;3. 初始化张量<br>&emsp;&emsp;4. 创建Session<br>&emsp;&emsp;5. 运行Session</p>
+<p>&emsp;&emsp;Tensorflow的计算依赖于一个高效的C++后台，而Session的作用就是Tensorflow与后台的连接，可以把目标事物通过Session传递到后台，再运行就可以进行计算了，这个之后会通过例子说明。从这些步骤可以看出，我们只需将前向传播的张量和网络设置好，其他事情，像什么反向传播，参数更新啥的就全都可以交给Tensorflow做了。</p>
+<h3 id="Tensorflow中的数据"><a href="#Tensorflow中的数据" class="headerlink" title="Tensorflow中的数据"></a>Tensorflow中的数据</h3><p>&emsp;&emsp;Tensorflow的数据储存在张量之中，并且它们有三种形式：constant、placeholder和variable</p>
+<h4 id="constant"><a href="#constant" class="headerlink" title="constant"></a>constant</h4><p>&emsp;&emsp;constant为常量，它的值在整个运算过程中不会变化，若我们不想在训练中改变某些参数的值，就可将它们设置为constant。比如在Neural Style Transfer中，我们希望训练时保持模型不变而只改变输入图像，就需要将模型设置为常量。<br>&emsp;&emsp;在Tensorflow中设置常量要使用constant函数（<a target="_blank" rel="noopener" href="https://www.tensorflow.org/versions/master/api_docs/python/tf/constant">官方文档</a>），我们会发现官方文档中constant函数的参数有很多，但一般情况下我们只需要使用它最基本的几个参数就够了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf <span class="comment">#导入类</span></span><br><span class="line">const = tf.constant(<span class="number">3.0</span>, dtype = tf.float32) <span class="comment">#创建constant</span></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;程序第一行用import将tensorflow类导入程序中，以便调用。这是所有Tensorflow程序都拥有的语句。第二行使用constant函数将3.0赋值给const，并设置数据类型为float32。<br>&emsp;&emsp;若用print函数直接将const输出，得到的结果为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Tensor(<span class="string">&quot;Const:0&quot;</span>, shape=(), dtype=float32)</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;它并非我们想的那样输出const的值，因为const此时是框架中的一个张量，无法用print直接输出。若要输出const的实际值，则需要创建一个Session，将const带入并运行，最后关闭Session：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sess = tf.Session() <span class="comment">#创建一个Session</span></span><br><span class="line">print(sess.run(const)) <span class="comment">#sess.run(const)得到const运行后的值，再通过print输出</span></span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;run是Session的一个method，通过它可以运行computational graph并输出目标事物的值。运行后得到输出为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3.0</span></span><br></pre></td></tr></table></figure>
+<h4 id="placeholder"><a href="#placeholder" class="headerlink" title="placeholder"></a>placeholder</h4><p>&emsp;&emsp;placeholder有点像函数中的形参，它的作用是在computational graph中为数据预留一个位置，在每次运行Session时再给它赋值。因此它常常用于分批训练，每次运行Session时带入一个batch的训练集。由于不用赋值，因此定义placeholder只需要指定数据类型（<a target="_blank" rel="noopener" href="https://www.tensorflow.org/versions/master/api_docs/python/tf/placeholder">官方文档</a>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">a = tf.placeholder(tf.int32) <span class="comment">#创建placeholder</span></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;当运行Session时，需要在run函数中对placeholder进行赋值，赋值方法为增加参数feed_dict = {placeholder1: value1, placeholder2: value2 …}：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">print(sess.run(a, feed_dict = &#123;a: [<span class="number">3</span>, <span class="number">4</span>]&#125;)) <span class="comment">#用feed_dict带入数值</span></span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;得到输出为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">3</span> <span class="number">4</span>]</span><br></pre></td></tr></table></figure>
+<h4 id="variable"><a href="#variable" class="headerlink" title="variable"></a>variable</h4><p>&emsp;&emsp;variable是Tensorflow中的变量，可以随Session运行而改变，因此在训练模型中常用于模型训练参数（W、b等）的定义。Variable在定义时需要指定初始值，并且在运行Session前需要使用initializer进行初始化（<a target="_blank" rel="noopener" href="https://www.tensorflow.org/versions/master/api_docs/python/tf/Variable">官方文档</a>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line">W = tf.Variable(<span class="number">3.0</span>, dtype = tf.float32) <span class="comment">#创建variable</span></span><br><span class="line">init = tf.global_variables_initializer() <span class="comment">#创建一个全局变量的initializer</span></span><br><span class="line">sess = tf.Session()</span><br><span class="line">sess.run(init) <span class="comment">#运行initializer，使得变量初始化</span></span><br><span class="line">print(sess.run(W))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;这里需要注意的是创建variable时的函数首字母是大写的，而constant和placeholder的函数都是小写的，很容易就搞错了（吐糟一句：统一一下函数命名这么难吗-_-||）。这里的initializer用的是global_variables_initializer()，用Session运行它可以初始化所有全局变量。程序运行结果为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3.0</span></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;我们还可以使用assign给变量重新分配一个值，当然也需要通过Session来实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fixW = tf.assign(W, <span class="number">2.0</span>) <span class="comment">#将2.0分配给W</span></span><br><span class="line">sess.run(fixW)</span><br><span class="line">print(sess.run(W))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;得到输出为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2.0</span></span><br></pre></td></tr></table></figure>
+<h3 id="构建computational-graph"><a href="#构建computational-graph" class="headerlink" title="构建computational graph"></a>构建computational graph</h3><p>&emsp;&emsp;创建张量后的第二步就是构建一个computational graph，我们可以通过Tensorflow中的各种运算建立节点以形成网络。常用的运算符有：tf.add、tf.subtract、tf.multiply、tf.divide、tf.square等。<br>&emsp;&emsp;以线性模型为例。设：<br>$$y=W*x+b$$<br>&emsp;&emsp;则它的损失值可通过如下函数求出：<br>$$loss=\sum(Wx_i+b-y_i)^2$$<br>&emsp;&emsp;由于W、b是我们要训练的参数，而x、y为模型的输入，因此设W、b为variable，x、y为placeholder。通过张量间的各种运算求出loss并输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"></span><br><span class="line"><span class="comment">#创建Tensor</span></span><br><span class="line">W = tf.Variable(<span class="number">0.3</span>, dtype = tf.float32)</span><br><span class="line">b = tf.Variable(<span class="number">-0.3</span>, dtype = tf.float32)</span><br><span class="line">x = tf.placeholder(tf.float32)</span><br><span class="line">y = tf.placeholder(tf.float32)</span><br><span class="line"></span><br><span class="line"><span class="comment">#构建computational graph</span></span><br><span class="line">linear_model = tf.add(tf.multiply(W, x), b) <span class="comment">#linear_model = Wx + b</span></span><br><span class="line">loss = tf.square(tf.subtract(y, linear_model)) <span class="comment">#loss = (y - linear_model) ^ 2</span></span><br><span class="line">loss = tf.reduce_sum(loss) <span class="comment">#求和</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#初始化</span></span><br><span class="line">sess = tf.Session()</span><br><span class="line">init = tf.global_variables_initializer()</span><br><span class="line">sess.run(init)</span><br><span class="line"></span><br><span class="line"><span class="comment">#输出</span></span><br><span class="line">print(sess.run(loss, feed_dict = &#123;x: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], y: [<span class="number">0</span>, <span class="number">-1</span>, <span class="number">-2</span>, <span class="number">-3</span>]&#125;))</span><br><span class="line"></span><br><span class="line"><span class="comment">#关闭Session</span></span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;输出结果为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">23.66</span></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;而实际上Tensorflow已经将最常用的算数运算符重载了，因此在运算时也可以直接使用，其结果是一样的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#构建computational graph</span></span><br><span class="line">linear_model = W * x + b <span class="comment">#linear_model = Wx + b</span></span><br><span class="line">loss = (y - linear_model)**<span class="number">2</span> <span class="comment">#loss = (y - linear_model) ^ 2</span></span><br><span class="line">loss = tf.reduce_sum(loss) <span class="comment">#求和</span></span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;其构建的computational graph为：<br><img src="/images/Tensorflow_01_computational_graph.png" alt="computational graph"><br>&emsp;&emsp;可以看到张量通过各个运算节点流过整张computational graph，并最终形成了输出。<br>&emsp;&emsp;这张图是通过Tensorflow内置的Tensorboard自动生成的。图中各张量的名称是在定义它们时加上参数name得到的。若想使用Tensorboard可视化整个训练过程，只需将输出改为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#输出</span></span><br><span class="line">writer = tf.summary.FileWriter(<span class="string">&quot;output&quot;</span>, sess.graph)</span><br><span class="line">print(sess.run(loss, feed_dict = &#123;x: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], y: [<span class="number">0</span>, <span class="number">-1</span>, <span class="number">-2</span>, <span class="number">-3</span>]&#125;))</span><br><span class="line">writer.close()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;运行后便会在代码所在目录新建一个名为output的文件夹。再打开一个终端中输入如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tensorboard --logdir&#x3D;path&#x2F;to&#x2F;output #output文件夹所在位置</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;回车后便会自动生成一个Tensorboard界面，还是很方便的。</p>
+<h3 id="使用optimizer训练参数"><a href="#使用optimizer训练参数" class="headerlink" title="使用optimizer训练参数"></a>使用optimizer训练参数</h3><p>&emsp;&emsp;Tensorflow最核心的功能便是训练参数了，在构建好computational graph之后，我们可以使用它内置的各种优化方式（optimizer）来方便快捷地实现参数训练。<br>&emsp;&emsp;接之前线性模型的例子，我们希望通过训练，改变W和b的值，使得loss减小，即模型输入x所得到的linear_model值越来越接近y。Tensorflow提供了<a target="_blank" rel="noopener" href="https://www.tensorflow.org/api_guides/python/train#Optimizers">很多优化方法</a>，这里选择最简单的梯度下降法（gradient descent）。我们只需设置优化方法（optimizer）及优化目标，Tensorflow便会自动计算梯度并且更新参数。其实现代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#接之前代码</span></span><br><span class="line"><span class="comment">#设置优化方式</span></span><br><span class="line">optimizer = tf.train.GradientDescentOptimizer(<span class="number">0.01</span>) <span class="comment">#设置优化方式为梯度下降，学习率为0.01</span></span><br><span class="line">train = optimizer.minimize(loss) <span class="comment">#设置优化目标为降低loss</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>): <span class="comment">#迭代1000次</span></span><br><span class="line">    sess.run(train, feed_dict = &#123;x: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], y: [<span class="number">0</span>, <span class="number">-1</span>, <span class="number">-2</span>, <span class="number">-3</span>]&#125;)</span><br><span class="line"></span><br><span class="line">print(sess.run([W, b, loss], feed_dict = &#123;x: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], y: [<span class="number">0</span>, <span class="number">-1</span>, <span class="number">-2</span>, <span class="number">-3</span>]&#125;))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;我们对模型迭代了1000次，每次迭代时，W与b的值都会更新，使loss减小。最终得到结果为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">-0.9999969</span>, <span class="number">0.99999082</span>, <span class="number">5.6999738e-11</span>]</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;可以看到，经过1000次迭代后，损失值已经非常小了。至此我们已经成功的使用Tensorflow训练了一个线性模型！</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
+<li>Tensorflow有constant、placeholder、variable三种数据形式。其中需要训练的参数设为variable，训练集设为placeholder，常量设为constant。</li>
+<li>通过运算建立张量流动的节点，构成computational graph，形成前向传播通道</li>
+<li>设置optimizer与优化目标来训练模型。</li>
+</ol>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://haosutopia.github.io/2018/01/Tensorflow-01/" data-id="ckflt9wnk0011eto9279496mc" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "进击的学渣"
+        },
+        "headline": "Tensorflow学习（一）",
+        "image": "https://haosutopia.github.io/images/Tensorflow.png",
+        "keywords": "Tensorflow",
+        "genre": "机器学习 深度学习",
+        "datePublished": "2018-01-05",
+        "dateCreated": "2018-01-05",
+        "dateModified": "2018-01-24",
+        "url": "https://haosutopia.github.io/2018/01/Tensorflow-01/",
+        "description": "&emsp;&emsp;Tensorflow是一个强大的深度学习框架，通过它可以方便地配置、训练以及评估模型。本次学习材料主要是Tensorflow官方教程、Deeplearning.ai课程以及一些网上的资料，并会加上自己的一些理解及想法。此外，本次学习针对的是机器学习在Tensorflow中的应用，不会对其理论做过多的阐述。
+理解Tensorflow&emsp;&emsp;Tensorflow",
+        "wordCount": 558
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/people/%E7%8E%8B%E8%AF%9A%E7%9A%93/100004082464920" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="instagram" href="https://www.instagram.com/changhao_wang0809/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-instagram"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/HaosUtopia" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="weibo" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-weibo"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/01/Tensorflow-02/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            Tensorflow学习（二）
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/08/Computer-Vision-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Computer_Vision.jpg)" alt="计算机视觉（一）：图像表示与梯度" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></p>
+                            <p class="item-title"><a href="/2018/08/Computer-Vision-01/" class="title">计算机视觉（一）：图像表示与梯度</a></p>
+                            <p class="item-date"><time datetime="2018-08-08T19:13:45.000Z" itemprop="datePublished">2018-08-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/05/Decision-Tree-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Decision_Tree.png)" alt="决策树" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></p>
+                            <p class="item-title"><a href="/2018/05/Decision-Tree-01/" class="title">决策树</a></p>
+                            <p class="item-date"><time datetime="2018-05-31T20:56:03.000Z" itemprop="datePublished">2018-05-31</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/K-Means-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/K_Means.png)" alt="K-Means聚类算法" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></p>
+                            <p class="item-title"><a href="/2018/04/K-Means-01/" class="title">K-Means聚类算法</a></p>
+                            <p class="item-date"><time datetime="2018-04-15T13:27:06.000Z" itemprop="datePublished">2018-04-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/RSVP-07/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/RSVP.png)" alt="分布参数系统控制（七）：边界输入" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></p>
+                            <p class="item-title"><a href="/2018/04/RSVP-07/" class="title">分布参数系统控制（七）：边界输入</a></p>
+                            <p class="item-date"><time datetime="2018-04-12T22:39:55.000Z" itemprop="datePublished">2018-04-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/RSVP-06/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/RSVP.png)" alt="分布参数系统控制（六）：反馈控制" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></p>
+                            <p class="item-title"><a href="/2018/04/RSVP-06/" class="title">分布参数系统控制（六）：反馈控制</a></p>
+                            <p class="item-date"><time datetime="2018-04-10T22:19:02.000Z" itemprop="datePublished">2018-04-11</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><span class="category-list-count">8</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%8E%A7%E5%88%B6/">非线性控制</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backstepping/" rel="tag">Backstepping</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CNN/" rel="tag">CNN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Caffe/" rel="tag">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVM/" rel="tag">SVM</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tensorflow/" rel="tag">Tensorflow</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F/" rel="tag">分布参数系统</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" rel="tag">数学建模</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E5%AD%90%E7%90%86%E8%AE%BA/" rel="tag">算子理论</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0/" rel="tag">迁移学习</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Backstepping/" style="font-size: 13.33px;">Backstepping</a> <a href="/tags/CNN/" style="font-size: 10px;">CNN</a> <a href="/tags/Caffe/" style="font-size: 10px;">Caffe</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/SVM/" style="font-size: 16.67px;">SVM</a> <a href="/tags/Tensorflow/" style="font-size: 13.33px;">Tensorflow</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F/" style="font-size: 20px;">分布参数系统</a> <a href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" style="font-size: 10px;">数学建模</a> <a href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">无监督学习</a> <a href="/tags/%E7%AE%97%E5%AD%90%E7%90%86%E8%AE%BA/" style="font-size: 10px;">算子理论</a> <a href="/tags/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">迁移学习</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="https://www.tensorflow.org/">TensorFlow</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 进击的学渣</p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'jin-ji-de-xue-zha';
+    
+    
+    var disqus_url = 'https://haosutopia.github.io/2018/01/Tensorflow-01/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+        </script>
+        
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML.js"></script>
+
+    
+
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>

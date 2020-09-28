@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    
+
+    
+    <title>支持向量机（三） | 理想国</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="SVM" />
+    
+    <meta name="description" content="&amp;emsp;&amp;emsp;支持向量机的强大不止在于它能在特征空间找到合适的超平面将正负样本分开并保持最大间隔，通过引入核函数，它还能在更高维，甚至无限维空间中对样本进行分离，以此来解决非线性的问题。 核特征映射&amp;emsp;&amp;emsp;在之前的推导中，我们使用的一直是样本的原始特征$x$，并通过线性平面$w^Tx+b$进行分割。但如果样本是线性不可分的，我们就需要先将特征映射到更高维空间，再分离正负样">
+<meta property="og:type" content="article">
+<meta property="og:title" content="支持向量机（三）">
+<meta property="og:url" content="https://haosutopia.github.io/2018/03/SVM-03/">
+<meta property="og:site_name" content="理想国">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;支持向量机的强大不止在于它能在特征空间找到合适的超平面将正负样本分开并保持最大间隔，通过引入核函数，它还能在更高维，甚至无限维空间中对样本进行分离，以此来解决非线性的问题。 核特征映射&amp;emsp;&amp;emsp;在之前的推导中，我们使用的一直是样本的原始特征$x$，并通过线性平面$w^Tx+b$进行分割。但如果样本是线性不可分的，我们就需要先将特征映射到更高维空间，再分离正负样">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://haosutopia.github.io/images/SVM.png">
+<meta property="article:published_time" content="2018-03-15T20:42:35.000Z">
+<meta property="article:modified_time" content="2018-03-23T21:15:50.000Z">
+<meta property="article:author" content="进击的学渣">
+<meta property="article:tag" content="SVM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://haosutopia.github.io/images/SVM.png">
+    
+
+    
+        <link rel="alternate" href="/" title="理想国" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/titillium-web/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-115921256-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?fc799e8461d37896f29cc1ea74f75070";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+    
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">主页</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%8E%A7%E5%88%B6/">非线性控制</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><ul class="main-nav-list-child"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></li></ul></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></li></ul>
+                                
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-SVM-03" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        支持向量机（三）
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2018/03/SVM-03/" class="article-date">
+       <time datetime="2018-03-15T20:42:35.000Z" itemprop="datePublished">2018-03-15</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2018/03/SVM-03/" class="article-date">
+     <time datetime="2018-03-23T21:15:50.000Z" itemprop="dateModified">2018-03-23</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link-link" href="/tags/SVM/" rel="tag">SVM</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p>&emsp;&emsp;支持向量机的强大不止在于它能在特征空间找到合适的超平面将正负样本分开并保持最大间隔，通过引入核函数，它还能在更高维，甚至无限维空间中对样本进行分离，以此来解决非线性的问题。</p>
+<h3 id="核"><a href="#核" class="headerlink" title="核"></a>核</h3><h4 id="特征映射"><a href="#特征映射" class="headerlink" title="特征映射"></a>特征映射</h4><p>&emsp;&emsp;在之前的推导中，我们使用的一直是样本的原始特征$x$，并通过线性平面$w^Tx+b$进行分割。但如果样本是线性不可分的，我们就需要先将特征映射到更高维空间，再分离正负样本。考虑如下训练集：<br><img src="%5Cimages%5CSVM_03_NL.PNG" alt="线性不可分样本"><br>&emsp;&emsp;这是一个拥有两个特征$(x_1,x_2)$的训练集，它的分布是非线性的，因此我们无法使用直线将正负样本分开。但观察可知，若决策边界为圆形，就能完全分离正负样本。因此可以令决策边界为一个二次曲线，其一般形式如下：<br>$$<br>w_1x_1+w_2x_2+w_3x_1^2+w_4x_2^2+w_5x_1x_2+b=0\tag{1}$$</p>
+<p>&emsp;&emsp;如果我们把$x_1,x_2,x_1^2,x_2^2,x_1x_2$都作为特征，那么就相当于将一个二维的特征空间映射到了一个五维的特征空间。在这个五维空间我们就能够使用线性分割将样本分离。这种映射我们称为<strong>特征映射</strong>（feature mapping），记为$\phi$。式(1)中的特征映射为：<br>$$<br>\phi(x)=\begin{bmatrix}<br>x_1\x_2\x_1^2\x_2^2\x_1x_2<br>\end{bmatrix}$$</p>
+<p>&emsp;&emsp;使用特征映射代替原来的特征就能够实现样本的高维分离。在<a href="../../../2018/03/SVM-02/index.html#e28">第二章节最后</a>我们得到预测函数只与样本特征的内积$\langle x_i,x_j\rangle$有关，因此我们将其中的特征$x$替换为特征映射$\phi$，并称它为$\phi$对应的<strong>核</strong>（Kernel）：<br>$$<br>K(x,z)=\phi(x)^T\phi(z)\tag{2}$$</p>
+<p>&emsp;&emsp;在使用中我们只需要将之前所有的$\langle x,z\rangle$替换成$K(x,z)$就可以了。</p>
+<h4 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h4><p>&emsp;&emsp;上面我们使用特征映射得到了核函数，但实际计算时，我们通常不计算特征映射，而是直接计算核函数。例如：<br>$$<br>K(x,z)=(x^Tz)^2$$</p>
+<p>&emsp;&emsp;将它化为式(2)的形式：<br>$$<br>\begin{split}<br>K(x,z)&amp;=\left(\sum_{i=1}^nx_iz_i\right)\left(\sum_{i=1}^nx_iz_i \right)\<br>&amp;=\sum_{i=1}^n\sum_{j=1}^nx_ix_jz_iz_j\<br>&amp;=\sum_{i,j=1}^n(x_ix_j)(z_i,z_j)<br>\end{split}$$</p>
+<p>&emsp;&emsp;得到该核函数对应的特征映射（取$n=2$）：<br>$$<br>\phi(x)=\begin{bmatrix}<br>x_1x_1\<br>x_1x_2\<br>x_2x_1\<br>x_2x_2<br>\end{bmatrix}$$</p>
+<p>&emsp;&emsp;可以发现，若通过特征映射计算，我们需要$n^2$数量级的计算次数。而若直接通过核函数公式，我们只需$n$数量级的计算次数，大大降低了高维空间的计算成本。</p>
+<h4 id="常用核函数"><a href="#常用核函数" class="headerlink" title="常用核函数"></a>常用核函数</h4><p>&emsp;&emsp;下面介绍几个常用核函数：<br>&emsp;&emsp;1. <strong>线性核</strong>：$K(x,z)=\langle x,z\rangle$。这个实际上就是原特征空间的内积。只是在一些SVM程序中需要我们定义核函数。将内积写成核函数形式就可以将线性与非线性SVM统一起来了。<br>&emsp;&emsp;2. <strong>多项式核</strong>：$K(x,z)=(\langle x,z\rangle+R)^d$。上面举例的核函数就是一个多项式核。若原特征空间维度为$n$，则多项式核对应特征映射的维度是$C_{n+d}^d$，并且可以通过计算将特征映射写出来。<br>&emsp;&emsp;3. <strong>高斯核</strong>：<br>$$<br>K(x,z)=\exp\left(-{||x-z||^2 \over 2\sigma^2}\right)\tag{3}$$</p>
+<p>&emsp;&emsp;&emsp;高斯核可以说是最常用的核函数了。它的表达式中存在指数函数，泰勒展开后得到：<br>$$<br>K(x,z)=1+\left(-{||x-z||^2 \over 2\sigma^2}\right)+{\left(-{||x-z||^2 \over 2\sigma^2}\right)^2 \over 2!}+…+{\left(-{||x-z||^2 \over 2\sigma^2}\right)^n \over n!}+…$$</p>
+<p>&emsp;&emsp;&emsp;由于泰勒展开得到的项数是无穷的，于是我们得到了一个无穷维的映射，因此高斯核对应的特征映射维度是无穷。需要注意的是，高斯核有个参数$\sigma$，在使用时需要合理选择。若$\sigma$过小，样本间稍有不同就会得到一个很大的数值，这就会导致过拟合；若$\sigma$过大，高斯核就起不了应有的效果。</p>
+<h4 id="Mercer定理"><a href="#Mercer定理" class="headerlink" title="Mercer定理"></a>Mercer定理</h4><p>&emsp;&emsp;如果有一个核函数，我们难以写出它对应的特征映射，就很难判断它到底是不是一个有效的核函数。这时Mercer定理提供了一个有效核函数的充要条件。<br>&emsp;&emsp;<strong>Mercer定理</strong>：若有一个函数$K:\Bbb{R}^n\times\Bbb{R}^n\to\Bbb{R}$，它是一个有效核函数的充要条件为：对任意数据集${x^{(1)},…,x^{(m)}},(m&lt;\infty)$，它所对应的核函数矩阵$K$是一个对称且半正定的矩阵。<br>&emsp;&emsp;其中核函数矩阵$K$是一个$m\times m$的矩阵，它的元素$K_{ij}=K(x^{(i)},x^{(j)})$。在这里核函数与核函数矩阵使用了相同的符号$K$。<br>&emsp;&emsp;在此我们省略它的证明。实际上使用SVM时绝大部分用的都是高斯核，毕竟它映射到的是无限维，理论上可以完美分离任意训练集。而其他核几乎是用不到的。</p>
+<h3 id="SVM正则化"><a href="#SVM正则化" class="headerlink" title="SVM正则化"></a>SVM正则化</h3><p>&emsp;&emsp;在<a href="../../../2018/03/SVM-02/index.html#3">第二章节</a>我们了解到，SVM优化问题的决策边界是由整个训练集中少数几个支持向量决定的。若训练集中存在极端值（outliers），又碰巧是支持向量的话，就会对决策边界的确定产生很大影响。考虑以下情况：<br><img src="%5Cimages%5CSVM_03_Outliers.PNG" alt="极端值情况"><br>&emsp;&emsp;左图是没有极端值的情况，最优间隔分类器能够很好地正负样本分开。但若加入一个极端值，如右图，它会使决策边界发生很大的变化来适应这个极端值，但这显然不是我们想要的。考虑到这种情况，我们将<a href="../../../2018/03/SVM-01/index.html#e18">第一章节最后</a>推导出的优化问题做些许改变，也就是正则化。我们将允许训练样本的函数间隔小于$1$，并且引入松弛变量（slack variable）来表示与$1$的偏差量。因此优化问题的约束条件变为：<br>$$<br>y^{(i)}(w^Tx^{(i)}+b)\geq 1-\xi_i,\ i=1,…,m\tag{4}$$</p>
+<p>&emsp;&emsp;但我们也不能让$\xi_i$任意大，因此在优化目标中增加一项作为偏差$\xi_i$的惩罚：<br>$$<br>\min_{\gamma,w,b}\ {1 \over 2}||w||^2+C\sum_{i=1}^m\xi_i\tag{5}$$</p>
+<p>&emsp;&emsp;我们既希望训练样本间隔最大，又希望其偏差量最小，故使用参数$C$来保持两者之间的平衡，它是需要我们人为确定的。完整的优化问题描述如下：<br>$$<br>\begin{split}<br>\min_{\gamma,w,b}\ &amp;{1 \over 2}||w||^2+C\sum_{i=1}^m\xi_i\<br>{\rm s.t.}\ &amp;y^{(i)}(w^Tx^{(i)}+b)\geq1-\xi_i,\ i=1,…,m\<br>&amp;\xi_i\geq 0,\ i=1,…,m<br>\end{split}\tag{6}$$</p>
+<p>&emsp;&emsp;写出式(6)优化问题的拉格朗日方程$\mathcal{L}(w,b,\xi,\alpha,r)$：<br>$$<br>\mathcal{L}={1 \over 2}||w||^2+C\sum_{i=1}^m\xi_i-\sum_{i=1}^m\alpha_i[y^{(i)}(w^Tx^{(i)}+b)-1+\xi_i]-\sum_{i=1}^mr_i\xi_i\tag{7}$$</p>
+<p>&emsp;&emsp;与之前一样，通过求取偏导来最小化$\mathcal{L}(w,b,\xi,\alpha,r)$：<br>$$<br>\begin{eqnarray}<br>\nabla_w\mathcal{L}&amp;=&amp;w-\sum_{i=1}^m\alpha_iy^{(i)}x^{(i)}=0\tag{8}\<br>{\partial \over \partial b}\mathcal{L}&amp;=&amp;\sum_{i=1}^m\alpha_iy^{(i)}=0\tag{9}\<br>{\partial \over \partial\xi_i}\mathcal{L}&amp;=&amp;C-\alpha_i-r_i=0\tag{10}<br>\end{eqnarray}$$</p>
+<p>&emsp;&emsp;将式(8)(9)(10)带回式(7)，我们得到：<br>$$<br>\mathcal{L}=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j\langle x^{(i)},x^{(j)}\rangle\tag{11}$$</p>
+<p>&emsp;&emsp;它与<a href="../../../2018/03/SVM-02/index.html#e25">第二章节式(25)</a>得到的结果一致。但由于我们有条件$C-\alpha_i-r_i=0$，并且根据KKT条件，$r_i\geq 0$，得出$\alpha_i\leq C$。这表明$\alpha_i$不能无限大，以此限制了单个样本对整体的影响。因此整个对偶问题表示为：<br>$$<br>\begin{split}<br>\max_{\alpha}\ &amp;\theta_{\cal{D}}(\alpha)=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j\langle x^{(i)},x^{(j)}\rangle\<br>{\rm s.t.}\ &amp;0\leq\alpha_i\leq C,\ i=1,…,m\<br>&amp;\sum_{i=1}^m\alpha_iy^{(i)}=0<br>\end{split}\tag{12}$$</p>
+<p>&emsp;&emsp;正则化后的对偶问题（式(12)）与原对偶问题（<a href="../../../2018/03/SVM-02/index.html#e26">第二章节式(26)</a>）唯一区别就是$\alpha_i$的取值范围变成了$0\leq\alpha_i\leq C$。并且通过$\alpha_i$的值我们可以大致判断训练样本$(x^{(i)},y^{(i)})$的状态：<br>&emsp;&emsp;1. $\alpha_i=0$，则$y^{(i)}(w^Tx^{(i)}+b)\geq 1$，此时训练样本在边界或边界内部，可能为支持向量或普通点。<br>&emsp;&emsp;2. $\alpha_i=C$，则$y^{(i)}(w^Tx^{(i)}+b)\leq 1$，同时$r_i=0$，$\xi_i\geq 0$，此时训练样本在边界或两个边界之间，为支持向量，并可能为极端点。<br>&emsp;&emsp;3. $0&lt;\alpha_i&lt; C$，则$y^{(i)}(w^Tx^{(i)}+b)=1$，此时训练样本在边界上，为支持向量。<br>&emsp;&emsp;若我们能解决式(12)中的对偶问题，得到相应$\alpha_i$，再将它们带回原式，就能得到最优解了。在之后的章节我们将使用SMO算法来解决这类对偶问题。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
+<li>使用核函数可以将原特征映射到更高维空间，从而得到非线性的决策边界。</li>
+<li>SVM正则化能有效减少极端值对模型的影响。</li>
+</ol>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://haosutopia.github.io/2018/03/SVM-03/" data-id="ckflt9wng000xeto9f9adfpn8" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "进击的学渣"
+        },
+        "headline": "支持向量机（三）",
+        "image": "https://haosutopia.github.io/images/SVM.png",
+        "keywords": "SVM",
+        "genre": "机器学习",
+        "datePublished": "2018-03-15",
+        "dateCreated": "2018-03-15",
+        "dateModified": "2018-03-23",
+        "url": "https://haosutopia.github.io/2018/03/SVM-03/",
+        "description": "&emsp;&emsp;支持向量机的强大不止在于它能在特征空间找到合适的超平面将正负样本分开并保持最大间隔，通过引入核函数，它还能在更高维，甚至无限维空间中对样本进行分离，以此来解决非线性的问题。
+核特征映射&emsp;&emsp;在之前的推导中，我们使用的一直是样本的原始特征$x$，并通过线性平面$w^Tx+b$进行分割。但如果样本是线性不可分的，我们就需要先将特征映射到更高维空间，再分离正负样",
+        "wordCount": 102
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/people/%E7%8E%8B%E8%AF%9A%E7%9A%93/100004082464920" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="instagram" href="https://www.instagram.com/changhao_wang0809/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-instagram"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/HaosUtopia" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="weibo" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-weibo"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/03/SVM-04/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            支持向量机（四）
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2018/03/SVM-02/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">支持向量机（二）</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/08/Computer-Vision-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Computer_Vision.jpg)" alt="计算机视觉（一）：图像表示与梯度" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></p>
+                            <p class="item-title"><a href="/2018/08/Computer-Vision-01/" class="title">计算机视觉（一）：图像表示与梯度</a></p>
+                            <p class="item-date"><time datetime="2018-08-08T19:13:45.000Z" itemprop="datePublished">2018-08-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/05/Decision-Tree-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Decision_Tree.png)" alt="决策树" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></p>
+                            <p class="item-title"><a href="/2018/05/Decision-Tree-01/" class="title">决策树</a></p>
+                            <p class="item-date"><time datetime="2018-05-31T20:56:03.000Z" itemprop="datePublished">2018-05-31</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/K-Means-01/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/K_Means.png)" alt="K-Means聚类算法" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></p>
+                            <p class="item-title"><a href="/2018/04/K-Means-01/" class="title">K-Means聚类算法</a></p>
+                            <p class="item-date"><time datetime="2018-04-15T13:27:06.000Z" itemprop="datePublished">2018-04-15</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/RSVP-07/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/RSVP.png)" alt="分布参数系统控制（七）：边界输入" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></p>
+                            <p class="item-title"><a href="/2018/04/RSVP-07/" class="title">分布参数系统控制（七）：边界输入</a></p>
+                            <p class="item-date"><time datetime="2018-04-12T22:39:55.000Z" itemprop="datePublished">2018-04-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2018/04/RSVP-06/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/RSVP.png)" alt="分布参数系统控制（六）：反馈控制" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><i class="icon fa fa-angle-right"></i><a class="article-category-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a></p>
+                            <p class="item-title"><a href="/2018/04/RSVP-06/" class="title">分布参数系统控制（六）：反馈控制</a></p>
+                            <p class="item-date"><time datetime="2018-04-10T22:19:02.000Z" itemprop="datePublished">2018-04-11</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/">控制理论</a><span class="category-list-count">8</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6/">分布参数系统控制</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%8E%A7%E5%88%B6%E7%90%86%E8%AE%BA/%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%8E%A7%E5%88%B6/">非线性控制</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">一月 2018</a><span class="archive-list-count">4</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">标签</h3>
+        <div class="widget">
+            <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backstepping/" rel="tag">Backstepping</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CNN/" rel="tag">CNN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Caffe/" rel="tag">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SVM/" rel="tag">SVM</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Tensorflow/" rel="tag">Tensorflow</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F/" rel="tag">分布参数系统</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" rel="tag">数学建模</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AE%97%E5%AD%90%E7%90%86%E8%AE%BA/" rel="tag">算子理论</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0/" rel="tag">迁移学习</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">标签云</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Backstepping/" style="font-size: 13.33px;">Backstepping</a> <a href="/tags/CNN/" style="font-size: 10px;">CNN</a> <a href="/tags/Caffe/" style="font-size: 10px;">Caffe</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/SVM/" style="font-size: 16.67px;">SVM</a> <a href="/tags/Tensorflow/" style="font-size: 13.33px;">Tensorflow</a> <a href="/tags/%E5%88%86%E5%B8%83%E5%8F%82%E6%95%B0%E7%B3%BB%E7%BB%9F/" style="font-size: 20px;">分布参数系统</a> <a href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/" style="font-size: 10px;">数学建模</a> <a href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">无监督学习</a> <a href="/tags/%E7%AE%97%E5%AD%90%E7%90%86%E8%AE%BA/" style="font-size: 10px;">算子理论</a> <a href="/tags/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">迁移学习</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="https://www.tensorflow.org/">TensorFlow</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 进击的学渣</p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'jin-ji-de-xue-zha';
+    
+    
+    var disqus_url = 'https://haosutopia.github.io/2018/03/SVM-03/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] } });
+        </script>
+        
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML.js"></script>
+
+    
+
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>
