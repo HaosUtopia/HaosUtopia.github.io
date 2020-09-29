@@ -12,12 +12,12 @@
     
     <meta name="keywords" content="分布参数系统" />
     
-    <meta name="description" content="&amp;emsp;&amp;emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：$$\dot{x}(t)&#x3D;{\cal A}x(t)\tag{1}$$ 指数稳定&amp;emsp;&amp;emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabili">
+    <meta name="description" content="&amp;emsp;&amp;emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：  \dot{x}(t)&#x3D;{\cal A}x(t)\tag{1}指数稳定&amp;emsp;&amp;emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabilität">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布参数系统控制（六）：反馈控制">
 <meta property="og:url" content="https://haosutopia.github.io/2018/04/RSVP-06/">
 <meta property="og:site_name" content="理想国">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：$$\dot{x}(t)&#x3D;{\cal A}x(t)\tag{1}$$ 指数稳定&amp;emsp;&amp;emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabili">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：  \dot{x}(t)&#x3D;{\cal A}x(t)\tag{1}指数稳定&amp;emsp;&amp;emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabilität">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://haosutopia.github.io/images/RSVP.png">
 <meta property="article:published_time" content="2018-04-10T22:19:02.000Z">
@@ -92,7 +92,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -236,45 +240,114 @@ var _hmt = _hmt || [];
 
             
 
-            <p>&emsp;&emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：<br>$$<br>\dot{x}(t)={\cal A}x(t)\tag{1}$$</p>
-<h3 id="指数稳定"><a href="#指数稳定" class="headerlink" title="指数稳定"></a>指数稳定</h3><p>&emsp;&emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabilität）的定义：若存在常数$M\geq 1,\alpha&gt;0$，使得系统状态变量$x(t)$满足：<br>$$<br>||x(t)||\leq Me^{-\alpha t }x_0,\ t\geq 0,\ \forall x_0\in {\cal H}\tag{2}$$</p>
-<p>&emsp;&emsp;则我们称系统指数稳定。其中范数$||x||$由内积定义：<br>$$<br>||x||=\sqrt{\langle x,x\rangle}=\sqrt{\int_0^1|x(z)|^2{\Bbb d}z}$$</p>
-<p>&emsp;&emsp;为了更好地描述系统稳定性，我们定义稳定裕量（Stabilitätsreserve）$\alpha_{stab}$为衰减率$\alpha$的下确界（相当于最小值），它可以用来表示$x(t)$趋向于$0$的速度。若$\alpha_{stab}&gt;0$，则系统指数稳定。<br>&emsp;&emsp;根据<a href="../../../2018/03/RSVP-03/index.html#e13">第三章节式(13)</a>：<br>$$<br>\begin{split}<br>x(t)&amp;=&amp;\sum_{i=1}^{\infty}e^{\lambda_it}\phi_ix_i^\ast (0)\&amp;\leq&amp; e^{(\sup_{i\geq 1} {\rm Re} \ \lambda_i)t}\sum_{i=1}^{\infty}\phi_ix_i^\ast (0)\&amp;=&amp;e^{(\sup_{i\geq 1} {\rm Re} \ \lambda_i)t}x(0)\end{split}\tag{3}$$</p>
-<p>&emsp;&emsp;我们得到Riesz-Spektral系统的稳定裕量：<br>$$<br>\alpha_{stab}=-\sup_{i\geq 1}{\rm Re}\lambda_i\tag{4}$$</p>
-<p>&emsp;&emsp;对一般系统来说，稳定裕量可表示为：<br>$$<br>\alpha_{stab}=-\sup_{\lambda\in\sigma({\cal A})}{\rm Re}\lambda\tag{5}$$</p>
-<p>&emsp;&emsp;根据式(5)我们就可以得到系统指数稳定的条件：$\sup_{\lambda\in\sigma({\cal A})}{\rm Re}\lambda&lt;0$，也就是说${\cal A}$的谱集（特征值）要在复平面的左半平面，这与集总参数系统类似。</p>
-<h3 id="状态反馈"><a href="#状态反馈" class="headerlink" title="状态反馈"></a>状态反馈</h3><h4 id="反馈算子"><a href="#反馈算子" class="headerlink" title="反馈算子"></a>反馈算子</h4><p>&emsp;&emsp;状态反馈的目的就是将原系统算子的谱集移动到复平面左半平面，使得系统稳定。它需要给系统增加一个输入$u(t)$，并且$u(t)$由系统状态变量决定。增加输入后的系统可表示为：<br>$$<br>\begin{eqnarray}<br>\dot{x}(t)&amp;=&amp;{\cal A}x(t)+{\cal B}u(t)\tag{6}\<br>u(t)&amp;=&amp;-{\cal K}x(t)\tag{7}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;其中$\cal K$为反馈算子（Rückführoperator），它将系统变量$x(t)$映射为一个$p$维向量。根据<strong>里斯表示定理</strong>（Rieszscher Darstellungssatz）：每个${\cal H}\to {\Bbb C}$的泛函$f$，都存在一个定义域上的函数$\xi_0$，使得$f(\cdot)=\langle\ \cdot,\xi_0\rangle$。也就是说，泛函空间的每个函数都可以表示为内积的形式。因此$\cal K$可以表示为：<br>$$<br>{\cal K}=\begin{bmatrix}\langle\ \cdot\ ,k_1\rangle \ \vdots \ \langle\ \cdot\ ,k_p\rangle\end{bmatrix}\tag{8}$$</p>
-<p>&emsp;&emsp;其中$k_1,…,k_p$均为定义域上函数，它们可以在状态空间中分解：<br>$$<br>k_i=\sum_{j=1}^{\infty}\langle k_i,\phi_j\rangle\psi_j=\sum_{j=1}^{\infty}k_{ij}^{\ast}\psi_j\tag{9}$$</p>
-<p>&emsp;&emsp;这里要注意，式(9)的分解与之前不同，它是以${\cal A}^\ast$的特征元素$\psi_i$为基进行的，至于原因纯粹是为了之后的计算。<br>&emsp;&emsp;将输入$u(t)$带入原系统得到：<br>$$<br>\dot{x}(t)=({\cal A-BK})x(t)=\tilde{\cal A}x(t)\tag{10}$$</p>
-<p>&emsp;&emsp;通过状态反馈，我们将原系统算子$\cal A$变成了$\tilde{\cal A}$，并且希望$\tilde{\cal A}$的谱集在复平面左半平面。</p>
-<h4 id="系统可稳定条件"><a href="#系统可稳定条件" class="headerlink" title="系统可稳定条件"></a>系统可稳定条件</h4><p>&emsp;&emsp;系统可稳定条件（Stabilisierbarkeit）是反馈能够有效的前提，它包含如下条件：<br>&emsp;&emsp;1. 原系统算子$\cal A$在右半平面只有有限个特征值。<br>&emsp;&emsp;2. 系统能控。<br>&emsp;&emsp;3. 左半平面特征值不能无限趋近于虚轴。<br>&emsp;&emsp;由于分布参数系统是无限维的，故$\cal A$可能有无限个$\lambda$在右半平面，仅使用$p$维输入无法将它们全部移动到理想位置，因此系统需要满足条件一。我们设系统前$n$个特征值$\lambda_1,…,\lambda_n$在右半平面，其余$\lambda$均在左半平面，因此反馈只需要改变前$n$个$\lambda$，而其余特征值保持不变：<br>$$\begin{matrix}{\cal A} &amp;&amp; \lambda_1 &amp;&amp; … &amp;&amp; \lambda_n &amp;&amp; \lambda_{n+1} &amp;&amp; \lambda_{n+2} &amp;&amp; … \<br>\downarrow &amp;&amp; \downarrow &amp;&amp;  &amp;&amp; \downarrow &amp;&amp; \downarrow &amp;&amp; \downarrow &amp;&amp; \<br>\tilde{\cal A} &amp;&amp; \tilde{\lambda}<em>1 &amp;&amp; … &amp;&amp; \tilde{\lambda}<em>n &amp;&amp; \lambda</em>{n+1} &amp;&amp; \lambda</em>{n+2} &amp;&amp; …<br>\end{matrix}$$</p>
-<p>&emsp;&emsp;由于$\lambda_i(i&gt;n)$同时是$\cal A$与$\tilde{\cal A}$的特征值，因此满足：<br>$$<br>\begin{eqnarray}<br>&amp;&amp;({\cal A-BK})\phi_i=\lambda_i\phi_i,\ i&gt;n\<br>\Rightarrow&amp;&amp;{\cal BK}\phi_i=0,\ i&gt;n\<br>\Rightarrow&amp;&amp;\begin{bmatrix}\langle \phi_i,k_1\rangle\ \vdots \ \langle \phi_i,k_p\rangle\end{bmatrix}=0,\ i&gt;n<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;其中：<br>$$<br>\begin{split}<br>\langle \phi_i,k_j\rangle&amp;=\langle \phi_i,\sum_{l=1}^{\infty}k_{jl}^{\ast}\psi_l\rangle\<br>&amp;=\sum_{l=1}^{\infty}\overline{k_{jl}^{\ast} }\langle\phi_i,\psi_l\rangle\<br>&amp;=\sum_{l=1}^{\infty}\overline{k_{jl}^{\ast} }\delta_{il}\<br>&amp;=\overline{k_{ji}^{\ast} }=0,\ i&gt;n<br>\end{split}$$</p>
-<p>&emsp;&emsp;因此式(9)转化为：<br>$$<br>k_i=\sum_{j=1}^{\infty}k_{ij}^{\ast}\psi_j=\sum_{j=1}^nk_{ij}^{\ast}\psi_j\tag{11}$$</p>
-<p>&emsp;&emsp;同时$\cal K$能够表示为：<br>$$<br>\begin{split}<br>{\cal K}&amp;=\begin{bmatrix}\langle\ \cdot\ ,k_1\rangle \ \vdots \ \langle\ \cdot\ ,k_p\rangle\end{bmatrix}=\begin{bmatrix}\langle\ \cdot\ ,\sum_{j=1}^nk_{1j}^{\ast}\psi_j\rangle \ \vdots \ \langle\ \cdot\ ,\sum_{j=1}^nk_{pj}^{\ast}\psi_j\rangle\end{bmatrix}=\begin{bmatrix}\sum_{j=1}^n\overline{k_{1j}^{\ast} }\langle\ \cdot\ ,\psi_j\rangle \ \vdots \ \sum_{j=1}^n\overline{k_{pj}^{\ast} }\langle\ \cdot\ ,\psi_j\rangle\end{bmatrix}\<br>&amp;=\underbrace{\begin{bmatrix}\overline{k_{11}^{\ast} } &amp;&amp; \overline{k_{12}^{\ast} } &amp;&amp; \cdots &amp;&amp; \overline{k_{1n}^{\ast} }\<br>\vdots &amp;&amp; \vdots &amp;&amp; \ddots &amp;&amp; \vdots\<br>\overline{k_{p1}^{\ast} } &amp;&amp; \overline{k_{p2}^{\ast} } &amp;&amp; \cdots &amp;&amp; \overline{k_{pn}^{\ast} }\end{bmatrix} }_{\overline{K^{\ast} }(p\times n)} \begin{bmatrix}\langle\ \cdot\ ,\psi_1\rangle \ \vdots \ \langle\ \cdot\ ,\psi_n\rangle\end{bmatrix}<br>\end{split}$$</p>
-<p>&emsp;&emsp;通过上述推导我们将反馈算子$\cal K$转化为了反馈矩阵$\overline{K^{\ast} }$与一个算子的乘积，其中算子是原系统决定的，因此$\cal K$只由$\overline{K^{\ast} }$决定。接下来我们只要设计反馈矩阵就能得到相应的反馈算子。若将反馈算子作用于状态变量：<br>$$<br>{\cal K}x(t)=\sum_{i=1}^{\infty}x_i^{\ast}{\cal K}\phi_i=\overline{K^{\ast} }\begin{bmatrix}x_1^{\ast} \ \vdots \ x_n^{\ast} \end{bmatrix}$$</p>
-<p>&emsp;&emsp;我们发现$\cal K$对前$n$项的$\phi_i$都有相应反馈，并且反馈到$p$个输入的大小分别为：$\overline{k_{1i}^{\ast} },\overline{k_{2i}^{\ast} },…,\overline{k_{pi}^{\ast} }$，以此来移动前$n$个特征值；同时对其余$\phi_i$均无反馈，故其余特征值保持不变。</p>
-<h4 id="系统能控性条件"><a href="#系统能控性条件" class="headerlink" title="系统能控性条件"></a>系统能控性条件</h4><p>&emsp;&emsp;系统可稳定条件中条件二要求系统是能控的，这里我们直接给出系统能控性条件，其证明能够在之后的推导过程中得到。<br>&emsp;&emsp;在反馈控制中我们使用${\cal B}u(t)$来控制前$n$个特征值$\lambda_1,…,\lambda_n$，其中：<br>$$<br>{\cal B}u(t)=\sum_{i=1}^pb_iu_i(t)=\sum_{i=1}^{\infty}\phi_ib_i^{\ast}u(t)$$</p>
-<p>&emsp;&emsp;系统能控的条件为：$B^{\ast}$无零行。其中$B^{\ast}$定义如下：<br>$$<br>B^{\ast}=\begin{bmatrix}{b_1^{\ast} }^T \ \vdots \ {b_n^{\ast} }^T\end{bmatrix}=\begin{bmatrix}\langle b_1,\psi_1\rangle &amp;&amp; \cdots &amp;&amp; \langle b_p,\psi_1\rangle\<br>\vdots &amp;&amp; \ddots &amp;&amp; \vdots \<br>\langle b_1,\psi_n\rangle &amp;&amp; \cdots &amp;&amp; \langle b_p,\psi_n\rangle\end{bmatrix}\tag{12}$$</p>
-<h4 id="反馈矩阵计算"><a href="#反馈矩阵计算" class="headerlink" title="反馈矩阵计算"></a>反馈矩阵计算</h4><p>&emsp;&emsp;现在就剩设计有限维的反馈矩阵了。我们利用反馈后系统算子$\tilde{\cal A}$的特征值$\tilde{\lambda}_1,…,\tilde{\lambda}_n$与特征向量$\tilde{\phi}_1,…,\tilde{\phi}_n$，得到：<br>$$<br>\begin{eqnarray}<br>&amp;&amp;({\cal A-BK})\tilde{\phi}_i=\tilde{\lambda}_i\tilde{\phi}_i,\ i=1,2,…,n\tag{13}\<br>\Rightarrow&amp;&amp;(\tilde{\lambda}_iI-{\cal A})\tilde{\phi}_i=-{\cal BK}\tilde{\phi}_i\tag{14}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;在这里我们引入参数向量（Parametervektoren）$p_i$，它是一个$p$维向量：<br>$$<br>p_i={\cal K}\tilde{\phi}_i=\overline{K^{\ast} }\begin{bmatrix}\langle\tilde{\phi}_i,\psi_1\rangle \ \vdots \ \langle\tilde{\phi}_i,\psi_n\rangle\end{bmatrix}=\overline{K^{\ast} }\tilde{v}_i\tag{15}$$</p>
-<p>&emsp;&emsp;其中：<br>$$\tilde{v}<em>i=\begin{bmatrix}\langle\tilde{\phi}_i,\psi_1\rangle \ \vdots \ \langle\tilde{\phi}_i,\psi_n\rangle\end{bmatrix}=\begin{bmatrix}c</em>{i1}^{\ast} \ \vdots \ c_{in}^{\ast}\end{bmatrix}\tag{16}$$</p>
-<p>&emsp;&emsp;将$p_i$合并得到：<br>$$<br>[p_1,…,p_n]=\overline{K^{\ast} }[\tilde{v}_1,…,\tilde{v}_n]=\overline{K^{\ast} }\tilde{V}\tag{17}$$</p>
-<p>&emsp;&emsp;在这里我们先来看看这些$p_i$、$\tilde{v}<em>i$具体表示什么意义。首先看$p_i$，根据式(15)定义我们可以知道$p_i$表示状态变量$x=\tilde{\phi}_i$时的反馈量。而一般情况下状态变量可由基$\tilde{\phi}_i$排列组合而成：<br>$$<br>x=\sum</em>{i=1}^{\infty}\tilde{x}_i^{\ast}\tilde{\phi}_i$$</p>
-<p>&emsp;&emsp;取前$n$个$\tilde{x}<em>i^{\ast}$为$x$的坐标（由于$n$项之后的特征向量均没有反馈，故省略），则$x$所产生的反馈量为：<br>$$<br>\begin{split}<br>{\cal K}x&amp;=\sum</em>{i=1}^n{\cal K}\tilde{\phi}_i\tilde{x}<em>i^{\ast}=\sum</em>{i=1}^np_i\tilde{x}_i^{\ast}\<br>&amp;=[p_1,…,p_n]\begin{bmatrix}\tilde{x}_1^{\ast} \ \vdots \ \tilde{x}_n^{\ast} \end{bmatrix}<br>\end{split}\tag{18}$$</p>
-<p>&emsp;&emsp;同样状态变量也可由基$\phi_i$排列组合而成：<br>$$<br>x=\sum_{i=1}^{\infty}x_i^{\ast}\phi_i$$</p>
-<p>&emsp;&emsp;根据$\cal K$定义，$x$所产生的反馈量也可以表示为：<br>$$<br>{\cal K}x=\overline{K^{\ast} }\begin{bmatrix}x_1^{\ast} \ \vdots \ x_n^{\ast} \end{bmatrix}\tag{19}$$</p>
-<p>&emsp;&emsp;根据式(17)~(19)可以得到：<br>$$<br>[\tilde{v}_1,…,\tilde{v}_n]\begin{bmatrix}\tilde{x}_1^{\ast} \ \vdots \ \tilde{x}_n^{\ast} \end{bmatrix}=\begin{bmatrix}x_1^{\ast} \ \vdots \ x_n^{\ast} \end{bmatrix}$$</p>
-<p>&emsp;&emsp;因此$[\tilde{v}<em>1,…,\tilde{v}<em>n]$实际上就是从基$\tilde{\phi}$到基$\phi$的坐标变换矩阵。而$c</em>{i1}^{\ast},…,c</em>{in}^{\ast}$则表示新特征向量$\tilde{\phi}_i$在基$\phi$下前$n$个坐标。<br>&emsp;&emsp;搞清楚符号含义后我们就要根据新定义的$p_i$、$\tilde{v}_i$来得到反馈矩阵了。假设新特征值$\tilde{\lambda}_i$没有重复，并且与原特征值$\lambda$不相等，则$\tilde{v}_1,…,\tilde{v}_n$线性无关（可用反证法证明），$\tilde{V}$存在逆矩阵。又根据式(17)可以得到：<br>$$<br>\overline{K^{\ast} }=[p_1,…,p_n] [\tilde{v}_1,…,\tilde{v}_n]^{-1}\tag{20}$$</p>
-<p>&emsp;&emsp;现在我们需要在式(20)中将$\tilde{v}_i$消去。根据式(14)(15)：<br>$$<br>\begin{eqnarray}<br>\tilde{\phi}<em>i&amp;=&amp;({\cal A}-\tilde{\lambda}_iI)^{-1}{\cal B}p_i\tag{21}\<br>&amp;=&amp;\sum</em>{j=1}^{\infty}{\langle {\cal B}p_i,\psi_j\rangle \over \lambda_j - \tilde{\lambda}_i}\phi_j\tag{22}\<br>&amp;=&amp;\sum_{j=1}^{\infty}{ {b_j^{\ast} }^Tp_i \over \lambda_j - \tilde{\lambda}_i}\phi_j\tag{23}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;其中式(21)推导式(22)时用到了下列等式（可以通过状态空间分解证明）：<br>$$<br>(\lambda I-{\cal A})^{-1}=\sum_{i=1}^{\infty}{\langle \ \cdot\ ,\psi_i\rangle \over \lambda - \lambda_i}\phi_i$$</p>
-<p>&emsp;&emsp;由于$c_{ij}^{\ast}$为$\tilde{\phi}<em>i$在基$\phi_j$下的坐标，因此$\tilde{\phi}_i$又可表示为：<br>$$<br>\tilde{\phi}<em>i=\sum</em>{j=1}^{\infty}c</em>{ij}^{\ast}\phi_j\tag{24}$$</p>
-<p>&emsp;&emsp;将式(23)(24)联立得到：<br>$$<br>c_{ij}^{\ast}={ {b_j^{\ast} }^Tp_i \over \lambda_j - \tilde{\lambda}_i}\tag{25}$$</p>
-<p>&emsp;&emsp;带入式(16)中：<br>$$<br>\begin{split}<br>\tilde{v}<em>i&amp;=\begin{bmatrix}c</em>{i1}^{\ast} \ \vdots \ c_{in}^{\ast}\end{bmatrix}=\begin{bmatrix}{ {b_1^{\ast} }^Tp_i \over \lambda_1 - \tilde{\lambda}<em>i} \ \vdots \ { {b_n^{\ast} }^Tp_i \over \lambda_n - \tilde{\lambda}_i}\end{bmatrix}\<br>&amp;=\underbrace{\begin{bmatrix}{ 1 \over \lambda_1 - \tilde{\lambda}_i} &amp;&amp; &amp;&amp; \ &amp;&amp; \ddots &amp;&amp; \ &amp;&amp; &amp;&amp; { 1 \over \lambda_n - \tilde{\lambda}_i}\end{bmatrix} }</em>{(\Lambda-\tilde{\lambda}<em>i I)^{-1} }\underbrace{\begin{bmatrix}{b_1^{\ast} }^T \ \vdots \ {b_n^{\ast} }^T\end{bmatrix} }</em>{B^{\ast} }p_i<br>\end{split}$$</p>
-<p>&emsp;&emsp;因此：<br>$$<br>\tilde{v}_i=(\Lambda-\tilde{\lambda}_i I)^{-1}B^{\ast}p_i\tag{26}$$</p>
-<p>&emsp;&emsp;式(26)带入式(20)得到$\overline{K^{\ast} }$的最终结果：<br>$$<br>\overline{K^{\ast} }=[p_1,…,p_n] [(\Lambda-\tilde{\lambda}_1 I)^{-1}B^{\ast}p_1,…,(\Lambda-\tilde{\lambda}_n I)^{-1}B^{\ast}p_n]^{-1}\tag{27}$$</p>
-<p>&emsp;&emsp;式(27)可以得到系统能控性条件的证明：若$B^{\ast}$有全零行，则式(27)最后项无法取逆，因此$B^{\ast}$不能有全零行。同时它表明，要设计一个反馈我们只需要设计$\tilde{\lambda}$和$p$就可以了。</p>
+            <p>&emsp;&emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：</p>
+<script type="math/tex; mode=display">
+\dot{x}(t)={\cal A}x(t)\tag{1}</script><h3 id="指数稳定"><a href="#指数稳定" class="headerlink" title="指数稳定"></a>指数稳定</h3><p>&emsp;&emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabilität）的定义：若存在常数$M\geq 1,\alpha&gt;0$，使得系统状态变量$x(t)$满足：</p>
+<script type="math/tex; mode=display">
+||x(t)||\leq Me^{-\alpha t }x_0,\ t\geq 0,\ \forall x_0\in {\cal H}\tag{2}</script><p>&emsp;&emsp;则我们称系统指数稳定。其中范数$||x||$由内积定义：</p>
+<script type="math/tex; mode=display">
+||x||=\sqrt{\langle x,x\rangle}=\sqrt{\int_0^1|x(z)|^2{\Bbb d}z}</script><p>&emsp;&emsp;为了更好地描述系统稳定性，我们定义稳定裕量（Stabilitätsreserve）$\alpha_{stab}$为衰减率$\alpha$的下确界（相当于最小值），它可以用来表示$x(t)$趋向于$0$的速度。若$\alpha_{stab}&gt;0$，则系统指数稳定。<br>&emsp;&emsp;根据<a href="../../../2018/03/RSVP-03/index.html#e13">第三章节式(13)</a>：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+x(t)&=&\sum_{i=1}^{\infty}e^{\lambda_it}\phi_ix_i^\ast (0)\\&\leq& e^{(\sup_{i\geq 1} {\rm Re} \ \lambda_i)t}\sum_{i=1}^{\infty}\phi_ix_i^\ast (0)\\&=&e^{(\sup_{i\geq 1} {\rm Re} \ \lambda_i)t}x(0)\end{split}\tag{3}</script><p>&emsp;&emsp;我们得到Riesz-Spektral系统的稳定裕量：</p>
+<script type="math/tex; mode=display">
+\alpha_{stab}=-\sup_{i\geq 1}{\rm Re}\lambda_i\tag{4}</script><p>&emsp;&emsp;对一般系统来说，稳定裕量可表示为：</p>
+<script type="math/tex; mode=display">
+\alpha_{stab}=-\sup_{\lambda\in\sigma({\cal A})}{\rm Re}\lambda\tag{5}</script><p>&emsp;&emsp;根据式(5)我们就可以得到系统指数稳定的条件：$\sup_{\lambda\in\sigma({\cal A})}{\rm Re}\lambda&lt;0$，也就是说${\cal A}$的谱集（特征值）要在复平面的左半平面，这与集总参数系统类似。</p>
+<h3 id="状态反馈"><a href="#状态反馈" class="headerlink" title="状态反馈"></a>状态反馈</h3><h4 id="反馈算子"><a href="#反馈算子" class="headerlink" title="反馈算子"></a>反馈算子</h4><p>&emsp;&emsp;状态反馈的目的就是将原系统算子的谱集移动到复平面左半平面，使得系统稳定。它需要给系统增加一个输入$u(t)$，并且$u(t)$由系统状态变量决定。增加输入后的系统可表示为：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\dot{x}(t)&=&{\cal A}x(t)+{\cal B}u(t)\tag{6}\\
+u(t)&=&-{\cal K}x(t)\tag{7}
+\end{eqnarray}</script><p>&emsp;&emsp;其中$\cal K$为反馈算子（Rückführoperator），它将系统变量$x(t)$映射为一个$p$维向量。根据<strong>里斯表示定理</strong>（Rieszscher Darstellungssatz）：每个${\cal H}\to {\Bbb C}$的泛函$f$，都存在一个定义域上的函数$\xi_0$，使得$f(\cdot)=\langle\ \cdot,\xi_0\rangle$。也就是说，泛函空间的每个函数都可以表示为内积的形式。因此$\cal K$可以表示为：</p>
+<script type="math/tex; mode=display">
+{\cal K}=\begin{bmatrix}\langle\ \cdot\ ,k_1\rangle \\ \vdots \\ \langle\ \cdot\ ,k_p\rangle\end{bmatrix}\tag{8}</script><p>&emsp;&emsp;其中$k_1,…,k_p$均为定义域上函数，它们可以在状态空间中分解：</p>
+<script type="math/tex; mode=display">
+k_i=\sum_{j=1}^{\infty}\langle k_i,\phi_j\rangle\psi_j=\sum_{j=1}^{\infty}k_{ij}^{\ast}\psi_j\tag{9}</script><p>&emsp;&emsp;这里要注意，式(9)的分解与之前不同，它是以${\cal A}^\ast$的特征元素$\psi_i$为基进行的，至于原因纯粹是为了之后的计算。<br>&emsp;&emsp;将输入$u(t)$带入原系统得到：</p>
+<script type="math/tex; mode=display">
+\dot{x}(t)=({\cal A-BK})x(t)=\tilde{\cal A}x(t)\tag{10}</script><p>&emsp;&emsp;通过状态反馈，我们将原系统算子$\cal A$变成了$\tilde{\cal A}$，并且希望$\tilde{\cal A}$的谱集在复平面左半平面。</p>
+<h4 id="系统可稳定条件"><a href="#系统可稳定条件" class="headerlink" title="系统可稳定条件"></a>系统可稳定条件</h4><p>&emsp;&emsp;系统可稳定条件（Stabilisierbarkeit）是反馈能够有效的前提，它包含如下条件：<br>&emsp;&emsp;1. 原系统算子$\cal A$在右半平面只有有限个特征值。<br>&emsp;&emsp;2. 系统能控。<br>&emsp;&emsp;3. 左半平面特征值不能无限趋近于虚轴。<br>&emsp;&emsp;由于分布参数系统是无限维的，故$\cal A$可能有无限个$\lambda$在右半平面，仅使用$p$维输入无法将它们全部移动到理想位置，因此系统需要满足条件一。我们设系统前$n$个特征值$\lambda_1,…,\lambda_n$在右半平面，其余$\lambda$均在左半平面，因此反馈只需要改变前$n$个$\lambda$，而其余特征值保持不变：</p>
+<script type="math/tex; mode=display">\begin{matrix}{\cal A} && \lambda_1 && ... && \lambda_n && \lambda_{n+1} && \lambda_{n+2} && ... \\
+\downarrow && \downarrow &&  && \downarrow && \downarrow && \downarrow && \\
+\tilde{\cal A} && \tilde{\lambda}_1 && ... && \tilde{\lambda}_n && \lambda_{n+1} && \lambda_{n+2} && ...
+\end{matrix}</script><p>&emsp;&emsp;由于$\lambda_i(i&gt;n)$同时是$\cal A$与$\tilde{\cal A}$的特征值，因此满足：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+&&({\cal A-BK})\phi_i=\lambda_i\phi_i,\ i>n\\
+\Rightarrow&&{\cal BK}\phi_i=0,\ i>n\\
+\Rightarrow&&\begin{bmatrix}\langle \phi_i,k_1\rangle\\ \vdots \\ \langle \phi_i,k_p\rangle\end{bmatrix}=0,\ i>n
+\end{eqnarray}</script><p>&emsp;&emsp;其中：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\langle \phi_i,k_j\rangle&=\langle \phi_i,\sum_{l=1}^{\infty}k_{jl}^{\ast}\psi_l\rangle\\
+&=\sum_{l=1}^{\infty}\overline{k_{jl}^{\ast} }\langle\phi_i,\psi_l\rangle\\
+&=\sum_{l=1}^{\infty}\overline{k_{jl}^{\ast} }\delta_{il}\\
+&=\overline{k_{ji}^{\ast} }=0,\ i>n
+\end{split}</script><p>&emsp;&emsp;因此式(9)转化为：</p>
+<script type="math/tex; mode=display">
+k_i=\sum_{j=1}^{\infty}k_{ij}^{\ast}\psi_j=\sum_{j=1}^nk_{ij}^{\ast}\psi_j\tag{11}</script><p>&emsp;&emsp;同时$\cal K$能够表示为：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+{\cal K}&=\begin{bmatrix}\langle\ \cdot\ ,k_1\rangle \\ \vdots \\ \langle\ \cdot\ ,k_p\rangle\end{bmatrix}=\begin{bmatrix}\langle\ \cdot\ ,\sum_{j=1}^nk_{1j}^{\ast}\psi_j\rangle \\ \vdots \\ \langle\ \cdot\ ,\sum_{j=1}^nk_{pj}^{\ast}\psi_j\rangle\end{bmatrix}=\begin{bmatrix}\sum_{j=1}^n\overline{k_{1j}^{\ast} }\langle\ \cdot\ ,\psi_j\rangle \\ \vdots \\ \sum_{j=1}^n\overline{k_{pj}^{\ast} }\langle\ \cdot\ ,\psi_j\rangle\end{bmatrix}\\
+&=\underbrace{\begin{bmatrix}\overline{k_{11}^{\ast} } && \overline{k_{12}^{\ast} } && \cdots && \overline{k_{1n}^{\ast} }\\
+\vdots && \vdots && \ddots && \vdots\\
+\overline{k_{p1}^{\ast} } && \overline{k_{p2}^{\ast} } && \cdots && \overline{k_{pn}^{\ast} }\end{bmatrix} }_{\overline{K^{\ast} }(p\times n)} \begin{bmatrix}\langle\ \cdot\ ,\psi_1\rangle \\ \vdots \\ \langle\ \cdot\ ,\psi_n\rangle\end{bmatrix}
+\end{split}</script><p>&emsp;&emsp;通过上述推导我们将反馈算子$\cal K$转化为了反馈矩阵$\overline{K^{\ast} }$与一个算子的乘积，其中算子是原系统决定的，因此$\cal K$只由$\overline{K^{\ast} }$决定。接下来我们只要设计反馈矩阵就能得到相应的反馈算子。若将反馈算子作用于状态变量：</p>
+<script type="math/tex; mode=display">
+{\cal K}x(t)=\sum_{i=1}^{\infty}x_i^{\ast}{\cal K}\phi_i=\overline{K^{\ast} }\begin{bmatrix}x_1^{\ast} \\ \vdots \\ x_n^{\ast} \end{bmatrix}</script><p>&emsp;&emsp;我们发现$\cal K$对前$n$项的$\phi_i$都有相应反馈，并且反馈到$p$个输入的大小分别为：$\overline{k_{1i}^{\ast} },\overline{k_{2i}^{\ast} },…,\overline{k_{pi}^{\ast} }$，以此来移动前$n$个特征值；同时对其余$\phi_i$均无反馈，故其余特征值保持不变。</p>
+<h4 id="系统能控性条件"><a href="#系统能控性条件" class="headerlink" title="系统能控性条件"></a>系统能控性条件</h4><p>&emsp;&emsp;系统可稳定条件中条件二要求系统是能控的，这里我们直接给出系统能控性条件，其证明能够在之后的推导过程中得到。<br>&emsp;&emsp;在反馈控制中我们使用${\cal B}u(t)$来控制前$n$个特征值$\lambda_1,…,\lambda_n$，其中：</p>
+<script type="math/tex; mode=display">
+{\cal B}u(t)=\sum_{i=1}^pb_iu_i(t)=\sum_{i=1}^{\infty}\phi_ib_i^{\ast}u(t)</script><p>&emsp;&emsp;系统能控的条件为：$B^{\ast}$无零行。其中$B^{\ast}$定义如下：</p>
+<script type="math/tex; mode=display">
+B^{\ast}=\begin{bmatrix}{b_1^{\ast} }^T \\ \vdots \\ {b_n^{\ast} }^T\end{bmatrix}=\begin{bmatrix}\langle b_1,\psi_1\rangle && \cdots && \langle b_p,\psi_1\rangle\\
+\vdots && \ddots && \vdots \\
+\langle b_1,\psi_n\rangle && \cdots && \langle b_p,\psi_n\rangle\end{bmatrix}\tag{12}</script><h4 id="反馈矩阵计算"><a href="#反馈矩阵计算" class="headerlink" title="反馈矩阵计算"></a>反馈矩阵计算</h4><p>&emsp;&emsp;现在就剩设计有限维的反馈矩阵了。我们利用反馈后系统算子$\tilde{\cal A}$的特征值$\tilde{\lambda}_1,…,\tilde{\lambda}_n$与特征向量$\tilde{\phi}_1,…,\tilde{\phi}_n$，得到：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+&&({\cal A-BK})\tilde{\phi}_i=\tilde{\lambda}_i\tilde{\phi}_i,\ i=1,2,...,n\tag{13}\\
+\Rightarrow&&(\tilde{\lambda}_iI-{\cal A})\tilde{\phi}_i=-{\cal BK}\tilde{\phi}_i\tag{14}
+\end{eqnarray}</script><p>&emsp;&emsp;在这里我们引入参数向量（Parametervektoren）$p_i$，它是一个$p$维向量：</p>
+<script type="math/tex; mode=display">
+p_i={\cal K}\tilde{\phi}_i=\overline{K^{\ast} }\begin{bmatrix}\langle\tilde{\phi}_i,\psi_1\rangle \\ \vdots \\ \langle\tilde{\phi}_i,\psi_n\rangle\end{bmatrix}=\overline{K^{\ast} }\tilde{v}_i\tag{15}</script><p>&emsp;&emsp;其中：</p>
+<script type="math/tex; mode=display">\tilde{v}_i=\begin{bmatrix}\langle\tilde{\phi}_i,\psi_1\rangle \\ \vdots \\ \langle\tilde{\phi}_i,\psi_n\rangle\end{bmatrix}=\begin{bmatrix}c_{i1}^{\ast} \\ \vdots \\ c_{in}^{\ast}\end{bmatrix}\tag{16}</script><p>&emsp;&emsp;将$p_i$合并得到：</p>
+<script type="math/tex; mode=display">
+[p_1,...,p_n]=\overline{K^{\ast} }[\tilde{v}_1,...,\tilde{v}_n]=\overline{K^{\ast} }\tilde{V}\tag{17}</script><p>&emsp;&emsp;在这里我们先来看看这些$p_i$、$\tilde{v}_i$具体表示什么意义。首先看$p_i$，根据式(15)定义我们可以知道$p_i$表示状态变量$x=\tilde{\phi}_i$时的反馈量。而一般情况下状态变量可由基$\tilde{\phi}_i$排列组合而成：</p>
+<script type="math/tex; mode=display">
+x=\sum_{i=1}^{\infty}\tilde{x}_i^{\ast}\tilde{\phi}_i</script><p>&emsp;&emsp;取前$n$个$\tilde{x}_i^{\ast}$为$x$的坐标（由于$n$项之后的特征向量均没有反馈，故省略），则$x$所产生的反馈量为：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+{\cal K}x&=\sum_{i=1}^n{\cal K}\tilde{\phi}_i\tilde{x}_i^{\ast}=\sum_{i=1}^np_i\tilde{x}_i^{\ast}\\
+&=[p_1,...,p_n]\begin{bmatrix}\tilde{x}_1^{\ast} \\ \vdots \\ \tilde{x}_n^{\ast} \end{bmatrix}
+\end{split}\tag{18}</script><p>&emsp;&emsp;同样状态变量也可由基$\phi_i$排列组合而成：</p>
+<script type="math/tex; mode=display">
+x=\sum_{i=1}^{\infty}x_i^{\ast}\phi_i</script><p>&emsp;&emsp;根据$\cal K$定义，$x$所产生的反馈量也可以表示为：</p>
+<script type="math/tex; mode=display">
+{\cal K}x=\overline{K^{\ast} }\begin{bmatrix}x_1^{\ast} \\ \vdots \\ x_n^{\ast} \end{bmatrix}\tag{19}</script><p>&emsp;&emsp;根据式(17)~(19)可以得到：</p>
+<script type="math/tex; mode=display">
+[\tilde{v}_1,...,\tilde{v}_n]\begin{bmatrix}\tilde{x}_1^{\ast} \\ \vdots \\ \tilde{x}_n^{\ast} \end{bmatrix}=\begin{bmatrix}x_1^{\ast} \\ \vdots \\ x_n^{\ast} \end{bmatrix}</script><p>&emsp;&emsp;因此$[\tilde{v}_1,…,\tilde{v}_n]$实际上就是从基$\tilde{\phi}$到基$\phi$的坐标变换矩阵。而$c_{i1}^{\ast},…,c_{in}^{\ast}$则表示新特征向量$\tilde{\phi}_i$在基$\phi$下前$n$个坐标。<br>&emsp;&emsp;搞清楚符号含义后我们就要根据新定义的$p_i$、$\tilde{v}_i$来得到反馈矩阵了。假设新特征值$\tilde{\lambda}_i$没有重复，并且与原特征值$\lambda$不相等，则$\tilde{v}_1,…,\tilde{v}_n$线性无关（可用反证法证明），$\tilde{V}$存在逆矩阵。又根据式(17)可以得到：</p>
+<script type="math/tex; mode=display">
+\overline{K^{\ast} }=[p_1,...,p_n] [\tilde{v}_1,...,\tilde{v}_n]^{-1}\tag{20}</script><p>&emsp;&emsp;现在我们需要在式(20)中将$\tilde{v}_i$消去。根据式(14)(15)：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\tilde{\phi}_i&=&({\cal A}-\tilde{\lambda}_iI)^{-1}{\cal B}p_i\tag{21}\\
+&=&\sum_{j=1}^{\infty}{\langle {\cal B}p_i,\psi_j\rangle \over \lambda_j - \tilde{\lambda}_i}\phi_j\tag{22}\\
+&=&\sum_{j=1}^{\infty}{ {b_j^{\ast} }^Tp_i \over \lambda_j - \tilde{\lambda}_i}\phi_j\tag{23}
+\end{eqnarray}</script><p>&emsp;&emsp;其中式(21)推导式(22)时用到了下列等式（可以通过状态空间分解证明）：</p>
+<script type="math/tex; mode=display">
+(\lambda I-{\cal A})^{-1}=\sum_{i=1}^{\infty}{\langle \ \cdot\ ,\psi_i\rangle \over \lambda - \lambda_i}\phi_i</script><p>&emsp;&emsp;由于$c_{ij}^{\ast}$为$\tilde{\phi}_i$在基$\phi_j$下的坐标，因此$\tilde{\phi}_i$又可表示为：</p>
+<script type="math/tex; mode=display">
+\tilde{\phi}_i=\sum_{j=1}^{\infty}c_{ij}^{\ast}\phi_j\tag{24}</script><p>&emsp;&emsp;将式(23)(24)联立得到：</p>
+<script type="math/tex; mode=display">
+c_{ij}^{\ast}={ {b_j^{\ast} }^Tp_i \over \lambda_j - \tilde{\lambda}_i}\tag{25}</script><p>&emsp;&emsp;带入式(16)中：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\tilde{v}_i&=\begin{bmatrix}c_{i1}^{\ast} \\ \vdots \\ c_{in}^{\ast}\end{bmatrix}=\begin{bmatrix}{ {b_1^{\ast} }^Tp_i \over \lambda_1 - \tilde{\lambda}_i} \\ \vdots \\ { {b_n^{\ast} }^Tp_i \over \lambda_n - \tilde{\lambda}_i}\end{bmatrix}\\
+&=\underbrace{\begin{bmatrix}{ 1 \over \lambda_1 - \tilde{\lambda}_i} && && \\ && \ddots && \\ && && { 1 \over \lambda_n - \tilde{\lambda}_i}\end{bmatrix} }_{(\Lambda-\tilde{\lambda}_i I)^{-1} }\underbrace{\begin{bmatrix}{b_1^{\ast} }^T \\ \vdots \\ {b_n^{\ast} }^T\end{bmatrix} }_{B^{\ast} }p_i
+\end{split}</script><p>&emsp;&emsp;因此：</p>
+<script type="math/tex; mode=display">
+\tilde{v}_i=(\Lambda-\tilde{\lambda}_i I)^{-1}B^{\ast}p_i\tag{26}</script><p>&emsp;&emsp;式(26)带入式(20)得到$\overline{K^{\ast} }$的最终结果：</p>
+<script type="math/tex; mode=display">
+\overline{K^{\ast} }=[p_1,...,p_n] [(\Lambda-\tilde{\lambda}_1 I)^{-1}B^{\ast}p_1,...,(\Lambda-\tilde{\lambda}_n I)^{-1}B^{\ast}p_n]^{-1}\tag{27}</script><p>&emsp;&emsp;式(27)可以得到系统能控性条件的证明：若$B^{\ast}$有全零行，则式(27)最后项无法取逆，因此$B^{\ast}$不能有全零行。同时它表明，要设计一个反馈我们只需要设计$\tilde{\lambda}$和$p$就可以了。</p>
 <h3 id="反馈控制设计条件"><a href="#反馈控制设计条件" class="headerlink" title="反馈控制设计条件"></a>反馈控制设计条件</h3><p>&emsp;&emsp;1. 原算子$\cal A$只有有限$\lambda&gt;0$。<br>&emsp;&emsp;2. 系统能控。<br>&emsp;&emsp;3. $\cal A$的其余$\lambda$不能无限接近虚轴。<br>&emsp;&emsp;4. 设计后$\tilde{\cal A}$的特征值$\tilde{\lambda}$为实数或为成对出现的虚数，且相互不重合。<br>&emsp;&emsp;5. $\tilde{\lambda}$不与$\cal A$的特征值或特征值聚点重合。<br>&emsp;&emsp;6. 若$\tilde{\lambda}_i=\overline{\tilde{\lambda}_j }$，则需满足$p_i=\overline{p_j}$。<br>&emsp;&emsp;7. 选取$\tilde{\lambda}$与$p$时，需保证$\tilde{v}$线性不相关。<br>&emsp;&emsp;以上将反馈控制设计条件做了一个总结，其中前三条为对原算子$\cal A$的要求，后四条为对$\tilde{\lambda}$与$p$的要求。</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
 <li>分布参数系统指数稳定条件与集总参数系统类似，要求谱集位于复平面的左半平面。</li>
@@ -288,7 +361,7 @@ var _hmt = _hmt || [];
 
 
 
-    <a data-url="https://haosutopia.github.io/2018/04/RSVP-06/" data-id="ckflt9wnb000oeto959rzhwl3" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://haosutopia.github.io/2018/04/RSVP-06/" data-id="ckfndebkg000kf2o97c078mi3" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -366,9 +439,10 @@ var _hmt = _hmt || [];
         "dateCreated": "2018-04-11",
         "dateModified": "2018-04-11",
         "url": "https://haosutopia.github.io/2018/04/RSVP-06/",
-        "description": "&emsp;&emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：$$\dot{x}(t)={\cal A}x(t)\tag{1}$$
-指数稳定&emsp;&emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabili",
-        "wordCount": 409
+        "description": "&emsp;&emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：
+
+\dot{x}(t)={\cal A}x(t)\tag{1}指数稳定&emsp;&emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabilität",
+        "wordCount": 479
     }
 </script>
 

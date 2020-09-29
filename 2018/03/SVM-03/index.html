@@ -92,7 +92,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -237,26 +241,64 @@ var _hmt = _hmt || [];
             
 
             <p>&emsp;&emsp;支持向量机的强大不止在于它能在特征空间找到合适的超平面将正负样本分开并保持最大间隔，通过引入核函数，它还能在更高维，甚至无限维空间中对样本进行分离，以此来解决非线性的问题。</p>
-<h3 id="核"><a href="#核" class="headerlink" title="核"></a>核</h3><h4 id="特征映射"><a href="#特征映射" class="headerlink" title="特征映射"></a>特征映射</h4><p>&emsp;&emsp;在之前的推导中，我们使用的一直是样本的原始特征$x$，并通过线性平面$w^Tx+b$进行分割。但如果样本是线性不可分的，我们就需要先将特征映射到更高维空间，再分离正负样本。考虑如下训练集：<br><img src="%5Cimages%5CSVM_03_NL.PNG" alt="线性不可分样本"><br>&emsp;&emsp;这是一个拥有两个特征$(x_1,x_2)$的训练集，它的分布是非线性的，因此我们无法使用直线将正负样本分开。但观察可知，若决策边界为圆形，就能完全分离正负样本。因此可以令决策边界为一个二次曲线，其一般形式如下：<br>$$<br>w_1x_1+w_2x_2+w_3x_1^2+w_4x_2^2+w_5x_1x_2+b=0\tag{1}$$</p>
-<p>&emsp;&emsp;如果我们把$x_1,x_2,x_1^2,x_2^2,x_1x_2$都作为特征，那么就相当于将一个二维的特征空间映射到了一个五维的特征空间。在这个五维空间我们就能够使用线性分割将样本分离。这种映射我们称为<strong>特征映射</strong>（feature mapping），记为$\phi$。式(1)中的特征映射为：<br>$$<br>\phi(x)=\begin{bmatrix}<br>x_1\x_2\x_1^2\x_2^2\x_1x_2<br>\end{bmatrix}$$</p>
-<p>&emsp;&emsp;使用特征映射代替原来的特征就能够实现样本的高维分离。在<a href="../../../2018/03/SVM-02/index.html#e28">第二章节最后</a>我们得到预测函数只与样本特征的内积$\langle x_i,x_j\rangle$有关，因此我们将其中的特征$x$替换为特征映射$\phi$，并称它为$\phi$对应的<strong>核</strong>（Kernel）：<br>$$<br>K(x,z)=\phi(x)^T\phi(z)\tag{2}$$</p>
-<p>&emsp;&emsp;在使用中我们只需要将之前所有的$\langle x,z\rangle$替换成$K(x,z)$就可以了。</p>
-<h4 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h4><p>&emsp;&emsp;上面我们使用特征映射得到了核函数，但实际计算时，我们通常不计算特征映射，而是直接计算核函数。例如：<br>$$<br>K(x,z)=(x^Tz)^2$$</p>
-<p>&emsp;&emsp;将它化为式(2)的形式：<br>$$<br>\begin{split}<br>K(x,z)&amp;=\left(\sum_{i=1}^nx_iz_i\right)\left(\sum_{i=1}^nx_iz_i \right)\<br>&amp;=\sum_{i=1}^n\sum_{j=1}^nx_ix_jz_iz_j\<br>&amp;=\sum_{i,j=1}^n(x_ix_j)(z_i,z_j)<br>\end{split}$$</p>
-<p>&emsp;&emsp;得到该核函数对应的特征映射（取$n=2$）：<br>$$<br>\phi(x)=\begin{bmatrix}<br>x_1x_1\<br>x_1x_2\<br>x_2x_1\<br>x_2x_2<br>\end{bmatrix}$$</p>
-<p>&emsp;&emsp;可以发现，若通过特征映射计算，我们需要$n^2$数量级的计算次数。而若直接通过核函数公式，我们只需$n$数量级的计算次数，大大降低了高维空间的计算成本。</p>
-<h4 id="常用核函数"><a href="#常用核函数" class="headerlink" title="常用核函数"></a>常用核函数</h4><p>&emsp;&emsp;下面介绍几个常用核函数：<br>&emsp;&emsp;1. <strong>线性核</strong>：$K(x,z)=\langle x,z\rangle$。这个实际上就是原特征空间的内积。只是在一些SVM程序中需要我们定义核函数。将内积写成核函数形式就可以将线性与非线性SVM统一起来了。<br>&emsp;&emsp;2. <strong>多项式核</strong>：$K(x,z)=(\langle x,z\rangle+R)^d$。上面举例的核函数就是一个多项式核。若原特征空间维度为$n$，则多项式核对应特征映射的维度是$C_{n+d}^d$，并且可以通过计算将特征映射写出来。<br>&emsp;&emsp;3. <strong>高斯核</strong>：<br>$$<br>K(x,z)=\exp\left(-{||x-z||^2 \over 2\sigma^2}\right)\tag{3}$$</p>
-<p>&emsp;&emsp;&emsp;高斯核可以说是最常用的核函数了。它的表达式中存在指数函数，泰勒展开后得到：<br>$$<br>K(x,z)=1+\left(-{||x-z||^2 \over 2\sigma^2}\right)+{\left(-{||x-z||^2 \over 2\sigma^2}\right)^2 \over 2!}+…+{\left(-{||x-z||^2 \over 2\sigma^2}\right)^n \over n!}+…$$</p>
-<p>&emsp;&emsp;&emsp;由于泰勒展开得到的项数是无穷的，于是我们得到了一个无穷维的映射，因此高斯核对应的特征映射维度是无穷。需要注意的是，高斯核有个参数$\sigma$，在使用时需要合理选择。若$\sigma$过小，样本间稍有不同就会得到一个很大的数值，这就会导致过拟合；若$\sigma$过大，高斯核就起不了应有的效果。</p>
-<h4 id="Mercer定理"><a href="#Mercer定理" class="headerlink" title="Mercer定理"></a>Mercer定理</h4><p>&emsp;&emsp;如果有一个核函数，我们难以写出它对应的特征映射，就很难判断它到底是不是一个有效的核函数。这时Mercer定理提供了一个有效核函数的充要条件。<br>&emsp;&emsp;<strong>Mercer定理</strong>：若有一个函数$K:\Bbb{R}^n\times\Bbb{R}^n\to\Bbb{R}$，它是一个有效核函数的充要条件为：对任意数据集${x^{(1)},…,x^{(m)}},(m&lt;\infty)$，它所对应的核函数矩阵$K$是一个对称且半正定的矩阵。<br>&emsp;&emsp;其中核函数矩阵$K$是一个$m\times m$的矩阵，它的元素$K_{ij}=K(x^{(i)},x^{(j)})$。在这里核函数与核函数矩阵使用了相同的符号$K$。<br>&emsp;&emsp;在此我们省略它的证明。实际上使用SVM时绝大部分用的都是高斯核，毕竟它映射到的是无限维，理论上可以完美分离任意训练集。而其他核几乎是用不到的。</p>
-<h3 id="SVM正则化"><a href="#SVM正则化" class="headerlink" title="SVM正则化"></a>SVM正则化</h3><p>&emsp;&emsp;在<a href="../../../2018/03/SVM-02/index.html#3">第二章节</a>我们了解到，SVM优化问题的决策边界是由整个训练集中少数几个支持向量决定的。若训练集中存在极端值（outliers），又碰巧是支持向量的话，就会对决策边界的确定产生很大影响。考虑以下情况：<br><img src="%5Cimages%5CSVM_03_Outliers.PNG" alt="极端值情况"><br>&emsp;&emsp;左图是没有极端值的情况，最优间隔分类器能够很好地正负样本分开。但若加入一个极端值，如右图，它会使决策边界发生很大的变化来适应这个极端值，但这显然不是我们想要的。考虑到这种情况，我们将<a href="../../../2018/03/SVM-01/index.html#e18">第一章节最后</a>推导出的优化问题做些许改变，也就是正则化。我们将允许训练样本的函数间隔小于$1$，并且引入松弛变量（slack variable）来表示与$1$的偏差量。因此优化问题的约束条件变为：<br>$$<br>y^{(i)}(w^Tx^{(i)}+b)\geq 1-\xi_i,\ i=1,…,m\tag{4}$$</p>
-<p>&emsp;&emsp;但我们也不能让$\xi_i$任意大，因此在优化目标中增加一项作为偏差$\xi_i$的惩罚：<br>$$<br>\min_{\gamma,w,b}\ {1 \over 2}||w||^2+C\sum_{i=1}^m\xi_i\tag{5}$$</p>
-<p>&emsp;&emsp;我们既希望训练样本间隔最大，又希望其偏差量最小，故使用参数$C$来保持两者之间的平衡，它是需要我们人为确定的。完整的优化问题描述如下：<br>$$<br>\begin{split}<br>\min_{\gamma,w,b}\ &amp;{1 \over 2}||w||^2+C\sum_{i=1}^m\xi_i\<br>{\rm s.t.}\ &amp;y^{(i)}(w^Tx^{(i)}+b)\geq1-\xi_i,\ i=1,…,m\<br>&amp;\xi_i\geq 0,\ i=1,…,m<br>\end{split}\tag{6}$$</p>
-<p>&emsp;&emsp;写出式(6)优化问题的拉格朗日方程$\mathcal{L}(w,b,\xi,\alpha,r)$：<br>$$<br>\mathcal{L}={1 \over 2}||w||^2+C\sum_{i=1}^m\xi_i-\sum_{i=1}^m\alpha_i[y^{(i)}(w^Tx^{(i)}+b)-1+\xi_i]-\sum_{i=1}^mr_i\xi_i\tag{7}$$</p>
-<p>&emsp;&emsp;与之前一样，通过求取偏导来最小化$\mathcal{L}(w,b,\xi,\alpha,r)$：<br>$$<br>\begin{eqnarray}<br>\nabla_w\mathcal{L}&amp;=&amp;w-\sum_{i=1}^m\alpha_iy^{(i)}x^{(i)}=0\tag{8}\<br>{\partial \over \partial b}\mathcal{L}&amp;=&amp;\sum_{i=1}^m\alpha_iy^{(i)}=0\tag{9}\<br>{\partial \over \partial\xi_i}\mathcal{L}&amp;=&amp;C-\alpha_i-r_i=0\tag{10}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;将式(8)(9)(10)带回式(7)，我们得到：<br>$$<br>\mathcal{L}=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j\langle x^{(i)},x^{(j)}\rangle\tag{11}$$</p>
-<p>&emsp;&emsp;它与<a href="../../../2018/03/SVM-02/index.html#e25">第二章节式(25)</a>得到的结果一致。但由于我们有条件$C-\alpha_i-r_i=0$，并且根据KKT条件，$r_i\geq 0$，得出$\alpha_i\leq C$。这表明$\alpha_i$不能无限大，以此限制了单个样本对整体的影响。因此整个对偶问题表示为：<br>$$<br>\begin{split}<br>\max_{\alpha}\ &amp;\theta_{\cal{D}}(\alpha)=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j\langle x^{(i)},x^{(j)}\rangle\<br>{\rm s.t.}\ &amp;0\leq\alpha_i\leq C,\ i=1,…,m\<br>&amp;\sum_{i=1}^m\alpha_iy^{(i)}=0<br>\end{split}\tag{12}$$</p>
-<p>&emsp;&emsp;正则化后的对偶问题（式(12)）与原对偶问题（<a href="../../../2018/03/SVM-02/index.html#e26">第二章节式(26)</a>）唯一区别就是$\alpha_i$的取值范围变成了$0\leq\alpha_i\leq C$。并且通过$\alpha_i$的值我们可以大致判断训练样本$(x^{(i)},y^{(i)})$的状态：<br>&emsp;&emsp;1. $\alpha_i=0$，则$y^{(i)}(w^Tx^{(i)}+b)\geq 1$，此时训练样本在边界或边界内部，可能为支持向量或普通点。<br>&emsp;&emsp;2. $\alpha_i=C$，则$y^{(i)}(w^Tx^{(i)}+b)\leq 1$，同时$r_i=0$，$\xi_i\geq 0$，此时训练样本在边界或两个边界之间，为支持向量，并可能为极端点。<br>&emsp;&emsp;3. $0&lt;\alpha_i&lt; C$，则$y^{(i)}(w^Tx^{(i)}+b)=1$，此时训练样本在边界上，为支持向量。<br>&emsp;&emsp;若我们能解决式(12)中的对偶问题，得到相应$\alpha_i$，再将它们带回原式，就能得到最优解了。在之后的章节我们将使用SMO算法来解决这类对偶问题。</p>
+<h3 id="核"><a href="#核" class="headerlink" title="核"></a>核</h3><h4 id="特征映射"><a href="#特征映射" class="headerlink" title="特征映射"></a>特征映射</h4><p>&emsp;&emsp;在之前的推导中，我们使用的一直是样本的原始特征$x$，并通过线性平面$w^Tx+b$进行分割。但如果样本是线性不可分的，我们就需要先将特征映射到更高维空间，再分离正负样本。考虑如下训练集：<br><img src="\images\SVM_03_NL.PNG" alt="线性不可分样本"><br>&emsp;&emsp;这是一个拥有两个特征$(x_1,x_2)$的训练集，它的分布是非线性的，因此我们无法使用直线将正负样本分开。但观察可知，若决策边界为圆形，就能完全分离正负样本。因此可以令决策边界为一个二次曲线，其一般形式如下：</p>
+<script type="math/tex; mode=display">
+w_1x_1+w_2x_2+w_3x_1^2+w_4x_2^2+w_5x_1x_2+b=0\tag{1}</script><p>&emsp;&emsp;如果我们把$x_1,x_2,x_1^2,x_2^2,x_1x_2$都作为特征，那么就相当于将一个二维的特征空间映射到了一个五维的特征空间。在这个五维空间我们就能够使用线性分割将样本分离。这种映射我们称为<strong>特征映射</strong>（feature mapping），记为$\phi$。式(1)中的特征映射为：</p>
+<script type="math/tex; mode=display">
+\phi(x)=\begin{bmatrix}
+x_1\\x_2\\x_1^2\\x_2^2\\x_1x_2
+\end{bmatrix}</script><p>&emsp;&emsp;使用特征映射代替原来的特征就能够实现样本的高维分离。在<a href="../../../2018/03/SVM-02/index.html#e28">第二章节最后</a>我们得到预测函数只与样本特征的内积$\langle x_i,x_j\rangle$有关，因此我们将其中的特征$x$替换为特征映射$\phi$，并称它为$\phi$对应的<strong>核</strong>（Kernel）：</p>
+<script type="math/tex; mode=display">
+K(x,z)=\phi(x)^T\phi(z)\tag{2}</script><p>&emsp;&emsp;在使用中我们只需要将之前所有的$\langle x,z\rangle$替换成$K(x,z)$就可以了。</p>
+<h4 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h4><p>&emsp;&emsp;上面我们使用特征映射得到了核函数，但实际计算时，我们通常不计算特征映射，而是直接计算核函数。例如：</p>
+<script type="math/tex; mode=display">
+K(x,z)=(x^Tz)^2</script><p>&emsp;&emsp;将它化为式(2)的形式：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+K(x,z)&=\left(\sum_{i=1}^nx_iz_i\right)\left(\sum_{i=1}^nx_iz_i \right)\\
+&=\sum_{i=1}^n\sum_{j=1}^nx_ix_jz_iz_j\\
+&=\sum_{i,j=1}^n(x_ix_j)(z_i,z_j)
+\end{split}</script><p>&emsp;&emsp;得到该核函数对应的特征映射（取$n=2$）：</p>
+<script type="math/tex; mode=display">
+\phi(x)=\begin{bmatrix}
+x_1x_1\\
+x_1x_2\\
+x_2x_1\\
+x_2x_2
+\end{bmatrix}</script><p>&emsp;&emsp;可以发现，若通过特征映射计算，我们需要$n^2$数量级的计算次数。而若直接通过核函数公式，我们只需$n$数量级的计算次数，大大降低了高维空间的计算成本。</p>
+<h4 id="常用核函数"><a href="#常用核函数" class="headerlink" title="常用核函数"></a>常用核函数</h4><p>&emsp;&emsp;下面介绍几个常用核函数：<br>&emsp;&emsp;1. <strong>线性核</strong>：$K(x,z)=\langle x,z\rangle$。这个实际上就是原特征空间的内积。只是在一些SVM程序中需要我们定义核函数。将内积写成核函数形式就可以将线性与非线性SVM统一起来了。<br>&emsp;&emsp;2. <strong>多项式核</strong>：$K(x,z)=(\langle x,z\rangle+R)^d$。上面举例的核函数就是一个多项式核。若原特征空间维度为$n$，则多项式核对应特征映射的维度是$C_{n+d}^d$，并且可以通过计算将特征映射写出来。<br>&emsp;&emsp;3. <strong>高斯核</strong>：</p>
+<script type="math/tex; mode=display">
+K(x,z)=\exp\left(-{||x-z||^2 \over 2\sigma^2}\right)\tag{3}</script><p>&emsp;&emsp;&emsp;高斯核可以说是最常用的核函数了。它的表达式中存在指数函数，泰勒展开后得到：</p>
+<script type="math/tex; mode=display">
+K(x,z)=1+\left(-{||x-z||^2 \over 2\sigma^2}\right)+{\left(-{||x-z||^2 \over 2\sigma^2}\right)^2 \over 2!}+...+{\left(-{||x-z||^2 \over 2\sigma^2}\right)^n \over n!}+...</script><p>&emsp;&emsp;&emsp;由于泰勒展开得到的项数是无穷的，于是我们得到了一个无穷维的映射，因此高斯核对应的特征映射维度是无穷。需要注意的是，高斯核有个参数$\sigma$，在使用时需要合理选择。若$\sigma$过小，样本间稍有不同就会得到一个很大的数值，这就会导致过拟合；若$\sigma$过大，高斯核就起不了应有的效果。</p>
+<h4 id="Mercer定理"><a href="#Mercer定理" class="headerlink" title="Mercer定理"></a>Mercer定理</h4><p>&emsp;&emsp;如果有一个核函数，我们难以写出它对应的特征映射，就很难判断它到底是不是一个有效的核函数。这时Mercer定理提供了一个有效核函数的充要条件。<br>&emsp;&emsp;<strong>Mercer定理</strong>：若有一个函数$K:\Bbb{R}^n\times\Bbb{R}^n\to\Bbb{R}$，它是一个有效核函数的充要条件为：对任意数据集$\{x^{(1)},…,x^{(m)}\},(m&lt;\infty)$，它所对应的核函数矩阵$K$是一个对称且半正定的矩阵。<br>&emsp;&emsp;其中核函数矩阵$K$是一个$m\times m$的矩阵，它的元素$K_{ij}=K(x^{(i)},x^{(j)})$。在这里核函数与核函数矩阵使用了相同的符号$K$。<br>&emsp;&emsp;在此我们省略它的证明。实际上使用SVM时绝大部分用的都是高斯核，毕竟它映射到的是无限维，理论上可以完美分离任意训练集。而其他核几乎是用不到的。</p>
+<h3 id="SVM正则化"><a href="#SVM正则化" class="headerlink" title="SVM正则化"></a>SVM正则化</h3><p>&emsp;&emsp;在<a href="../../../2018/03/SVM-02/index.html#3">第二章节</a>我们了解到，SVM优化问题的决策边界是由整个训练集中少数几个支持向量决定的。若训练集中存在极端值（outliers），又碰巧是支持向量的话，就会对决策边界的确定产生很大影响。考虑以下情况：<br><img src="\images\SVM_03_Outliers.PNG" alt="极端值情况"><br>&emsp;&emsp;左图是没有极端值的情况，最优间隔分类器能够很好地正负样本分开。但若加入一个极端值，如右图，它会使决策边界发生很大的变化来适应这个极端值，但这显然不是我们想要的。考虑到这种情况，我们将<a href="../../../2018/03/SVM-01/index.html#e18">第一章节最后</a>推导出的优化问题做些许改变，也就是正则化。我们将允许训练样本的函数间隔小于$1$，并且引入松弛变量（slack variable）来表示与$1$的偏差量。因此优化问题的约束条件变为：</p>
+<script type="math/tex; mode=display">
+y^{(i)}(w^Tx^{(i)}+b)\geq 1-\xi_i,\ i=1,...,m\tag{4}</script><p>&emsp;&emsp;但我们也不能让$\xi_i$任意大，因此在优化目标中增加一项作为偏差$\xi_i$的惩罚：</p>
+<script type="math/tex; mode=display">
+\min_{\gamma,w,b}\ {1 \over 2}||w||^2+C\sum_{i=1}^m\xi_i\tag{5}</script><p>&emsp;&emsp;我们既希望训练样本间隔最大，又希望其偏差量最小，故使用参数$C$来保持两者之间的平衡，它是需要我们人为确定的。完整的优化问题描述如下：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\min_{\gamma,w,b}\ &{1 \over 2}||w||^2+C\sum_{i=1}^m\xi_i\\
+{\rm s.t.}\ &y^{(i)}(w^Tx^{(i)}+b)\geq1-\xi_i,\ i=1,...,m\\
+&\xi_i\geq 0,\ i=1,...,m
+\end{split}\tag{6}</script><p>&emsp;&emsp;写出式(6)优化问题的拉格朗日方程$\mathcal{L}(w,b,\xi,\alpha,r)$：</p>
+<script type="math/tex; mode=display">
+\mathcal{L}={1 \over 2}||w||^2+C\sum_{i=1}^m\xi_i-\sum_{i=1}^m\alpha_i[y^{(i)}(w^Tx^{(i)}+b)-1+\xi_i]-\sum_{i=1}^mr_i\xi_i\tag{7}</script><p>&emsp;&emsp;与之前一样，通过求取偏导来最小化$\mathcal{L}(w,b,\xi,\alpha,r)$：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\nabla_w\mathcal{L}&=&w-\sum_{i=1}^m\alpha_iy^{(i)}x^{(i)}=0\tag{8}\\
+{\partial \over \partial b}\mathcal{L}&=&\sum_{i=1}^m\alpha_iy^{(i)}=0\tag{9}\\
+{\partial \over \partial\xi_i}\mathcal{L}&=&C-\alpha_i-r_i=0\tag{10}
+\end{eqnarray}</script><p>&emsp;&emsp;将式(8)(9)(10)带回式(7)，我们得到：</p>
+<script type="math/tex; mode=display">
+\mathcal{L}=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j\langle x^{(i)},x^{(j)}\rangle\tag{11}</script><p>&emsp;&emsp;它与<a href="../../../2018/03/SVM-02/index.html#e25">第二章节式(25)</a>得到的结果一致。但由于我们有条件$C-\alpha_i-r_i=0$，并且根据KKT条件，$r_i\geq 0$，得出$\alpha_i\leq C$。这表明$\alpha_i$不能无限大，以此限制了单个样本对整体的影响。因此整个对偶问题表示为：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\max_{\alpha}\ &\theta_{\cal{D}}(\alpha)=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j\langle x^{(i)},x^{(j)}\rangle\\
+{\rm s.t.}\ &0\leq\alpha_i\leq C,\ i=1,...,m\\
+&\sum_{i=1}^m\alpha_iy^{(i)}=0
+\end{split}\tag{12}</script><p>&emsp;&emsp;正则化后的对偶问题（式(12)）与原对偶问题（<a href="../../../2018/03/SVM-02/index.html#e26">第二章节式(26)</a>）唯一区别就是$\alpha_i$的取值范围变成了$0\leq\alpha_i\leq C$。并且通过$\alpha_i$的值我们可以大致判断训练样本$(x^{(i)},y^{(i)})$的状态：<br>&emsp;&emsp;1. $\alpha_i=0$，则$y^{(i)}(w^Tx^{(i)}+b)\geq 1$，此时训练样本在边界或边界内部，可能为支持向量或普通点。<br>&emsp;&emsp;2. $\alpha_i=C$，则$y^{(i)}(w^Tx^{(i)}+b)\leq 1$，同时$r_i=0$，$\xi_i\geq 0$，此时训练样本在边界或两个边界之间，为支持向量，并可能为极端点。<br>&emsp;&emsp;3. $0&lt;\alpha_i&lt; C$，则$y^{(i)}(w^Tx^{(i)}+b)=1$，此时训练样本在边界上，为支持向量。<br>&emsp;&emsp;若我们能解决式(12)中的对偶问题，得到相应$\alpha_i$，再将它们带回原式，就能得到最优解了。在之后的章节我们将使用SMO算法来解决这类对偶问题。</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
 <li>使用核函数可以将原特征映射到更高维空间，从而得到非线性的决策边界。</li>
 <li>SVM正则化能有效减少极端值对模型的影响。</li>
@@ -268,7 +310,7 @@ var _hmt = _hmt || [];
 
 
 
-    <a data-url="https://haosutopia.github.io/2018/03/SVM-03/" data-id="ckflt9wng000xeto9f9adfpn8" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://haosutopia.github.io/2018/03/SVM-03/" data-id="ckfndebkk000uf2o98l2rajx8" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -348,7 +390,7 @@ var _hmt = _hmt || [];
         "url": "https://haosutopia.github.io/2018/03/SVM-03/",
         "description": "&emsp;&emsp;支持向量机的强大不止在于它能在特征空间找到合适的超平面将正负样本分开并保持最大间隔，通过引入核函数，它还能在更高维，甚至无限维空间中对样本进行分离，以此来解决非线性的问题。
 核特征映射&emsp;&emsp;在之前的推导中，我们使用的一直是样本的原始特征$x$，并通过线性平面$w^Tx+b$进行分割。但如果样本是线性不可分的，我们就需要先将特征映射到更高维空间，再分离正负样",
-        "wordCount": 102
+        "wordCount": 132
     }
 </script>
 

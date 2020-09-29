@@ -83,7 +83,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -421,8 +425,9 @@ var _hmt = _hmt || [];
     
 
         <p class="article-excerpt">
-            &emsp;&emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：$$\dot{x}(t)={\cal A}x(t)\tag{1}$$
-指数稳定&emsp;&emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabili
+            &emsp;&emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：
+
+\dot{x}(t)={\cal A}x(t)\tag{1}指数稳定&emsp;&emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabilität
         </p>
     </div>
 </article>
@@ -469,7 +474,10 @@ var _hmt = _hmt || [];
 
         <p class="article-excerpt">
             &emsp;&emsp;分布参数系统是个无限维的系统，在第一章节所提到的early-lumping控制中，我们先将系统过程近似为集总参数系统，再使用现代控制方法对系统进行分析控制。本文将阐述模型近似的过程及相关注意事项。
-模型近似&emsp;&emsp;分布参数系统状态方程如下：$$\begin{eqnarray}\dot{x}(t)&amp;=&amp;\mathcal{A}x(t)+\math
+模型近似&emsp;&emsp;分布参数系统状态方程如下：
+
+\begin{eqnarray}
+\dot{x}(t)&=&\mathcal{A}x(t)+\mathcal{B}u
         </p>
     </div>
 </article>
@@ -565,7 +573,10 @@ var _hmt = _hmt || [];
     
 
         <p class="article-excerpt">
-            &emsp;&emsp;到目前为止，我们把SVM优化问题化为了更容易解决的对偶问题，并且使用核函数及正则化来改善它的特性。现在我们只需解决这个对偶问题就可以得到最优间隔分类器，可以说是“万事具备，只欠东风”了。我们先将第三章节得到的对偶问题搬运过来：$$\begin{eqnarray}\max_{\alpha}\ &amp;&amp;\theta_{\cal{D}}(\alpha)=\sum_{i
+            &emsp;&emsp;到目前为止，我们把SVM优化问题化为了更容易解决的对偶问题，并且使用核函数及正则化来改善它的特性。现在我们只需解决这个对偶问题就可以得到最优间隔分类器，可以说是“万事具备，只欠东风”了。我们先将第三章节得到的对偶问题搬运过来：
+
+\begin{eqnarray}
+\max_{\alpha}\ &&\theta_{\cal{D}}(\alpha)=\sum_{i=1}^m\a
         </p>
     </div>
 </article>
@@ -663,7 +674,11 @@ var _hmt = _hmt || [];
 
         <p class="article-excerpt">
             &emsp;&emsp;上一章节我们将SVM的目标转换为了一个带不等式约束条件的优化问题，现在我们的目标就是解决这个优化问题。在此我们先将SVM及最优间隔分类器放一放，来看看一般约束优化问题的求解方法。
-约束优化问题等式约束优化问题&emsp;&emsp;等式优化问题一般描述如下：$$\begin{split}\min_x\ &amp;f(x)\{\rm s.t.}\ &amp;h_i(x)=0,
+约束优化问题等式约束优化问题&emsp;&emsp;等式优化问题一般描述如下：
+
+\begin{split}
+\min_x\ &f(x)\\
+{\rm s.t.}\ &h_i(x)=0,\ i=1
         </p>
     </div>
 </article>

@@ -93,7 +93,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -238,63 +242,217 @@ var _hmt = _hmt || [];
             
 
             <p>&emsp;&emsp;分布参数系统的输入可以分为点输入、分布式输入和边界输入。之前的章节我们讨论的都是分布式输入，此时输入分布在定义域的某个区间。而若输入$u(t)$定义在边界，则称为边界输入（Randeingriff），此时系统方程会有所不同，相应的计算方法也会有差别。因此本文讨论边界输入以及它在反馈控制中的应用。</p>
-<h3 id="边界输入"><a href="#边界输入" class="headerlink" title="边界输入"></a>边界输入</h3><h4 id="系统方程"><a href="#系统方程" class="headerlink" title="系统方程"></a>系统方程</h4><p>&emsp;&emsp;分布式输入中，输入$u(t)$在系统状态方程中；而边界输入中，$u(t)$在系统边界条件中。一个典型的边界输入系统如下：<br>$$<br>\begin{eqnarray}<br>\partial_tx(z,t)&amp;=&amp;{\cal A}x(z,t),\ t&gt;0,\ z\in(0,1)\tag{1}\<br>x(0,t)&amp;=&amp;0,\ t&gt;0\tag{2}\<br>x(1,t)&amp;=&amp;u(t),\ t&gt;0\tag{3}\<br>x(z,0)&amp;=&amp;x_0(z),\ z\in[0,1]\tag{4}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;其中式(3)边界条件表示输入为$z=1$处的边界输入，同时式(4)所示的初始条件需要满足式(2)(3)的边界条件，即：<br>$$<br>\begin{eqnarray}<br>x_0(0)&amp;=&amp;0\<br>x_0(1)&amp;=&amp;u(0)<br>\end{eqnarray}$$</p>
-<h4 id="分布式输入转换"><a href="#分布式输入转换" class="headerlink" title="分布式输入转换"></a>分布式输入转换</h4><p>&emsp;&emsp;在不改变系统的前提下，我们可以使用特殊的方法将边界输入系统转换为分布式输入。以式(1)~(4)所示系统为例，设${\cal A}h={\rm d}_z^2h$。首先将系统状态变量分解：<br>$$<br>x(z,t)=x_H(z,t)+x_I(z,t)\tag{5}$$</p>
-<p>&emsp;&emsp;其中$x_H(z,t)$满足齐次边界条件：<br>$$<br>\begin{eqnarray}<br>x_H(0,t)&amp;=&amp;0\tag{6}\<br>x_H(1,t)&amp;=&amp;0\tag{7}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;$x_I(z,t)$满足非齐次边界条件：<br>$$<br>\begin{eqnarray}<br>x_I(0,t)&amp;=&amp;0\tag{8}\<br>x_I(1,t)&amp;=&amp;u(t)\tag{9}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;简单来说齐次边界条件就是输入$u(t)$不存在时的边界条件；非齐次边界条件就是$u(t)$存在时的边界条件。这有点像零输入响应与零状态响应，不过还是有区别的。<br>&emsp;&emsp;非齐次部分$x_I(z,t)$可以表示为一个多项式$f(z)$与$u(t)$的乘积:<br>$$<br>x_I(z,t)=f(z)u(t)\tag{10}$$</p>
-<p>&emsp;&emsp;其中$f(z)$的阶数可以取到足够高为止。我们先假设$f(z)$为一阶：<br>$$<br>f(z)=az+b\tag{11}$$</p>
-<p>&emsp;&emsp;通过式(8)(9)可以求解出$f(z)$：<br>$$<br>\begin{eqnarray}<br>x_I(0,t)&amp;=&amp;f(0)u(t)=bu(t)=0\<br>x_I(1,t)&amp;=&amp;f(1)u(t)=(a+b)u(t)=u(t)<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;我们得到$a=1,b=0$（若无法求解，则增加$f(z)$的阶数）。此时：<br>$$<br>x_I(z,t)=zu(t)\tag{12}$$</p>
-<p>&emsp;&emsp;将式(12)带入式(1)，就可以得到一个$x_H(z,t)$的方程：<br>$$<br>\begin{eqnarray}<br>&amp;&amp;\partial_t(x_H(z,t)+x_I(z,t))=\partial_z^2(x_H(z,t)+x_I(z,t))\<br>\Rightarrow&amp;&amp;\partial_t(x_H(z,t)+zu(t))=\partial_z^2(x_H(z,t)+zu(t))\<br>\Rightarrow&amp;&amp;\partial_tx_H(z,t)=\partial_z^2x_H(z,t)-z\partial_tu(t)<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;将式(6)(7)的边界条件以及相应初始条件加入后，我们便将原系统转换为了$x_H(z,t)$为状态变量的分布式输入系统：<br>$$<br>\begin{eqnarray}<br>\partial_tx_H(z,t)&amp;=&amp;{\cal A}x_H(z,t)-z\partial_tu(t),\ t&gt;0,\ z\in(0,1)\<br>x_H(0,t)&amp;=&amp;0,\ t&gt;0\<br>x_H(1,t)&amp;=&amp;0,\ t&gt;0\<br>x_H(z,0)&amp;=&amp;x_0(z)-zu(0),\ z\in[0,1]<br>\end{eqnarray}$$</p>
-<h3 id="反馈控制（Backstepping）"><a href="#反馈控制（Backstepping）" class="headerlink" title="反馈控制（Backstepping）"></a>反馈控制（Backstepping）</h3><p>&emsp;&emsp;若不转换为分布式输入，我们也可使用Backstepping来设计边界输入的反馈控制。这种控制方法来源于非线性控制（详见<a href="../../../2018/01/Backstepping-01/">Backstepping（反步控制）</a>），但个人觉得两者差别还是挺大的。</p>
+<h3 id="边界输入"><a href="#边界输入" class="headerlink" title="边界输入"></a>边界输入</h3><h4 id="系统方程"><a href="#系统方程" class="headerlink" title="系统方程"></a>系统方程</h4><p>&emsp;&emsp;分布式输入中，输入$u(t)$在系统状态方程中；而边界输入中，$u(t)$在系统边界条件中。一个典型的边界输入系统如下：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\partial_tx(z,t)&=&{\cal A}x(z,t),\ t>0,\ z\in(0,1)\tag{1}\\
+x(0,t)&=&0,\ t>0\tag{2}\\
+x(1,t)&=&u(t),\ t>0\tag{3}\\
+x(z,0)&=&x_0(z),\ z\in[0,1]\tag{4}
+\end{eqnarray}</script><p>&emsp;&emsp;其中式(3)边界条件表示输入为$z=1$处的边界输入，同时式(4)所示的初始条件需要满足式(2)(3)的边界条件，即：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+x_0(0)&=&0\\
+x_0(1)&=&u(0)
+\end{eqnarray}</script><h4 id="分布式输入转换"><a href="#分布式输入转换" class="headerlink" title="分布式输入转换"></a>分布式输入转换</h4><p>&emsp;&emsp;在不改变系统的前提下，我们可以使用特殊的方法将边界输入系统转换为分布式输入。以式(1)~(4)所示系统为例，设${\cal A}h={\rm d}_z^2h$。首先将系统状态变量分解：</p>
+<script type="math/tex; mode=display">
+x(z,t)=x_H(z,t)+x_I(z,t)\tag{5}</script><p>&emsp;&emsp;其中$x_H(z,t)$满足齐次边界条件：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+x_H(0,t)&=&0\tag{6}\\
+x_H(1,t)&=&0\tag{7}
+\end{eqnarray}</script><p>&emsp;&emsp;$x_I(z,t)$满足非齐次边界条件：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+x_I(0,t)&=&0\tag{8}\\
+x_I(1,t)&=&u(t)\tag{9}
+\end{eqnarray}</script><p>&emsp;&emsp;简单来说齐次边界条件就是输入$u(t)$不存在时的边界条件；非齐次边界条件就是$u(t)$存在时的边界条件。这有点像零输入响应与零状态响应，不过还是有区别的。<br>&emsp;&emsp;非齐次部分$x_I(z,t)$可以表示为一个多项式$f(z)$与$u(t)$的乘积:</p>
+<script type="math/tex; mode=display">
+x_I(z,t)=f(z)u(t)\tag{10}</script><p>&emsp;&emsp;其中$f(z)$的阶数可以取到足够高为止。我们先假设$f(z)$为一阶：</p>
+<script type="math/tex; mode=display">
+f(z)=az+b\tag{11}</script><p>&emsp;&emsp;通过式(8)(9)可以求解出$f(z)$：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+x_I(0,t)&=&f(0)u(t)=bu(t)=0\\
+x_I(1,t)&=&f(1)u(t)=(a+b)u(t)=u(t)
+\end{eqnarray}</script><p>&emsp;&emsp;我们得到$a=1,b=0$（若无法求解，则增加$f(z)$的阶数）。此时：</p>
+<script type="math/tex; mode=display">
+x_I(z,t)=zu(t)\tag{12}</script><p>&emsp;&emsp;将式(12)带入式(1)，就可以得到一个$x_H(z,t)$的方程：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+&&\partial_t(x_H(z,t)+x_I(z,t))=\partial_z^2(x_H(z,t)+x_I(z,t))\\
+\Rightarrow&&\partial_t(x_H(z,t)+zu(t))=\partial_z^2(x_H(z,t)+zu(t))\\
+\Rightarrow&&\partial_tx_H(z,t)=\partial_z^2x_H(z,t)-z\partial_tu(t)
+\end{eqnarray}</script><p>&emsp;&emsp;将式(6)(7)的边界条件以及相应初始条件加入后，我们便将原系统转换为了$x_H(z,t)$为状态变量的分布式输入系统：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\partial_tx_H(z,t)&=&{\cal A}x_H(z,t)-z\partial_tu(t),\ t>0,\ z\in(0,1)\\
+x_H(0,t)&=&0,\ t>0\\
+x_H(1,t)&=&0,\ t>0\\
+x_H(z,0)&=&x_0(z)-zu(0),\ z\in[0,1]
+\end{eqnarray}</script><h3 id="反馈控制（Backstepping）"><a href="#反馈控制（Backstepping）" class="headerlink" title="反馈控制（Backstepping）"></a>反馈控制（Backstepping）</h3><p>&emsp;&emsp;若不转换为分布式输入，我们也可使用Backstepping来设计边界输入的反馈控制。这种控制方法来源于非线性控制（详见<a href="../../../2018/01/Backstepping-01/">Backstepping（反步控制）</a>），但个人觉得两者差别还是挺大的。</p>
 <h4 id="基本思路"><a href="#基本思路" class="headerlink" title="基本思路"></a>基本思路</h4><p>&emsp;&emsp;Backstepping基本思路如下：<br>&emsp;&emsp;1. 识别系统中不稳定的状态。<br>&emsp;&emsp;2. 选择所要达到的稳定目标系统。<br>&emsp;&emsp;3. 计算Backstepping变换以达到目标。<br>&emsp;&emsp;4. 通过Backstepping得到Backstepping控制器。<br>&emsp;&emsp;下面我们将通过一个例子来分步演示Backstepping的设计过程。</p>
-<h4 id="识别系统不稳定状态"><a href="#识别系统不稳定状态" class="headerlink" title="识别系统不稳定状态"></a>识别系统不稳定状态</h4><p>&emsp;&emsp;我们仍然以式(1)~(4)所示系统为例，并设系统算子为${\cal A}h=\partial_z^2h+\gamma h,$ $\gamma&gt;\pi^2$。系统表示如下：<br>$$<br>\begin{eqnarray}<br>\partial_tx(z,t)&amp;=&amp;\partial_z^2x(z,t)+\gamma x(z,t),\ t&gt;0,\ z\in(0,1),\tag{13}\<br>x(0,t)&amp;=&amp;0,\ t&gt;0\tag{14}\<br>x(1,t)&amp;=&amp;u(t),\ t&gt;0\tag{15}\<br>x(z,0)&amp;=&amp;x_0(z),\ z\in[0,1]\tag{16}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;计算系统特征值，我们得到$\lambda_i=\gamma-(i\pi)^2$。系统存在部分特征值实部大于零，不稳定。又系统只有一个状态变量$x(z,t)$，因此我们的目标就是将$x(z,t)$通过反馈转换为稳定状态。</p>
-<h4 id="选择目标系统"><a href="#选择目标系统" class="headerlink" title="选择目标系统"></a>选择目标系统</h4><p>&emsp;&emsp;根据<a href="../../../2018/03/RSVP-03/index.html#e13">第三章节式(13)</a>：<br>$$<br>x(t)=\sum_{i=1}^{\infty}e^{\lambda_it}\phi_ix_i^\ast (0)$$</p>
-<p>&emsp;&emsp;可以发现，若我们将$x(t)$乘以一个指数函数$e^{-\mu t}$，只要$\mu$足够大，则结果一定收敛。因此我们设目标状态变量为：<br>$$<br>\tilde{x}(z,t)=e^{-\mu t}x(z,t)$$</p>
-<p>&emsp;&emsp;对于目标变量来说：<br>$$<br>\begin{eqnarray}<br>&amp;&amp;\partial_t\tilde{x}(z,t)&amp;=&amp;-\mu e^{-\mu t}x(z,t)+e^{-\mu t}\partial_tx(z,t)\<br>&amp;&amp; &amp;=&amp;e^{-\mu t}(\partial_z^2x(z,t)-(\mu-\gamma)x(z,t))\<br>&amp;&amp; &amp;=&amp;\partial_z^2\tilde{x}(z,t)-(\mu-\gamma)\tilde{x}(z,t)\<br>&amp;&amp;\tilde{x}(0,t)&amp;=&amp;e^{-\mu t}x(0,t)=0\<br>&amp;&amp;\tilde{x}(1,t)&amp;=&amp;e^{-\mu t}x(1,t)=0<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;最后一项成立，是系统齐次的要求，即目标系统是原系统通过输入$u(t)$得到的，故目标系统中不能再存在$u(t)$。设$\mu_R=\mu-\gamma$，就得到了目标系统：<br>$$<br>\begin{eqnarray}<br>&amp;&amp;\partial_t\tilde{x}(z,t)&amp;=&amp;\partial_z^2\tilde{x}(z,t)-\mu_R\tilde{x}(z,t),\ t&gt;0,\ z\in(0,1)\tag{17}\<br>&amp;&amp;\tilde{x}(0,t)&amp;=&amp;0,\ t&gt;0\tag{18}\<br>&amp;&amp;\tilde{x}(1,t)&amp;=&amp;0,\ t&gt;0\tag{19}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;当$\mu_R&gt;-\pi^2$时，目标系统指数稳定。</p>
-<h4 id="Backstepping变换"><a href="#Backstepping变换" class="headerlink" title="Backstepping变换"></a>Backstepping变换</h4><p>&emsp;&emsp;Backstepping变换表达式如下：<br>$$<br>\tilde{x}(z,t)=x(z,t)-\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\tag{20}$$</p>
-<p>&emsp;&emsp;其中积分核$\kappa(z,\zeta)$是变换的关键。<br>&emsp;&emsp;将$z=1$带入得到：<br>$$<br>\tilde{x}(1,t)=x(1,t)-\int_0^1\kappa(1,\zeta)x(\zeta,t){\rm d}\zeta\tag{21}$$</p>
-<p>&emsp;&emsp;结合式(15)(19)(21)，我们得到输入$u(t)$的表达式：<br>$$<br>u(t)=\int_0^1\kappa(1,\zeta)x(\zeta,t){\rm d}\zeta\tag{22}$$</p>
-<p>&emsp;&emsp;因此我们现在要做的就是将式(20)的Backstepping变换带入目标系统方程，求出积分核$\kappa(z,\zeta)$，再带入式(22)就得到了输入函数$u(t)$。通过求得的$u(t)$，在理论上就可以将原系统控制为稳定的目标系统。下面我们开始计算积分核，该过程较为繁琐，故建议在安静的时候耐心推导一遍（用Latex打出来太不容易了！）。</p>
-<h5 id="建立核方程"><a href="#建立核方程" class="headerlink" title="建立核方程"></a>建立核方程</h5><p>&emsp;&emsp;将式(20)带入式(17)，方程左侧为：<br>$$<br>\begin{split}<br>\partial_t\tilde{x}(z,t)=&amp;\partial_tx(z,t)-\int_0^z\kappa(z,\zeta)\partial_tx(\zeta,t){\rm d}\zeta\<br>=&amp;\partial_z^2x(z,t)+\gamma x(z,t)-\int_0^z\kappa(z,\zeta)\partial_{\zeta}^2x(\zeta,t){\rm d}\zeta-\int_0^z\gamma\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta<br>\end{split}$$</p>
-<p>&emsp;&emsp;方程右侧为：<br>$$<br>\begin{split}<br>\partial_z^2\tilde{x}(z,t)&amp;-\mu_R\tilde{x}(z,t)=\<br>&amp;\partial_z^2x(z,t)-\partial_z^2\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta-\mu_Rx(z,t)+\int_0^z\mu_R\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta<br>\end{split}$$</p>
-<p>&emsp;&emsp;之后将方程左侧与右侧联立得到：<br>$$<br>\begin{split}<br>&amp;\partial_z^2x(z,t)+\gamma x(z,t)-\int_0^z\kappa(z,\zeta)\partial_{\zeta}^2x(\zeta,t){\rm d}\zeta-\int_0^z\gamma\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\<br>=&amp;\partial_z^2x(z,t)-\partial_z^2\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta-\mu_Rx(z,t)+\int_0^z\mu_R\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta<br>\end{split}$$</p>
-<p>&emsp;&emsp;将所有项移动到一边：<br>$$<br>\begin{split}<br>0=&amp;-\partial_z^2x(z,t)+\partial_z^2\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta+\mu_Rx(z,t)-\int_0^z\mu_R\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\<br>&amp;+\partial_z^2x(z,t)+\gamma x(z,t)-\int_0^z\kappa(z,\zeta)\partial_{\zeta}^2x(\zeta,t){\rm d}\zeta-\int_0^z\gamma\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta<br>\end{split}$$</p>
-<p>&emsp;&emsp;到了这一步我们需要处理其中两个个麻烦的项。它们分别为：<br>$$<br>\begin{eqnarray}<br>&amp;&amp;-\int_0^z\kappa(z,\zeta)\partial_{\zeta}^2x(\zeta,t){\rm d}\zeta\tag{23}\<br>&amp;&amp;\partial_z^2\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\tag{24}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;我们可以通过分部积分法将式(23)展开得到：<br>$$<br>\begin{split}<br>&amp;-&amp;\int_0^z\kappa(z,\zeta)\partial_{\zeta}^2x(\zeta,t){\rm d}\zeta=-[\kappa(z,\zeta)\partial_{\zeta}x(\zeta,t)]_ 0^z+\int_0^z\partial_{\zeta}\kappa(z,\zeta)\partial_{\zeta}x(\zeta,t){\rm d}\zeta\<br>&amp;=&amp;-[\kappa(z,\zeta)\partial_{\zeta}x(\zeta,t)]_ 0^z+[\partial_{\zeta}\kappa(z,\zeta)x(\zeta,t)]_ 0^z-\int_0^z\partial_{\zeta}^2\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\<br>&amp;=&amp;-\kappa(z,z)\partial_zx(z,t)+\kappa(z,0)\partial_zx(0,t)+\partial_{\zeta}\kappa(z,z)x(z,t)\<br>&amp;&amp;-\partial_{\zeta}\kappa(z,0)x(0,t)-\int_0^z{\rm d}_{\zeta}^2\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta<br>\end{split}$$</p>
-<p>&emsp;&emsp;对于式(24)我们直接使用求导计算即可：<br>$$<br>\partial_z\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta=\kappa(z,z)x(z,t)+\int_0^z\partial_z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta$$</p>
-<p>&emsp;&emsp;我们再求一次导，得到式(24)的表达式：<br>$$<br>\begin{split}<br>&amp;\partial_z^2\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta=\partial_z\left(\kappa(z,z)x(z,t)+\int_0^z\partial_z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\right)\<br>&amp;={\rm d}_z\kappa(z,z)x(z,t)+\kappa(z,z)\partial_zx(z,t)+\partial_z\kappa(z,z)x(z,t)+\int_0^z\partial_z^2\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta<br>\end{split}$$</p>
-<p>&emsp;&emsp;在这里需要注意$\kappa(z,z)$的本质是$\kappa(z,\zeta)$，只是第二个参数$\zeta$为$z$的函数$\zeta(z)=z$。因此$\kappa(z,z)$的导数为：<br>$$<br>\begin{split}<br>{\rm d}<em>z\kappa(z,z)={\rm d}_z\kappa(z,\zeta(z))&amp;=\partial_z\kappa(z,z){ {\rm d}z \over {\rm d}z}+\partial</em>{\zeta}\kappa(z,z){ {\rm d}\zeta \over {\rm d}z}\<br>&amp;=\partial_z\kappa(z,z)+\partial_{\zeta}\kappa(z,z)<br>\end{split}$$</p>
-<p>&emsp;&emsp;将麻烦项的展开带入原方程，合并同类项得到：<br>$$<br>\begin{split}<br>0&amp;=({\rm d}<em>z\kappa(z,z)+\partial_z\kappa(z,z)+\partial_{\zeta}\kappa(z,z)+\mu_R+\gamma)x(z,t)\<br>&amp;+(\kappa(z,z)-\kappa(z,z))\partial_zx(z,t)\<br>&amp;+\int_0^z(\partial_z^2\kappa(z,\zeta)-\partial</em>{\zeta}\kappa(z,\zeta)-(\mu_R+\gamma)\kappa(z,\zeta))x(\zeta,t){\rm d}\zeta\<br>&amp;+\kappa(z,0)\partial_zx(0,t)+\partial_{\zeta}\kappa(z,0)x(0,t)<br>\end{split}$$</p>
-<p>&emsp;&emsp;由于$x(z,t)$是状态变量，因此若需要上式始终为$0$，则需要将$x(z,t)$及其导数前的系数方程都设置为$0$，因此得到：<br>$$<br>\begin{eqnarray}<br>2{\rm d}_z\kappa(z,z)+\mu&amp;=&amp;0\tag{25}\<br>\partial_z^2\kappa(z,\zeta)-\partial_{\zeta}^2\kappa(z,\zeta)-\mu\kappa(z,\zeta)&amp;=&amp;0\tag{26}\<br>\kappa(z,0)&amp;=&amp;0\tag{27}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;考虑完式(17)的系统状态方程，我们再来看式(18)(19)的边界条件。将式(20)带入式(18)：<br>$$<br>\tilde{x}(0,t)=x(0,t)-\int_0^0\kappa(0,\zeta)x(\zeta,t){\rm d}\zeta=0$$</p>
-<p>&emsp;&emsp;式(18)恒成立，而式(19)在之前计算$u(t)$时已经考虑过了。因此综上所述我们得到了所有积分核需要满足的条件，即式(25)~(27)，使用它们建立核方程（Kerngleichung）：<br>$$<br>\begin{eqnarray}<br>\partial_z^2\kappa(z,\zeta)-\partial_{\zeta}^2\kappa(z,\zeta)&amp;=&amp;\mu\kappa(z,\zeta),\ 0&lt;\zeta&lt;z&lt;1\tag{28}\<br>\kappa(z,0)&amp;=&amp;0\tag{29}\<br>\kappa(z,z)&amp;=&amp;-{\mu \over 2}z\tag{30}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;接下来我们只要求解核方程就能得到积分核的表达式了。</p>
-<h5 id="求解核方程"><a href="#求解核方程" class="headerlink" title="求解核方程"></a>求解核方程</h5><p>&emsp;&emsp;可以发现式(28)所示的核方程是一个波动方程，我们通过坐标转换将它写成标准形式。引入坐标$\xi$与$\eta$：<br>$$<br>\begin{cases}<br>\xi=z+\zeta\<br>\eta=z-\zeta<br>\end{cases}<br>$$</p>
-<p>&emsp;&emsp;由于原坐标存在约束条件$0&lt;\zeta&lt;z&lt;1$，因此它的作用范围（Ortsbereich）在如下三条直线所围成的区域内：<br>&emsp;&emsp;1. $\zeta=0$<br>&emsp;&emsp;2. $\zeta=z$<br>&emsp;&emsp;3. $z=1$<br>&emsp;&emsp;通过坐标变换我们可以将这三条曲线转换为$\xi,\eta$坐标形式：<br>&emsp;&emsp;1. $\begin{bmatrix}\xi\\eta\end{bmatrix}<em>{\zeta=0}=\begin{bmatrix}1 &amp;&amp; 1 \ 1 &amp;&amp; -1 \end{bmatrix}\begin{bmatrix}z\0\end{bmatrix}=\begin{bmatrix} 1 \ 1 \end{bmatrix}z\Rightarrow \xi=\eta$<br>&emsp;&emsp;2. $\begin{bmatrix}\xi\\eta\end{bmatrix}</em>{\zeta=z}=\begin{bmatrix}1 &amp;&amp; 1 \ 1 &amp;&amp; -1 \end{bmatrix}\begin{bmatrix}z\z\end{bmatrix}=\begin{bmatrix} 2 \ 0 \end{bmatrix}z\Rightarrow \eta=0$<br>&emsp;&emsp;3. $\begin{bmatrix}\xi\\eta\end{bmatrix}_{z=1}=\begin{bmatrix}1 &amp;&amp; 1 \ 1 &amp;&amp; -1 \end{bmatrix}\begin{bmatrix}1\\zeta\end{bmatrix}=\begin{bmatrix} 1+\zeta \ 1-\zeta \end{bmatrix}z\Rightarrow \xi+\eta=2$</p>
-<p>&emsp;&emsp;因此核方程作用范围${\cal T}_R$变化为$\tilde{\cal T}_R$，如下图所示：<br><img src="/images/RSVP_07_Ortsbereich.PNG" alt="Transformation des Ortsbereichs"><br>&emsp;&emsp;设核方程$\kappa(z,\zeta)$通过坐标变换转换为$G(\xi,\eta)$，即：<br>$$<br>\kappa(z,\zeta)=G(\xi,\eta)=G(\xi(z,\zeta),\eta(z,\zeta))\tag{31}$$</p>
-<p>&emsp;&emsp;带入式(28)~(30)得到$G(\xi,\eta)$所满足的方程。其中：<br>$$<br>\begin{eqnarray}<br>\partial_z\kappa(z,\zeta)&amp;=&amp;\partial_{\xi}G(\xi,\eta){\rm d}<em>z\xi+\partial</em>{\eta}G(\xi,\eta){\rm d}<em>z\eta\<br>&amp;=&amp;\partial</em>{\xi}G(\xi,\eta)+\partial_{\eta}G(\xi,\eta)\<br>\partial_z^2\kappa(z,\zeta)&amp;=&amp;\partial_{\xi}^2G(\xi,\eta){\rm d}<em>z\xi+\partial</em>{\eta}\partial_{\xi}G(\xi,\eta){\rm d}<em>z\eta+\partial</em>{\xi}\partial_{\eta}G(\xi,\eta){\rm d}<em>z\xi+\partial</em>{\eta}^2G(\xi,\eta){\rm d}<em>z\eta\<br>&amp;=&amp;\partial</em>{\xi}^2G(\xi,\eta)+2\partial_{\eta}\partial_{\xi}G(\xi,\eta)+\partial_{\eta}^2G(\xi,\eta)\<br>\partial_{\zeta}\kappa(z,\zeta)&amp;=&amp;\partial_{\xi}G(\xi,\eta){\rm d}<em>{\zeta}\xi+\partial</em>{\eta}G(\xi,\eta){\rm d}<em>{\zeta}\eta\<br>&amp;=&amp;\partial</em>{\xi}G(\xi,\eta)-\partial_{\eta}G(\xi,\eta)\<br>\partial_{\zeta}^2\kappa(z,\zeta)&amp;=&amp;\partial_{\xi}^2G(\xi,\eta){\rm d}<em>{\zeta}\xi+\partial</em>{\eta}\partial_{\xi}G(\xi,\eta){\rm d}<em>{\zeta}\eta+\partial</em>{\xi}\partial_{\eta}G(\xi,\eta){\rm d}<em>{\zeta}\xi+\partial</em>{\eta}^2G(\xi,\eta){\rm d}<em>{\zeta}\eta\<br>&amp;=&amp;\partial</em>{\xi}^2G(\xi,\eta)-2\partial_{\eta}\partial_{\xi}G(\xi,\eta)+\partial_{\eta}^2G(\xi,\eta)\<br>\kappa(z,0)&amp;=&amp;G(\xi,\xi)=0\<br>\kappa(z,z)&amp;=&amp;G(\xi,0)=-{\mu \over 4}\xi<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;于是我们得到坐标转换后的核方程：<br>$$<br>\begin{eqnarray}<br>\partial_{\eta}\partial_{\xi}G(\xi,\eta)&amp;=&amp;{\mu \over 4}G(\xi,\eta),\ (\xi,\eta)\in\tilde{\cal T}_R\tag{32}\<br>G(\xi,\xi)&amp;=&amp;0\tag{33}\<br>G(\xi,0)&amp;=&amp;-{\mu \over 4}\xi\tag{34}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;现在我们开始求解该核方程。将式(32)在作用范围$\tilde{\cal T}<em>R$上积分：<br>$$<br>\int</em>{\eta}^{\xi}\int_0^{\eta}\partial_{\eta’}\partial_{\xi’}G(\xi’,\eta’){\rm d}\eta’{\rm d}\xi’={\mu \over 4}\int_{\eta}^{\xi}\int_0^{\eta}G(\xi’,\eta’){\rm d}\eta’{\rm d}\xi’$$</p>
-<p>&emsp;&emsp;化简后得到：<br>$$<br>G(\xi,\eta)=-{\mu \over 4}(\xi-\eta)+{\mu \over 4}\int_{\eta}^{\xi}\int_0^{\eta}G(\xi’,\eta’){\rm d}\eta’{\rm d}\xi’\tag{35}$$</p>
-<p>&emsp;&emsp;在这里我们使用不动点迭代（Fixpunktiteration）求解式(35)中的$G(\xi,\eta)$。将式(35)右侧的第一项看作$G$的初始项$G_0$，第二项看作对$G$的方程$F[G]$：<br>$$<br>\begin{eqnarray}<br>G_0(\xi,\eta)&amp;=&amp;-{\mu \over 4}(\xi-\eta)\<br>F[G] (\xi,\eta)&amp;=&amp;{\mu \over 4}\int_{\eta}^{\xi}\int_0^{\eta}G(\xi’,\eta’){\rm d}\eta’{\rm d}\xi’<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;此时式(35)就化为了：<br>$$<br>G(\xi,\eta)=G_0(\xi,\eta)+F[G] (\xi,\eta)\tag{36}$$</p>
-<p>&emsp;&emsp;使用如下等式对$G$进行迭代：<br>$$<br>G_{i+1}(\xi,\eta)=G_0(\xi,\eta)+F[G_i] (\xi,\eta)\tag{37}$$</p>
-<p>&emsp;&emsp;一直迭代下去$G_i(\xi,\eta)$就会收敛为核方程$G(\xi,\eta)$：<br>$$<br>\begin{eqnarray}<br>G_1&amp;=&amp;G_0+F[G_0]\<br>G_2&amp;=&amp;G_0+F[G_1]=G_0+F[G_0]+F^2[G_0]\<br>&amp;\vdots&amp;<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;最终得到：<br>$$<br>G=\lim_{i\to\infty}G_i=\sum_{i=0}^{\infty}F^i[G_0]\tag{38}$$</p>
-<p>&emsp;&emsp;设：<br>$$<br>F^i[G_0]=\Delta G_i$$</p>
-<p>&emsp;&emsp;并且$\Delta G_i$满足：<br>$$<br>\Delta G_{i+1}=F[\Delta G_i],\ \ \Delta G_0=G_0$$</p>
-<p>&emsp;&emsp;将$G_0$带入，经过一系列计算（这里我也没有算过，直接搬课件上的）得到：<br>$$<br>\Delta G_i(\xi,\eta)=-\left({\mu \over 4}\right)^{i+1}{(\xi-\eta)\xi^i\eta^i \over i!(i+1)!},\ i\in{\Bbb N}\tag{39}$$</p>
-<p>&emsp;&emsp;带入式(38)得到：<br>$$<br>G(\xi,\eta)=\sum_{i=0}^{\infty}\Delta G_i(\xi,\eta)=-{\mu \over 2}(\xi-\eta){I_1(\sqrt{\mu\xi\eta}) \over \sqrt{\mu\xi\eta}}\tag{40}$$</p>
-<p>&emsp;&emsp;其中$I_1(\cdot)$代表第一类贝塞尔函数。终于我们求得了$G(\xi,\eta)$的表达式，最后对其进行坐标变换我们就得到了最初的核函数$\kappa(z,\zeta)$：<br>$$<br>\kappa(z,\zeta)=-\mu\zeta{I_1(\sqrt{\mu(z^2-\zeta^2)}) \over \sqrt{\mu(z^2-\zeta^2)}}\tag{41}$$</p>
-<p>&emsp;&emsp;将是(41)带入式(22)我们就求得了相应输入$u(t)$：<br>$$<br>u(t)=-(\gamma+\mu_R)\int_0^1z{I_1(\sqrt{(\gamma+\mu_R)(1-z^2)}) \over \sqrt{(\gamma+\mu_R)(1-z^2)}}x(z,t){\rm d}z$$</p>
-<p>&emsp;&emsp;通过这个输入可以控制不稳定的原系统，将其转化为稳定的目标系统。在这里还需要注意的是，Backstepping求得的边界输入能够将系统所有特征值进行移动，因此它需要保证系统所有特征值都是能控的。</p>
+<h4 id="识别系统不稳定状态"><a href="#识别系统不稳定状态" class="headerlink" title="识别系统不稳定状态"></a>识别系统不稳定状态</h4><p>&emsp;&emsp;我们仍然以式(1)~(4)所示系统为例，并设系统算子为${\cal A}h=\partial_z^2h+\gamma h,$ $\gamma&gt;\pi^2$。系统表示如下：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\partial_tx(z,t)&=&\partial_z^2x(z,t)+\gamma x(z,t),\ t>0,\ z\in(0,1),\tag{13}\\
+x(0,t)&=&0,\ t>0\tag{14}\\
+x(1,t)&=&u(t),\ t>0\tag{15}\\
+x(z,0)&=&x_0(z),\ z\in[0,1]\tag{16}
+\end{eqnarray}</script><p>&emsp;&emsp;计算系统特征值，我们得到$\lambda_i=\gamma-(i\pi)^2$。系统存在部分特征值实部大于零，不稳定。又系统只有一个状态变量$x(z,t)$，因此我们的目标就是将$x(z,t)$通过反馈转换为稳定状态。</p>
+<h4 id="选择目标系统"><a href="#选择目标系统" class="headerlink" title="选择目标系统"></a>选择目标系统</h4><p>&emsp;&emsp;根据<a href="../../../2018/03/RSVP-03/index.html#e13">第三章节式(13)</a>：</p>
+<script type="math/tex; mode=display">
+x(t)=\sum_{i=1}^{\infty}e^{\lambda_it}\phi_ix_i^\ast (0)</script><p>&emsp;&emsp;可以发现，若我们将$x(t)$乘以一个指数函数$e^{-\mu t}$，只要$\mu$足够大，则结果一定收敛。因此我们设目标状态变量为：</p>
+<script type="math/tex; mode=display">
+\tilde{x}(z,t)=e^{-\mu t}x(z,t)</script><p>&emsp;&emsp;对于目标变量来说：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+&&\partial_t\tilde{x}(z,t)&=&-\mu e^{-\mu t}x(z,t)+e^{-\mu t}\partial_tx(z,t)\\
+&& &=&e^{-\mu t}(\partial_z^2x(z,t)-(\mu-\gamma)x(z,t))\\
+&& &=&\partial_z^2\tilde{x}(z,t)-(\mu-\gamma)\tilde{x}(z,t)\\
+&&\tilde{x}(0,t)&=&e^{-\mu t}x(0,t)=0\\
+&&\tilde{x}(1,t)&=&e^{-\mu t}x(1,t)=0
+\end{eqnarray}</script><p>&emsp;&emsp;最后一项成立，是系统齐次的要求，即目标系统是原系统通过输入$u(t)$得到的，故目标系统中不能再存在$u(t)$。设$\mu_R=\mu-\gamma$，就得到了目标系统：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+&&\partial_t\tilde{x}(z,t)&=&\partial_z^2\tilde{x}(z,t)-\mu_R\tilde{x}(z,t),\ t>0,\ z\in(0,1)\tag{17}\\
+&&\tilde{x}(0,t)&=&0,\ t>0\tag{18}\\
+&&\tilde{x}(1,t)&=&0,\ t>0\tag{19}
+\end{eqnarray}</script><p>&emsp;&emsp;当$\mu_R&gt;-\pi^2$时，目标系统指数稳定。</p>
+<h4 id="Backstepping变换"><a href="#Backstepping变换" class="headerlink" title="Backstepping变换"></a>Backstepping变换</h4><p>&emsp;&emsp;Backstepping变换表达式如下：</p>
+<script type="math/tex; mode=display">
+\tilde{x}(z,t)=x(z,t)-\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\tag{20}</script><p>&emsp;&emsp;其中积分核$\kappa(z,\zeta)$是变换的关键。<br>&emsp;&emsp;将$z=1$带入得到：</p>
+<script type="math/tex; mode=display">
+\tilde{x}(1,t)=x(1,t)-\int_0^1\kappa(1,\zeta)x(\zeta,t){\rm d}\zeta\tag{21}</script><p>&emsp;&emsp;结合式(15)(19)(21)，我们得到输入$u(t)$的表达式：</p>
+<script type="math/tex; mode=display">
+u(t)=\int_0^1\kappa(1,\zeta)x(\zeta,t){\rm d}\zeta\tag{22}</script><p>&emsp;&emsp;因此我们现在要做的就是将式(20)的Backstepping变换带入目标系统方程，求出积分核$\kappa(z,\zeta)$，再带入式(22)就得到了输入函数$u(t)$。通过求得的$u(t)$，在理论上就可以将原系统控制为稳定的目标系统。下面我们开始计算积分核，该过程较为繁琐，故建议在安静的时候耐心推导一遍（用Latex打出来太不容易了！）。</p>
+<h5 id="建立核方程"><a href="#建立核方程" class="headerlink" title="建立核方程"></a>建立核方程</h5><p>&emsp;&emsp;将式(20)带入式(17)，方程左侧为：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\partial_t\tilde{x}(z,t)=&\partial_tx(z,t)-\int_0^z\kappa(z,\zeta)\partial_tx(\zeta,t){\rm d}\zeta\\
+=&\partial_z^2x(z,t)+\gamma x(z,t)-\int_0^z\kappa(z,\zeta)\partial_{\zeta}^2x(\zeta,t){\rm d}\zeta-\int_0^z\gamma\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta
+\end{split}</script><p>&emsp;&emsp;方程右侧为：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\partial_z^2\tilde{x}(z,t)&-\mu_R\tilde{x}(z,t)=\\
+&\partial_z^2x(z,t)-\partial_z^2\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta-\mu_Rx(z,t)+\int_0^z\mu_R\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta
+\end{split}</script><p>&emsp;&emsp;之后将方程左侧与右侧联立得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+&\partial_z^2x(z,t)+\gamma x(z,t)-\int_0^z\kappa(z,\zeta)\partial_{\zeta}^2x(\zeta,t){\rm d}\zeta-\int_0^z\gamma\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\\
+=&\partial_z^2x(z,t)-\partial_z^2\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta-\mu_Rx(z,t)+\int_0^z\mu_R\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta
+\end{split}</script><p>&emsp;&emsp;将所有项移动到一边：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+0=&-\partial_z^2x(z,t)+\partial_z^2\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta+\mu_Rx(z,t)-\int_0^z\mu_R\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\\
+&+\partial_z^2x(z,t)+\gamma x(z,t)-\int_0^z\kappa(z,\zeta)\partial_{\zeta}^2x(\zeta,t){\rm d}\zeta-\int_0^z\gamma\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta
+\end{split}</script><p>&emsp;&emsp;到了这一步我们需要处理其中两个个麻烦的项。它们分别为：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+&&-\int_0^z\kappa(z,\zeta)\partial_{\zeta}^2x(\zeta,t){\rm d}\zeta\tag{23}\\
+&&\partial_z^2\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\tag{24}
+\end{eqnarray}</script><p>&emsp;&emsp;我们可以通过分部积分法将式(23)展开得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+&-&\int_0^z\kappa(z,\zeta)\partial_{\zeta}^2x(\zeta,t){\rm d}\zeta=-[\kappa(z,\zeta)\partial_{\zeta}x(\zeta,t)]_ 0^z+\int_0^z\partial_{\zeta}\kappa(z,\zeta)\partial_{\zeta}x(\zeta,t){\rm d}\zeta\\
+&=&-[\kappa(z,\zeta)\partial_{\zeta}x(\zeta,t)]_ 0^z+[\partial_{\zeta}\kappa(z,\zeta)x(\zeta,t)]_ 0^z-\int_0^z\partial_{\zeta}^2\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\\
+&=&-\kappa(z,z)\partial_zx(z,t)+\kappa(z,0)\partial_zx(0,t)+\partial_{\zeta}\kappa(z,z)x(z,t)\\
+&&-\partial_{\zeta}\kappa(z,0)x(0,t)-\int_0^z{\rm d}_{\zeta}^2\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta
+\end{split}</script><p>&emsp;&emsp;对于式(24)我们直接使用求导计算即可：</p>
+<script type="math/tex; mode=display">
+\partial_z\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta=\kappa(z,z)x(z,t)+\int_0^z\partial_z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta</script><p>&emsp;&emsp;我们再求一次导，得到式(24)的表达式：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+&\partial_z^2\int_0^z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta=\partial_z\left(\kappa(z,z)x(z,t)+\int_0^z\partial_z\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta\right)\\
+&={\rm d}_z\kappa(z,z)x(z,t)+\kappa(z,z)\partial_zx(z,t)+\partial_z\kappa(z,z)x(z,t)+\int_0^z\partial_z^2\kappa(z,\zeta)x(\zeta,t){\rm d}\zeta
+\end{split}</script><p>&emsp;&emsp;在这里需要注意$\kappa(z,z)$的本质是$\kappa(z,\zeta)$，只是第二个参数$\zeta$为$z$的函数$\zeta(z)=z$。因此$\kappa(z,z)$的导数为：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+{\rm d}_z\kappa(z,z)={\rm d}_z\kappa(z,\zeta(z))&=\partial_z\kappa(z,z){ {\rm d}z \over {\rm d}z}+\partial_{\zeta}\kappa(z,z){ {\rm d}\zeta \over {\rm d}z}\\
+&=\partial_z\kappa(z,z)+\partial_{\zeta}\kappa(z,z)
+\end{split}</script><p>&emsp;&emsp;将麻烦项的展开带入原方程，合并同类项得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+0&=({\rm d}_z\kappa(z,z)+\partial_z\kappa(z,z)+\partial_{\zeta}\kappa(z,z)+\mu_R+\gamma)x(z,t)\\
+&+(\kappa(z,z)-\kappa(z,z))\partial_zx(z,t)\\
+&+\int_0^z(\partial_z^2\kappa(z,\zeta)-\partial_{\zeta}\kappa(z,\zeta)-(\mu_R+\gamma)\kappa(z,\zeta))x(\zeta,t){\rm d}\zeta\\
+&+\kappa(z,0)\partial_zx(0,t)+\partial_{\zeta}\kappa(z,0)x(0,t)
+\end{split}</script><p>&emsp;&emsp;由于$x(z,t)$是状态变量，因此若需要上式始终为$0$，则需要将$x(z,t)$及其导数前的系数方程都设置为$0$，因此得到：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+2{\rm d}_z\kappa(z,z)+\mu&=&0\tag{25}\\
+\partial_z^2\kappa(z,\zeta)-\partial_{\zeta}^2\kappa(z,\zeta)-\mu\kappa(z,\zeta)&=&0\tag{26}\\
+\kappa(z,0)&=&0\tag{27}
+\end{eqnarray}</script><p>&emsp;&emsp;考虑完式(17)的系统状态方程，我们再来看式(18)(19)的边界条件。将式(20)带入式(18)：</p>
+<script type="math/tex; mode=display">
+\tilde{x}(0,t)=x(0,t)-\int_0^0\kappa(0,\zeta)x(\zeta,t){\rm d}\zeta=0</script><p>&emsp;&emsp;式(18)恒成立，而式(19)在之前计算$u(t)$时已经考虑过了。因此综上所述我们得到了所有积分核需要满足的条件，即式(25)~(27)，使用它们建立核方程（Kerngleichung）：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\partial_z^2\kappa(z,\zeta)-\partial_{\zeta}^2\kappa(z,\zeta)&=&\mu\kappa(z,\zeta),\ 0<\zeta<z<1\tag{28}\\
+\kappa(z,0)&=&0\tag{29}\\
+\kappa(z,z)&=&-{\mu \over 2}z\tag{30}
+\end{eqnarray}</script><p>&emsp;&emsp;接下来我们只要求解核方程就能得到积分核的表达式了。</p>
+<h5 id="求解核方程"><a href="#求解核方程" class="headerlink" title="求解核方程"></a>求解核方程</h5><p>&emsp;&emsp;可以发现式(28)所示的核方程是一个波动方程，我们通过坐标转换将它写成标准形式。引入坐标$\xi$与$\eta$：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+\xi=z+\zeta\\
+\eta=z-\zeta
+\end{cases}</script><p>&emsp;&emsp;由于原坐标存在约束条件$0&lt;\zeta&lt;z&lt;1$，因此它的作用范围（Ortsbereich）在如下三条直线所围成的区域内：<br>&emsp;&emsp;1. $\zeta=0$<br>&emsp;&emsp;2. $\zeta=z$<br>&emsp;&emsp;3. $z=1$<br>&emsp;&emsp;通过坐标变换我们可以将这三条曲线转换为$\xi,\eta$坐标形式：<br>&emsp;&emsp;1. $\begin{bmatrix}\xi\\\eta\end{bmatrix}_{\zeta=0}=\begin{bmatrix}1 &amp;&amp; 1 \\ 1 &amp;&amp; -1 \end{bmatrix}\begin{bmatrix}z\\0\end{bmatrix}=\begin{bmatrix} 1 \\ 1 \end{bmatrix}z\Rightarrow \xi=\eta$<br>&emsp;&emsp;2. $\begin{bmatrix}\xi\\\eta\end{bmatrix}_{\zeta=z}=\begin{bmatrix}1 &amp;&amp; 1 \\ 1 &amp;&amp; -1 \end{bmatrix}\begin{bmatrix}z\\z\end{bmatrix}=\begin{bmatrix} 2 \\ 0 \end{bmatrix}z\Rightarrow \eta=0$<br>&emsp;&emsp;3. $\begin{bmatrix}\xi\\\eta\end{bmatrix}_{z=1}=\begin{bmatrix}1 &amp;&amp; 1 \\ 1 &amp;&amp; -1 \end{bmatrix}\begin{bmatrix}1\\\zeta\end{bmatrix}=\begin{bmatrix} 1+\zeta \\ 1-\zeta \end{bmatrix}z\Rightarrow \xi+\eta=2$</p>
+<p>&emsp;&emsp;因此核方程作用范围${\cal T}_R$变化为$\tilde{\cal T}_R$，如下图所示：<br><img src="/images/RSVP_07_Ortsbereich.PNG" alt="Transformation des Ortsbereichs"><br>&emsp;&emsp;设核方程$\kappa(z,\zeta)$通过坐标变换转换为$G(\xi,\eta)$，即：</p>
+<script type="math/tex; mode=display">
+\kappa(z,\zeta)=G(\xi,\eta)=G(\xi(z,\zeta),\eta(z,\zeta))\tag{31}</script><p>&emsp;&emsp;带入式(28)~(30)得到$G(\xi,\eta)$所满足的方程。其中：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\partial_z\kappa(z,\zeta)&=&\partial_{\xi}G(\xi,\eta){\rm d}_z\xi+\partial_{\eta}G(\xi,\eta){\rm d}_z\eta\\
+&=&\partial_{\xi}G(\xi,\eta)+\partial_{\eta}G(\xi,\eta)\\
+\partial_z^2\kappa(z,\zeta)&=&\partial_{\xi}^2G(\xi,\eta){\rm d}_z\xi+\partial_{\eta}\partial_{\xi}G(\xi,\eta){\rm d}_z\eta+\partial_{\xi}\partial_{\eta}G(\xi,\eta){\rm d}_z\xi+\partial_{\eta}^2G(\xi,\eta){\rm d}_z\eta\\
+&=&\partial_{\xi}^2G(\xi,\eta)+2\partial_{\eta}\partial_{\xi}G(\xi,\eta)+\partial_{\eta}^2G(\xi,\eta)\\
+\partial_{\zeta}\kappa(z,\zeta)&=&\partial_{\xi}G(\xi,\eta){\rm d}_{\zeta}\xi+\partial_{\eta}G(\xi,\eta){\rm d}_{\zeta}\eta\\
+&=&\partial_{\xi}G(\xi,\eta)-\partial_{\eta}G(\xi,\eta)\\
+\partial_{\zeta}^2\kappa(z,\zeta)&=&\partial_{\xi}^2G(\xi,\eta){\rm d}_{\zeta}\xi+\partial_{\eta}\partial_{\xi}G(\xi,\eta){\rm d}_{\zeta}\eta+\partial_{\xi}\partial_{\eta}G(\xi,\eta){\rm d}_{\zeta}\xi+\partial_{\eta}^2G(\xi,\eta){\rm d}_{\zeta}\eta\\
+&=&\partial_{\xi}^2G(\xi,\eta)-2\partial_{\eta}\partial_{\xi}G(\xi,\eta)+\partial_{\eta}^2G(\xi,\eta)\\
+\kappa(z,0)&=&G(\xi,\xi)=0\\
+\kappa(z,z)&=&G(\xi,0)=-{\mu \over 4}\xi
+\end{eqnarray}</script><p>&emsp;&emsp;于是我们得到坐标转换后的核方程：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\partial_{\eta}\partial_{\xi}G(\xi,\eta)&=&{\mu \over 4}G(\xi,\eta),\ (\xi,\eta)\in\tilde{\cal T}_R\tag{32}\\
+G(\xi,\xi)&=&0\tag{33}\\
+G(\xi,0)&=&-{\mu \over 4}\xi\tag{34}
+\end{eqnarray}</script><p>&emsp;&emsp;现在我们开始求解该核方程。将式(32)在作用范围$\tilde{\cal T}_R$上积分：</p>
+<script type="math/tex; mode=display">
+\int_{\eta}^{\xi}\int_0^{\eta}\partial_{\eta'}\partial_{\xi'}G(\xi',\eta'){\rm d}\eta'{\rm d}\xi'={\mu \over 4}\int_{\eta}^{\xi}\int_0^{\eta}G(\xi',\eta'){\rm d}\eta'{\rm d}\xi'</script><p>&emsp;&emsp;化简后得到：</p>
+<script type="math/tex; mode=display">
+G(\xi,\eta)=-{\mu \over 4}(\xi-\eta)+{\mu \over 4}\int_{\eta}^{\xi}\int_0^{\eta}G(\xi',\eta'){\rm d}\eta'{\rm d}\xi'\tag{35}</script><p>&emsp;&emsp;在这里我们使用不动点迭代（Fixpunktiteration）求解式(35)中的$G(\xi,\eta)$。将式(35)右侧的第一项看作$G$的初始项$G_0$，第二项看作对$G$的方程$F[G]$：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+G_0(\xi,\eta)&=&-{\mu \over 4}(\xi-\eta)\\
+F[G] (\xi,\eta)&=&{\mu \over 4}\int_{\eta}^{\xi}\int_0^{\eta}G(\xi',\eta'){\rm d}\eta'{\rm d}\xi'
+\end{eqnarray}</script><p>&emsp;&emsp;此时式(35)就化为了：</p>
+<script type="math/tex; mode=display">
+G(\xi,\eta)=G_0(\xi,\eta)+F[G] (\xi,\eta)\tag{36}</script><p>&emsp;&emsp;使用如下等式对$G$进行迭代：</p>
+<script type="math/tex; mode=display">
+G_{i+1}(\xi,\eta)=G_0(\xi,\eta)+F[G_i] (\xi,\eta)\tag{37}</script><p>&emsp;&emsp;一直迭代下去$G_i(\xi,\eta)$就会收敛为核方程$G(\xi,\eta)$：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+G_1&=&G_0+F[G_0]\\
+G_2&=&G_0+F[G_1]=G_0+F[G_0]+F^2[G_0]\\
+&\vdots&
+\end{eqnarray}</script><p>&emsp;&emsp;最终得到：</p>
+<script type="math/tex; mode=display">
+G=\lim_{i\to\infty}G_i=\sum_{i=0}^{\infty}F^i[G_0]\tag{38}</script><p>&emsp;&emsp;设：</p>
+<script type="math/tex; mode=display">
+F^i[G_0]=\Delta G_i</script><p>&emsp;&emsp;并且$\Delta G_i$满足：</p>
+<script type="math/tex; mode=display">
+\Delta G_{i+1}=F[\Delta G_i],\ \ \Delta G_0=G_0</script><p>&emsp;&emsp;将$G_0$带入，经过一系列计算（这里我也没有算过，直接搬课件上的）得到：</p>
+<script type="math/tex; mode=display">
+\Delta G_i(\xi,\eta)=-\left({\mu \over 4}\right)^{i+1}{(\xi-\eta)\xi^i\eta^i \over i!(i+1)!},\ i\in{\Bbb N}\tag{39}</script><p>&emsp;&emsp;带入式(38)得到：</p>
+<script type="math/tex; mode=display">
+G(\xi,\eta)=\sum_{i=0}^{\infty}\Delta G_i(\xi,\eta)=-{\mu \over 2}(\xi-\eta){I_1(\sqrt{\mu\xi\eta}) \over \sqrt{\mu\xi\eta}}\tag{40}</script><p>&emsp;&emsp;其中$I_1(\cdot)$代表第一类贝塞尔函数。终于我们求得了$G(\xi,\eta)$的表达式，最后对其进行坐标变换我们就得到了最初的核函数$\kappa(z,\zeta)$：</p>
+<script type="math/tex; mode=display">
+\kappa(z,\zeta)=-\mu\zeta{I_1(\sqrt{\mu(z^2-\zeta^2)}) \over \sqrt{\mu(z^2-\zeta^2)}}\tag{41}</script><p>&emsp;&emsp;将是(41)带入式(22)我们就求得了相应输入$u(t)$：</p>
+<script type="math/tex; mode=display">
+u(t)=-(\gamma+\mu_R)\int_0^1z{I_1(\sqrt{(\gamma+\mu_R)(1-z^2)}) \over \sqrt{(\gamma+\mu_R)(1-z^2)}}x(z,t){\rm d}z</script><p>&emsp;&emsp;通过这个输入可以控制不稳定的原系统，将其转化为稳定的目标系统。在这里还需要注意的是，Backstepping求得的边界输入能够将系统所有特征值进行移动，因此它需要保证系统所有特征值都是能控的。</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
 <li>边界输入是作用在系统定义域边界的输入，因此它通过边界条件表示。</li>
 <li>边界输入的系统方程能够通过特殊方法转换为分布式输入的系统方程。</li>
@@ -307,7 +465,7 @@ var _hmt = _hmt || [];
 
 
 
-    <a data-url="https://haosutopia.github.io/2018/04/RSVP-07/" data-id="ckflt9wnz002eeto9enrgdc8g" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://haosutopia.github.io/2018/04/RSVP-07/" data-id="ckfndebl0002bf2o9cb4wbr62" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -387,7 +545,7 @@ var _hmt = _hmt || [];
         "url": "https://haosutopia.github.io/2018/04/RSVP-07/",
         "description": "&emsp;&emsp;分布参数系统的输入可以分为点输入、分布式输入和边界输入。之前的章节我们讨论的都是分布式输入，此时输入分布在定义域的某个区间。而若输入$u(t)$定义在边界，则称为边界输入（Randeingriff），此时系统方程会有所不同，相应的计算方法也会有差别。因此本文讨论边界输入以及它在反馈控制中的应用。
 边界输入系统方程&emsp;&emsp;分布式输入中，输入$u(t)$在系统状",
-        "wordCount": 257
+        "wordCount": 355
     }
 </script>
 

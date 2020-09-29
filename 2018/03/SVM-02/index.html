@@ -12,12 +12,12 @@
     
     <meta name="keywords" content="SVM" />
     
-    <meta name="description" content="&amp;emsp;&amp;emsp;上一章节我们将SVM的目标转换为了一个带不等式约束条件的优化问题，现在我们的目标就是解决这个优化问题。在此我们先将SVM及最优间隔分类器放一放，来看看一般约束优化问题的求解方法。 约束优化问题等式约束优化问题&amp;emsp;&amp;emsp;等式优化问题一般描述如下：$$\begin{split}\min_x\ &amp;f(x)\{\rm s.t.}\ &amp;h_i(x)&#x3D;0,">
+    <meta name="description" content="&amp;emsp;&amp;emsp;上一章节我们将SVM的目标转换为了一个带不等式约束条件的优化问题，现在我们的目标就是解决这个优化问题。在此我们先将SVM及最优间隔分类器放一放，来看看一般约束优化问题的求解方法。 约束优化问题等式约束优化问题&amp;emsp;&amp;emsp;等式优化问题一般描述如下：  \begin{split} \min_x\ &amp;f(x)\\ {\rm s.t.}\ &amp;h_i(x)&#x3D;0,\ i&#x3D;1">
 <meta property="og:type" content="article">
 <meta property="og:title" content="支持向量机（二）">
 <meta property="og:url" content="https://haosutopia.github.io/2018/03/SVM-02/">
 <meta property="og:site_name" content="理想国">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;上一章节我们将SVM的目标转换为了一个带不等式约束条件的优化问题，现在我们的目标就是解决这个优化问题。在此我们先将SVM及最优间隔分类器放一放，来看看一般约束优化问题的求解方法。 约束优化问题等式约束优化问题&amp;emsp;&amp;emsp;等式优化问题一般描述如下：$$\begin{split}\min_x\ &amp;f(x)\{\rm s.t.}\ &amp;h_i(x)&#x3D;0,">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;上一章节我们将SVM的目标转换为了一个带不等式约束条件的优化问题，现在我们的目标就是解决这个优化问题。在此我们先将SVM及最优间隔分类器放一放，来看看一般约束优化问题的求解方法。 约束优化问题等式约束优化问题&amp;emsp;&amp;emsp;等式优化问题一般描述如下：  \begin{split} \min_x\ &amp;f(x)\\ {\rm s.t.}\ &amp;h_i(x)&#x3D;0,\ i&#x3D;1">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://haosutopia.github.io/images/SVM.png">
 <meta property="article:published_time" content="2018-03-14T20:37:57.000Z">
@@ -92,7 +92,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -237,39 +241,98 @@ var _hmt = _hmt || [];
             
 
             <p>&emsp;&emsp;上一章节我们将SVM的目标转换为了一个带不等式约束条件的优化问题，现在我们的目标就是解决这个优化问题。在此我们先将SVM及最优间隔分类器放一放，来看看一般约束优化问题的求解方法。</p>
-<h3 id="约束优化问题"><a href="#约束优化问题" class="headerlink" title="约束优化问题"></a>约束优化问题</h3><h4 id="等式约束优化问题"><a href="#等式约束优化问题" class="headerlink" title="等式约束优化问题"></a>等式约束优化问题</h4><p>&emsp;&emsp;等式优化问题一般描述如下：<br>$$<br>\begin{split}<br>\min_x\ &amp;f(x)\<br>{\rm s.t.}\ &amp;h_i(x)=0,\ i=1,…,l<br>\end{split}\tag{1}$$</p>
-<p>&emsp;&emsp;它包含一个优化目标和一系列约束等式。我们可以构建一个拉格朗日函数（Lagrangian）：<br>$$<br>\mathcal{L}(x,\beta)=f(x)+\sum_{i=1}^l\beta_ih_i(x)\tag{2}$$</p>
-<p>&emsp;&emsp;其中$\beta$为拉格朗日乘子（Lagrange multiplier）。$x$与$\beta$均为$\mathcal{L}$的参数，若我们让它们的偏导置$0$，就能得到$\mathcal{L}$的极值点：<br>$$<br>\begin{cases}<br>{\partial\mathcal{L} \over \partial x_i}=0,\ i=1,…,n\<br>{\partial\mathcal{L} \over \partial \beta_j}=0,\ j=1,…,l<br>\end{cases}\tag{3}$$</p>
-<p>&emsp;&emsp;这里我们发现式(3)第二项等价于式(1)中的约束条件。因此拉格朗日函数将原约束优化问题的优化目标及约束组合在了一起，转换为对$\mathcal{L}(x,\beta)$的无约束优化问题。这两个优化问题是等价的，通过式(3)便可求解原优化问题。这就是拉格朗日乘数法。</p>
-<h4 id="不等式约束优化问题"><a href="#不等式约束优化问题" class="headerlink" title="不等式约束优化问题"></a>不等式约束优化问题</h4><p>&emsp;&emsp;不等式优化问题一般描述如下：<br>$$<br>\begin{split}<br>\min_x\ &amp;f(x)\<br>{\rm s.t.}\ &amp;g_i(x)\leq0,\ i=1,…,k\<br>&amp;h_i(x)=0,\ i=1,….l<br>\end{split}\tag{4}$$</p>
-<p>&emsp;&emsp;它比等式约束优化增加了不等式的约束条件。我们希望它与等式约束优化一样，能将优化目标及约束合并为一个函数。因此我们引入广义拉格朗日函数（generalized Lagrangian）：<br>$$<br>\mathcal{L}(x,\alpha,\beta)=f(x)+\sum_{i=1}^k\alpha_ig_i(x)+\sum_{i=1}^l\beta_ih_i(x)\tag{5}$$</p>
-<p>&emsp;&emsp;其中$\alpha$与$\beta$为拉格朗日乘子。由于$g_i(x)$为不等式，不能直接套用式(3)的形式求解。因此我们考虑如下方程：<br>$$<br>\theta_{\cal{P}}(x)=\max_{\alpha,\beta:\alpha_i\geq0}\mathcal{L}(x,\alpha,\beta)\tag{6}$$</p>
-<p>&emsp;&emsp;其中$\cal{P}$代表原始（之后我们还会引入对偶）。可以发现，若$x$不满足约束条件，即$g_i(x)&gt;0$或$h_i(x)\neq 0$，我们可以令$\alpha \to\infty$或$\beta\to\infty$将$\theta_{\cal{P}}(x)$最大化为正无穷；若$x$满足约束条件，则$\alpha_ig_i(x)$与$\beta_ih_i(x)$最大均为$0$。而$f(x)$与$\alpha,\beta$无关，满足：<br>$$<br>\max_{\alpha,\beta:\alpha_i\geq0}f(x)=f(x)\tag{7}$$</p>
-<p>&emsp;&emsp;综上我们就得到：<br>$$<br>\theta_{\cal{P}}(x)=\begin{cases}<br>f(x)\ &amp;若x满足约束\<br>\infty\ &amp;若x不满足约束<br>\end{cases}$$</p>
-<p>&emsp;&emsp;若我们最小化$\theta_{\cal{P}}(x)$，得到的$x$必然满足约束条件（否则$\theta_{\cal{P}}(x)\to\infty$），并且能够最小化$f(x)$。以此就能将优化目标与约束合并成一个函数了，同时优化问题转换为：<br>$$<br>\min_x\theta_{\cal{P}}(x)=\min_x\max_{\alpha,\beta:\alpha_i\geq0}\mathcal{L}(x,\alpha,\beta)\tag{8}$$</p>
-<p>&emsp;&emsp;我们来仔细观察$\alpha_ig_i(x)$项。若$\alpha_i&lt;0$，那么当$x$满足约束条件$g_i(x)\leq 0$时，$\max\alpha_ig_i(x)\geq0$，而我们希望此时$\max\alpha_ig_i(x)=0$，因此式(6)中规定：<br>$$<br>\alpha_i\geq 0\tag{9}$$</p>
-<p>&emsp;&emsp;再来看，若$g_i(x)&lt;0$，那么$\max\alpha_ig_i(x)=0$时所取的$\alpha_i=0$；若$g_i(x)=0$，不管$\alpha_i$取什么值，$\alpha_ig_i(x)$都为$0$。因此在$\theta_{\cal{P}}(x)$中$\alpha_i$所满足的条件为：<br>$$<br>\alpha_i\begin{cases}<br>=0,\ &amp;g_i(x)&lt;0\<br>\geq 0,\ &amp;g_i(x)=0<br>\end{cases}$$</p>
-<p>&emsp;&emsp;可以将上式合并为：<br>$$<br>\alpha_ig_i(x)=0\tag{10}$$</p>
-<p>&emsp;&emsp;根据以上所述，我们就能够推导出不等式约束优化问题解所满足的KKT条件了。</p>
-<h4 id="KKT条件"><a href="#KKT条件" class="headerlink" title="KKT条件"></a>KKT条件</h4><p>&emsp;&emsp;我们假设式(8)存在解$x^\ast ,\alpha^\ast ,\beta^\ast $，则它们满足如下Karush-Kuhn-Tucker（KKT）条件：<br>$$<br>\begin{eqnarray}<br>{\partial \over \partial x_i}\mathcal{L}(x^\ast ,\alpha^\ast ,\beta^\ast ) &amp;=&amp;0,\ i=1,…,n\tag{11}\<br>{\partial \over \partial \beta_i}\mathcal{L}(x^\ast ,\alpha^\ast ,\beta^\ast ) &amp;=&amp;0,\ i=1,…,l\tag{12}\<br>\alpha_i^\ast g_i(x^\ast ) &amp;=&amp;0,\ i=1,…,k\tag{13}\<br>g_i(x^\ast )&amp;\leq&amp; 0,\ i=1,…,k\tag{14}\<br>\alpha_i^\ast &amp;\geq&amp; 0,\ i=1,…,k\tag{15}<br>\end{eqnarray}<br>$$</p>
-<p>&emsp;&emsp;其中条件(11)(12)与式(3)类似，通过求偏导来得到$x$与$\beta$的极值点；条件(13)由式(10)得到；条件(14)为式(4)中的约束条件；而条件(15)由式(9)得到。<br>&emsp;&emsp;这里要注意，对于一般的优化问题，KKT条件只是一个<strong>必要条件</strong>，也就是说可能存在其他极值点也满足KKT条件，但是它们不是最小极值点。若我们希望使用它来求解优化问题，就需要增加一些条件使它变成充要条件。因此接下来我们引入对偶问题。</p>
-<h3 id="拉格朗日对偶"><a href="#拉格朗日对偶" class="headerlink" title="拉格朗日对偶"></a>拉格朗日对偶</h3><h4 id="对偶优化问题"><a href="#对偶优化问题" class="headerlink" title="对偶优化问题"></a>对偶优化问题</h4><p>&emsp;&emsp;通过引入广义拉格朗日函数我们将优化问题转换为了：<br>$$<br>\min_x\max_{\alpha,\beta:\alpha_i\geq0}\mathcal{L}(x,\alpha,\beta)\tag{16}$$</p>
-<p>&emsp;&emsp;我们称式(16)为原优化问题（primal optimization problem），它先对$\alpha,\beta$求最大值，再对$x$求最小值。若我们将最大最小的顺序换一换，就得到了原问题的对偶问题。与之前相同，我们设方程：<br>$$\theta_{\cal{D}}(\alpha,\beta)=\min_x\mathcal{L}(x,\alpha,\beta)\tag{17}$$</p>
-<p>&emsp;&emsp;其中$\cal{D}$代表对偶。通过它我们得到对偶优化问题（dual optimization problem）：<br>$$<br>\max_{\alpha,\beta:\alpha_i\geq0}\theta_{\cal{D}}(\alpha,\beta)=\max_{\alpha,\beta:\alpha_i\geq0}\min_x\mathcal{L}(x,\alpha,\beta)\tag{18}$$</p>
-<p>&emsp;&emsp;数学上可以证明，$\max\min\leq\min\max$（这里证明貌似挺难的，不过我们只需记住：瘦死的骆驼比马大）。因此我们得到：<br>$$<br>d^\ast =\max_{\alpha,\beta:\alpha_i\geq0}\min_x\mathcal{L}(x,\alpha,\beta)\leq\min_x\max_{\alpha,\beta:\alpha_i\geq0}\mathcal{L}(x,\alpha,\beta)=p^\ast \tag{19}$$</p>
-<p>&emsp;&emsp;通常来说，求解对偶问题比求解原问题要更容易，并且由于$d^\ast \leq p^\ast $，对偶问题的解提供了原问题解的下界。因此有时候我们可以同时用软件求解原问题与对偶问题，若它们得到的结果之差（也叫对偶距离）小于$\epsilon$时，我们就可以说此时函数值与极值的距离小于$\epsilon$。</p>
+<h3 id="约束优化问题"><a href="#约束优化问题" class="headerlink" title="约束优化问题"></a>约束优化问题</h3><h4 id="等式约束优化问题"><a href="#等式约束优化问题" class="headerlink" title="等式约束优化问题"></a>等式约束优化问题</h4><p>&emsp;&emsp;等式优化问题一般描述如下：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\min_x\ &f(x)\\
+{\rm s.t.}\ &h_i(x)=0,\ i=1,...,l
+\end{split}\tag{1}</script><p>&emsp;&emsp;它包含一个优化目标和一系列约束等式。我们可以构建一个拉格朗日函数（Lagrangian）：</p>
+<script type="math/tex; mode=display">
+\mathcal{L}(x,\beta)=f(x)+\sum_{i=1}^l\beta_ih_i(x)\tag{2}</script><p>&emsp;&emsp;其中$\beta$为拉格朗日乘子（Lagrange multiplier）。$x$与$\beta$均为$\mathcal{L}$的参数，若我们让它们的偏导置$0$，就能得到$\mathcal{L}$的极值点：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+{\partial\mathcal{L} \over \partial x_i}=0,\ i=1,...,n\\
+{\partial\mathcal{L} \over \partial \beta_j}=0,\ j=1,...,l
+\end{cases}\tag{3}</script><p>&emsp;&emsp;这里我们发现式(3)第二项等价于式(1)中的约束条件。因此拉格朗日函数将原约束优化问题的优化目标及约束组合在了一起，转换为对$\mathcal{L}(x,\beta)$的无约束优化问题。这两个优化问题是等价的，通过式(3)便可求解原优化问题。这就是拉格朗日乘数法。</p>
+<h4 id="不等式约束优化问题"><a href="#不等式约束优化问题" class="headerlink" title="不等式约束优化问题"></a>不等式约束优化问题</h4><p>&emsp;&emsp;不等式优化问题一般描述如下：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\min_x\ &f(x)\\
+{\rm s.t.}\ &g_i(x)\leq0,\ i=1,...,k\\
+&h_i(x)=0,\ i=1,....l
+\end{split}\tag{4}</script><p>&emsp;&emsp;它比等式约束优化增加了不等式的约束条件。我们希望它与等式约束优化一样，能将优化目标及约束合并为一个函数。因此我们引入广义拉格朗日函数（generalized Lagrangian）：</p>
+<script type="math/tex; mode=display">
+\mathcal{L}(x,\alpha,\beta)=f(x)+\sum_{i=1}^k\alpha_ig_i(x)+\sum_{i=1}^l\beta_ih_i(x)\tag{5}</script><p>&emsp;&emsp;其中$\alpha$与$\beta$为拉格朗日乘子。由于$g_i(x)$为不等式，不能直接套用式(3)的形式求解。因此我们考虑如下方程：</p>
+<script type="math/tex; mode=display">
+\theta_{\cal{P}}(x)=\max_{\alpha,\beta:\alpha_i\geq0}\mathcal{L}(x,\alpha,\beta)\tag{6}</script><p>&emsp;&emsp;其中$\cal{P}$代表原始（之后我们还会引入对偶）。可以发现，若$x$不满足约束条件，即$g_i(x)&gt;0$或$h_i(x)\neq 0$，我们可以令$\alpha \to\infty$或$\beta\to\infty$将$\theta_{\cal{P}}(x)$最大化为正无穷；若$x$满足约束条件，则$\alpha_ig_i(x)$与$\beta_ih_i(x)$最大均为$0$。而$f(x)$与$\alpha,\beta$无关，满足：</p>
+<script type="math/tex; mode=display">
+\max_{\alpha,\beta:\alpha_i\geq0}f(x)=f(x)\tag{7}</script><p>&emsp;&emsp;综上我们就得到：</p>
+<script type="math/tex; mode=display">
+\theta_{\cal{P}}(x)=\begin{cases}
+f(x)\ &若x满足约束\\
+\infty\ &若x不满足约束
+\end{cases}</script><p>&emsp;&emsp;若我们最小化$\theta_{\cal{P}}(x)$，得到的$x$必然满足约束条件（否则$\theta_{\cal{P}}(x)\to\infty$），并且能够最小化$f(x)$。以此就能将优化目标与约束合并成一个函数了，同时优化问题转换为：</p>
+<script type="math/tex; mode=display">
+\min_x\theta_{\cal{P}}(x)=\min_x\max_{\alpha,\beta:\alpha_i\geq0}\mathcal{L}(x,\alpha,\beta)\tag{8}</script><p>&emsp;&emsp;我们来仔细观察$\alpha_ig_i(x)$项。若$\alpha_i&lt;0$，那么当$x$满足约束条件$g_i(x)\leq 0$时，$\max\alpha_ig_i(x)\geq0$，而我们希望此时$\max\alpha_ig_i(x)=0$，因此式(6)中规定：</p>
+<script type="math/tex; mode=display">
+\alpha_i\geq 0\tag{9}</script><p>&emsp;&emsp;再来看，若$g_i(x)&lt;0$，那么$\max\alpha_ig_i(x)=0$时所取的$\alpha_i=0$；若$g_i(x)=0$，不管$\alpha_i$取什么值，$\alpha_ig_i(x)$都为$0$。因此在$\theta_{\cal{P}}(x)$中$\alpha_i$所满足的条件为：</p>
+<script type="math/tex; mode=display">
+\alpha_i\begin{cases}
+=0,\ &g_i(x)<0\\
+\geq 0,\ &g_i(x)=0
+\end{cases}</script><p>&emsp;&emsp;可以将上式合并为：</p>
+<script type="math/tex; mode=display">
+\alpha_ig_i(x)=0\tag{10}</script><p>&emsp;&emsp;根据以上所述，我们就能够推导出不等式约束优化问题解所满足的KKT条件了。</p>
+<h4 id="KKT条件"><a href="#KKT条件" class="headerlink" title="KKT条件"></a>KKT条件</h4><p>&emsp;&emsp;我们假设式(8)存在解$x^\ast ,\alpha^\ast ,\beta^\ast $，则它们满足如下Karush-Kuhn-Tucker（KKT）条件：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+{\partial \over \partial x_i}\mathcal{L}(x^\ast ,\alpha^\ast ,\beta^\ast ) &=&0,\ i=1,...,n\tag{11}\\
+{\partial \over \partial \beta_i}\mathcal{L}(x^\ast ,\alpha^\ast ,\beta^\ast ) &=&0,\ i=1,...,l\tag{12}\\
+\alpha_i^\ast g_i(x^\ast ) &=&0,\ i=1,...,k\tag{13}\\
+g_i(x^\ast )&\leq& 0,\ i=1,...,k\tag{14}\\
+\alpha_i^\ast &\geq& 0,\ i=1,...,k\tag{15}
+\end{eqnarray}</script><p>&emsp;&emsp;其中条件(11)(12)与式(3)类似，通过求偏导来得到$x$与$\beta$的极值点；条件(13)由式(10)得到；条件(14)为式(4)中的约束条件；而条件(15)由式(9)得到。<br>&emsp;&emsp;这里要注意，对于一般的优化问题，KKT条件只是一个<strong>必要条件</strong>，也就是说可能存在其他极值点也满足KKT条件，但是它们不是最小极值点。若我们希望使用它来求解优化问题，就需要增加一些条件使它变成充要条件。因此接下来我们引入对偶问题。</p>
+<h3 id="拉格朗日对偶"><a href="#拉格朗日对偶" class="headerlink" title="拉格朗日对偶"></a>拉格朗日对偶</h3><h4 id="对偶优化问题"><a href="#对偶优化问题" class="headerlink" title="对偶优化问题"></a>对偶优化问题</h4><p>&emsp;&emsp;通过引入广义拉格朗日函数我们将优化问题转换为了：</p>
+<script type="math/tex; mode=display">
+\min_x\max_{\alpha,\beta:\alpha_i\geq0}\mathcal{L}(x,\alpha,\beta)\tag{16}</script><p>&emsp;&emsp;我们称式(16)为原优化问题（primal optimization problem），它先对$\alpha,\beta$求最大值，再对$x$求最小值。若我们将最大最小的顺序换一换，就得到了原问题的对偶问题。与之前相同，我们设方程：</p>
+<script type="math/tex; mode=display">\theta_{\cal{D}}(\alpha,\beta)=\min_x\mathcal{L}(x,\alpha,\beta)\tag{17}</script><p>&emsp;&emsp;其中$\cal{D}$代表对偶。通过它我们得到对偶优化问题（dual optimization problem）：</p>
+<script type="math/tex; mode=display">
+\max_{\alpha,\beta:\alpha_i\geq0}\theta_{\cal{D}}(\alpha,\beta)=\max_{\alpha,\beta:\alpha_i\geq0}\min_x\mathcal{L}(x,\alpha,\beta)\tag{18}</script><p>&emsp;&emsp;数学上可以证明，$\max\min\leq\min\max$（这里证明貌似挺难的，不过我们只需记住：瘦死的骆驼比马大）。因此我们得到：</p>
+<script type="math/tex; mode=display">
+d^\ast =\max_{\alpha,\beta:\alpha_i\geq0}\min_x\mathcal{L}(x,\alpha,\beta)\leq\min_x\max_{\alpha,\beta:\alpha_i\geq0}\mathcal{L}(x,\alpha,\beta)=p^\ast \tag{19}</script><p>&emsp;&emsp;通常来说，求解对偶问题比求解原问题要更容易，并且由于$d^\ast \leq p^\ast $，对偶问题的解提供了原问题解的下界。因此有时候我们可以同时用软件求解原问题与对偶问题，若它们得到的结果之差（也叫对偶距离）小于$\epsilon$时，我们就可以说此时函数值与极值的距离小于$\epsilon$。</p>
 <h4 id="slater条件"><a href="#slater条件" class="headerlink" title="slater条件"></a>slater条件</h4><p>&emsp;&emsp;对于一般问题，根据式(19)，$d^\ast \leq p^\ast $成立，我们称它为弱对偶（weak duality）。但有时候优化问题满足$d^\ast =p^\ast $，此时我们称它为强对偶（strong duality）。若优化问题是强对偶，那么我们就能将原问题转换为对偶问题进行解决。因此我们引入slater条件，它是强对偶的一个<strong>充分条件</strong>。<br>&emsp;&emsp;<strong>slater条件</strong>：对于式(4)所示的不等式优化问题，存在一个可行的$x$，使得所有不等式约束严格成立，则该优化问题为强对偶，即$d^\ast =p^\ast $。<br>&emsp;&emsp;稍微解释一下：$x$可行（feasible）表示$x$满足所有约束条件；不等式严格成立就是指$g_i(x)&lt;0$。<br>&emsp;&emsp;slater条件是一个判断强对偶的方法。并且可以证明，若优化问题为凸优化，并且满足slater条件，则式(11)～(15)所示的KKT条件就变成了最优解的<strong>充要条件</strong>，并且该解是原问题与对偶问题共同的解。此时我们可以直接通过KKT条件求解优化问题。</p>
-<h3 id="最优间隔分类器"><a href="#最优间隔分类器" class="headerlink" title="最优间隔分类器"></a><span id="3">最优间隔分类器</span></h3><p>&emsp;&emsp;现在我们回到SVM。<a href="../../../2018/03/SVM-01/index.html#e18">第一章节最后</a>我们推导出了求解最优间隔分类器的优化问题：<br>$$<br>\begin{split}<br>\min_{\gamma,w,b}\ &amp;{1 \over 2}||w||^2\<br>{\rm s.t.}\ &amp;y^{(i)}(w^Tx^{(i)}+b)\geq1,\ i=1,…,m<br>\end{split}\tag{20}$$</p>
-<p>&emsp;&emsp;我们可以把约束写为：<br>$$<br>g_i(w)=-y^{(i)}(w^Tx^{(i)}+b)+1\leq 0\tag{21}$$</p>
-<p>&emsp;&emsp;此时优化问题就变为了式(4)的形式。根据KKT条件中式(13)，只有$g_i(w)=0$，即训练样本的函数间隔等于$1$时，$\alpha_i$才能大于$0$。它在SVM中具有直观的描述：<br><img src="%5Cimages%5CSVM_02_SV.PNG" alt="支持向量"><br>&emsp;&emsp;图中SVM的决策边界穿过了三个样本，这三个样本的函数间隔均等于$1$，因此在优化问题中只有它们所对应的$\alpha_i$才能大于$0$。也就是说只有它们对优化问题的决策边界起决定作用，而其他训练样本并没有什么贡献。因此这三个样本被称为<strong>支持向量</strong>。在一个训练集中，支持向量所占整体样本的比例通常很小。<br>&emsp;&emsp;根据上图我们也能轻松证明SVM优化问题满足slater条件：把图中决策边界的$(w,b)$同时增大$k$倍，此时所有样本的几何间隔不变，但函数间隔增长为原来的$k$倍。只要$k&gt;1$，则式(21)中所有$g_i(w)&lt;0$成立。由于优化问题为凸优化，又满足slater条件，因此它的原问题与对偶问题拥有共同的最优解，并且KKT条件为最优解的充要条件。<br>&emsp;&emsp;我们写出优化问题的拉格朗日方程：<br>$$<br>\mathcal{L}(w,b,\alpha)={1 \over 2}||w||^2-\sum_{i=1}^m\alpha_i[y^{(i)}(w^Tx^{(i)}+b)-1]\tag{22}$$</p>
-<p>&emsp;&emsp;由于SVM优化问题只有不等式约束，因此式(22)中没有$\beta$乘子。为了使用对偶问题求解，根据式(17)，我们先求偏导来最小化$\mathcal{L}(w,b,\alpha)$，得到$\theta_{\cal{D}}$：<br>$$<br>\begin{eqnarray}<br>\nabla_w\mathcal{L}(w,b,\alpha)&amp;=&amp;w-\sum_{i=1}^m\alpha_iy^{(i)}x^{(i)}=0\tag{23}\<br>{\partial \over \partial b}\mathcal{L}(w,b,\alpha)&amp;=&amp;\sum_{i=1}^m\alpha_iy^{(i)}=0\tag{24}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;将式(23)(24)带回式(22)，我们得到：</p>
-<p><span id="e25">$$<br>\begin{split}<br>\mathcal{L}(w,b,\alpha)&amp;=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j(x^{(i)})^Tx^{(j)}-b\sum_{i=1}^m\alpha_iy^{(i)}\<br>&amp;=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j(x^{(i)})^Tx^{(j)}<br>\end{split}\tag{25}$$</span></p>
+<h3 id="最优间隔分类器"><a href="#最优间隔分类器" class="headerlink" title="最优间隔分类器"></a><span id="3">最优间隔分类器</span></h3><p>&emsp;&emsp;现在我们回到SVM。<a href="../../../2018/03/SVM-01/index.html#e18">第一章节最后</a>我们推导出了求解最优间隔分类器的优化问题：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\min_{\gamma,w,b}\ &{1 \over 2}||w||^2\\
+{\rm s.t.}\ &y^{(i)}(w^Tx^{(i)}+b)\geq1,\ i=1,...,m
+\end{split}\tag{20}</script><p>&emsp;&emsp;我们可以把约束写为：</p>
+<script type="math/tex; mode=display">
+g_i(w)=-y^{(i)}(w^Tx^{(i)}+b)+1\leq 0\tag{21}</script><p>&emsp;&emsp;此时优化问题就变为了式(4)的形式。根据KKT条件中式(13)，只有$g_i(w)=0$，即训练样本的函数间隔等于$1$时，$\alpha_i$才能大于$0$。它在SVM中具有直观的描述：<br><img src="\images\SVM_02_SV.PNG" alt="支持向量"><br>&emsp;&emsp;图中SVM的决策边界穿过了三个样本，这三个样本的函数间隔均等于$1$，因此在优化问题中只有它们所对应的$\alpha_i$才能大于$0$。也就是说只有它们对优化问题的决策边界起决定作用，而其他训练样本并没有什么贡献。因此这三个样本被称为<strong>支持向量</strong>。在一个训练集中，支持向量所占整体样本的比例通常很小。<br>&emsp;&emsp;根据上图我们也能轻松证明SVM优化问题满足slater条件：把图中决策边界的$(w,b)$同时增大$k$倍，此时所有样本的几何间隔不变，但函数间隔增长为原来的$k$倍。只要$k&gt;1$，则式(21)中所有$g_i(w)&lt;0$成立。由于优化问题为凸优化，又满足slater条件，因此它的原问题与对偶问题拥有共同的最优解，并且KKT条件为最优解的充要条件。<br>&emsp;&emsp;我们写出优化问题的拉格朗日方程：</p>
+<script type="math/tex; mode=display">
+\mathcal{L}(w,b,\alpha)={1 \over 2}||w||^2-\sum_{i=1}^m\alpha_i[y^{(i)}(w^Tx^{(i)}+b)-1]\tag{22}</script><p>&emsp;&emsp;由于SVM优化问题只有不等式约束，因此式(22)中没有$\beta$乘子。为了使用对偶问题求解，根据式(17)，我们先求偏导来最小化$\mathcal{L}(w,b,\alpha)$，得到$\theta_{\cal{D}}$：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\nabla_w\mathcal{L}(w,b,\alpha)&=&w-\sum_{i=1}^m\alpha_iy^{(i)}x^{(i)}=0\tag{23}\\
+{\partial \over \partial b}\mathcal{L}(w,b,\alpha)&=&\sum_{i=1}^m\alpha_iy^{(i)}=0\tag{24}
+\end{eqnarray}</script><p>&emsp;&emsp;将式(23)(24)带回式(22)，我们得到：</p>
+<p><span id="e25"><script type="math/tex">\begin{split}
+\mathcal{L}(w,b,\alpha)&=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j(x^{(i)})^Tx^{(j)}-b\sum_{i=1}^m\alpha_iy^{(i)}\\
+&=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j(x^{(i)})^Tx^{(j)}
+\end{split}\tag{25}</script></span></p>
 <p>&emsp;&emsp;此时优化问题就化为式(18)中最大化$\theta_{\cal{D}}$的对偶问题：</p>
-<p><span id="e26">$$<br>\begin{split}<br>\max_{\alpha}\ &amp;\theta_{\cal{D}}(\alpha)=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j\langle x^{(i)},x^{(j)}\rangle\<br>{\rm s.t.}\ &amp;\alpha_i\geq0,\ i=1,…,m\<br>&amp;\sum_{i=1}^m\alpha_iy^{(i)}=0<br>\end{split}\tag{26}$$</span></p>
-<p>&emsp;&emsp;之后我们能够通过SMO算法求解式(26)所示的对偶问题，得到相应$\alpha_i$的值。将它们带入式(23)就能得到$w$的最优解$w^\ast $。而$b$的最优解$b^\ast $可以通过KKT条件中式(13)得到（此处省略证明）：<br>$$<br>b^\ast =-{\max_{i:y^{(i)}=-1}w^{\ast T}x^{(i)}+\min_{i:y^{(i)}=1}w^{\ast T}x^{(i)} \over 2}\tag{27}$$</p>
-<p>&emsp;&emsp;它表明决策边界在正负支持向量的中间。在得到最优解后我们便能用训练好的模型来预测新的样本了。根据式(23)，预测函数$h(x)$可以写为：</p>
-<p><span id="e28">$$<br>\begin{split}<br>h(x)={\rm sign}(w^Tx+b)&amp;={\rm sign}\left(\left(\sum_{i=1}^m\alpha_iy^{(i)}x^{(i)}\right)^Tx+b\right)\<br>&amp;={\rm sign}\left(\sum_{i=1}^m\alpha_iy^{(i)}\langle x^{(i)},x\rangle+b\right)<br>\end{split}\tag{28}$$</span></p>
+<p><span id="e26"><script type="math/tex">\begin{split}
+\max_{\alpha}\ &\theta_{\cal{D}}(\alpha)=\sum_{i=1}^m\alpha_i-{1 \over 2}\sum_{i,j=1}^my^{(i)}y^{(j)}\alpha_i\alpha_j\langle x^{(i)},x^{(j)}\rangle\\
+{\rm s.t.}\ &\alpha_i\geq0,\ i=1,...,m\\
+&\sum_{i=1}^m\alpha_iy^{(i)}=0
+\end{split}\tag{26}</script></span></p>
+<p>&emsp;&emsp;之后我们能够通过SMO算法求解式(26)所示的对偶问题，得到相应$\alpha_i$的值。将它们带入式(23)就能得到$w$的最优解$w^\ast $。而$b$的最优解$b^\ast $可以通过KKT条件中式(13)得到（此处省略证明）：</p>
+<script type="math/tex; mode=display">
+b^\ast =-{\max_{i:y^{(i)}=-1}w^{\ast T}x^{(i)}+\min_{i:y^{(i)}=1}w^{\ast T}x^{(i)} \over 2}\tag{27}</script><p>&emsp;&emsp;它表明决策边界在正负支持向量的中间。在得到最优解后我们便能用训练好的模型来预测新的样本了。根据式(23)，预测函数$h(x)$可以写为：</p>
+<p><span id="e28"><script type="math/tex">\begin{split}
+h(x)={\rm sign}(w^Tx+b)&={\rm sign}\left(\left(\sum_{i=1}^m\alpha_iy^{(i)}x^{(i)}\right)^Tx+b\right)\\
+&={\rm sign}\left(\sum_{i=1}^m\alpha_iy^{(i)}\langle x^{(i)},x\rangle+b\right)
+\end{split}\tag{28}</script></span></p>
 <p>&emsp;&emsp;我们可以发现，在预测新样本时，预测值只与新样本与训练样本特征的内积有关。而除了支持向量外，其余训练样本的$\alpha_i$都为$0$。故我们只需计算新样本与支持向量的内积即可得到新样本的预测值。因此内积在SVM中起着关键作用。<br>&emsp;&emsp;在之后的章节我们会将内积替换成更高维的核函数以达到更好的效果，并引入正则化来减少极端值的影响。</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
 <li>可以使用拉格朗日称数法来求解优化问题。</li>
@@ -283,7 +346,7 @@ var _hmt = _hmt || [];
 
 
 
-    <a data-url="https://haosutopia.github.io/2018/03/SVM-02/" data-id="ckflt9wne000veto9hdseb2h3" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://haosutopia.github.io/2018/03/SVM-02/" data-id="ckfndebkh000of2o97bqpboam" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -362,8 +425,12 @@ var _hmt = _hmt || [];
         "dateModified": "2018-03-23",
         "url": "https://haosutopia.github.io/2018/03/SVM-02/",
         "description": "&emsp;&emsp;上一章节我们将SVM的目标转换为了一个带不等式约束条件的优化问题，现在我们的目标就是解决这个优化问题。在此我们先将SVM及最优间隔分类器放一放，来看看一般约束优化问题的求解方法。
-约束优化问题等式约束优化问题&emsp;&emsp;等式优化问题一般描述如下：$$\begin{split}\min_x\ &amp;f(x)\{\rm s.t.}\ &amp;h_i(x)=0,",
-        "wordCount": 153
+约束优化问题等式约束优化问题&emsp;&emsp;等式优化问题一般描述如下：
+
+\begin{split}
+\min_x\ &f(x)\\
+{\rm s.t.}\ &h_i(x)=0,\ i=1",
+        "wordCount": 200
     }
 </script>
 

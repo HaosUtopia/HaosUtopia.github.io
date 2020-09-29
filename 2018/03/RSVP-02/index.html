@@ -93,7 +93,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -239,46 +243,107 @@ var _hmt = _hmt || [];
 
             <p>&emsp;&emsp;我们在分析一个实际系统前往往需要将它转化为抽象的模型，再通过数学上的方法进行分析。而这其中往往涉及到一些物理化学方面的知识，因此本次学习不是分布参数系统的重点。本次学习将以导热棒为例，使我们对分布参数系统建模有一个初步的印象。</p>
 <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>&emsp;&emsp;不管是什么系统，对其进行建模的方法都类似：通过系统中各个物理量的相互作用来建立相应的平衡方程，再对这些方程施加一些外部条件便能求得系统的状态变量随时间变化函数。在分布参数系统中，状态变量是函数，而这些函数通常都有着相同的定义域，比如区间$(0,1)$。通过物理平衡方程便可以对区间内的函数值进行描述。然而这时我们发现，区间边界（比如说0和1）的函数值无法通过这个方式确定。我们需要对区间的边界进行限制，来得到边界的函数值，因此就引入了边界条件（Randbedingungen）。同时每个微分方程需要有一个初始值，因此引入了初始条件（Anfangsbedingungen）。通过偏微分方程和边界以及初始条件，我们便能将整个系统确定下来，并能够求解系统的输出。</p>
-<h3 id="建立系统方程"><a href="#建立系统方程" class="headerlink" title="建立系统方程"></a>建立系统方程</h3><p>&emsp;&emsp;导热棒系统是最简单的一阶分布参数系统。我们假设导热棒长度为$L$，质量为$m$，密度为$\rho$，比热容为$c$。棒上$z$点的温度随时间变化函数为$T(z,t)$，其中$z=(z_1,z_2,z_3)$为棒上任意一点，$z_1,z_2,z_3$分别表示长宽高方向上的坐标，且$t\geq0$。<br>&emsp;&emsp;取导热棒上其中一个小段$\Delta\Omega$，其无穷小体积单元$d\Omega$上的热量可以用比热容定义得到：<br>$$<br>{\rm d}Q=c\cdot T\cdot {\rm d}m\tag{1}$$</p>
-<p>&emsp;&emsp;其中质量${\rm d}m$可以通过体积与密度得到：<br>$$<br>{\rm d}m=\rho \cdot {\rm d}\Omega\tag{2}$$</p>
-<p>&emsp;&emsp;将式(1)与式(2)合并得到热量与温度的微分表达式：<br>$$<br>{\rm d}Q=cT{\rm d}m=c\rho T{\rm d}\Omega \tag{3}$$</p>
-<p>&emsp;&emsp;将式(3)对体积积分便可以得到该小段$\Delta \Omega$的热量为：<br>$$<br>Q(t)=\int_{\Delta \Omega}c\rho T(z,t){\rm d}\Omega\tag{4}$$</p>
-<p>&emsp;&emsp;由热力学知识可知，物质热量的变化量等于物质自身产热加上周围物质传递的热能，而热能传递又可分为物质传递以及能量传递。因此使用公式对热量变化进行描述便可以得到系统的微分方程。<br>&emsp;&emsp;热能的能量传递总是由温度高的物体通过表面接触传递给温度低的，并且温度相差越大，能量传递越快。因此能量传递有方向，是一个矢量。它能通过下式描述：<br>$$<br>\vec{j_L}=-\lambda \cdot {\rm grad}T(z,t)\tag{5}$$</p>
-<p>&emsp;&emsp;其中$\vec{j_L}$为热流密度，它代表单位时间单位面积上所传递的热量及方向，$\lambda$为材料的导热系数，${\rm grad}T(z,t)$为温度在$z$上的梯度。<br>&emsp;&emsp;物质传递也是矢量，它可以通过下式描述：<br>$$<br>\vec{j_K}=c\rho T(z,t)\cdot \vec{v}(z,t)\tag{6}$$</p>
-<p>&emsp;&emsp;其中$\vec{j_K}$与$\vec{j_L}$类似，它代表单位是间单位面积通过物质传递所传递的能量，$c\rho T(z,t)$为单位物质能量，$\vec{v}(z,t)$为棒上$z$点单位面积物质的传输速度及方向。<br>&emsp;&emsp;物质自身产热可以通过$u_\Omega(z,t)$描述，它表示棒上$z$点单位时间所产生的热量。<br>&emsp;&emsp;将所有表达式合起来便得到了该小段$\Delta \Omega$上的平衡方程：<br>$$<br>{\rm d\over\rm d\mathcal t} \int_{\Delta \Omega}c\rho T(z,t){\rm d}\Omega =-\oint_{\Delta \Gamma}(\vec{j_L}(z,t)+\vec{j_K}(z,t)){\rm d}\vec{\Gamma}+\int_{\Delta \Omega}u_{\Omega}(z,t){\rm d}\Omega\tag{7}$$</p>
-<p>&emsp;&emsp;其中$\Delta \Gamma$表示$\Delta \Omega$的包络面。式(7)表示$\Delta \Omega$的能量变化等于自身产热减去通过传递流出的热量（即热流密度在包络面的积分）。通过高斯定理可以将$\vec{j_L}$与$\vec{j_K}$在包络面上的面积分转化为其散度（${\rm div}$）在包络面所围体积的体积分，即：<br>$$<br>\oint_{\Delta \Gamma}\vec{j}{\rm d}\vec{\Gamma}=\int_{\Delta \Omega}{\rm div}\vec{j}{\rm d}\Omega\tag{8}$$</p>
-<p>&emsp;&emsp;将式(8)代入式(7)得到：<br>$$<br>\begin{split}<br>{\rm d\over \rm d\mathcal t}\int_{\Delta \Omega}c\rho T(z,t){\rm d}\Omega&amp;=\int_{\Delta \Omega}c\rho {\partial T(z,t)\over \partial t}{\rm d}\Omega\&amp;=\int_{\Delta \Omega}-{\rm div}(\vec{j_L}(z,t)+\vec{j_K}(z,t))+u_{\Omega}(z,t){\rm d}\Omega<br>\end{split}\tag{9}$$</p>
-<p>&emsp;&emsp;将式(9)积分去掉便得到了导热棒系统方程：<br>$$<br>c\rho {\partial T(z,t)\over \partial t}=-{\rm div}(\vec{j_L}(z,t)+\vec{j_K}(z,t))+u_{\Omega}(z,t)\tag{10}$$</p>
-<p>&emsp;&emsp;式(10)对导热棒上的点均成立。由于系统方程是对$T(z,t)$的方程，因此我们将式(5)(6)带入式(10)，得到：<br>$$<br>c\rho {\partial T(z,t)\over \partial t}=\lambda {\rm div\ grad}T(z,t)-c\rho {\rm div}(\vec{v}(z,t)T(z,t))+u_{\Omega}(z,t)\tag{11}$$</p>
-<p>&emsp;&emsp;在实际应用中，导热棒的宽和高相比它的长度可以忽略不计。因此我们只保留长度方向坐标$z_1$，并将其表示为$z$，其中：<br>$$<br>{\rm div\ grad}=\partial_{z_1}^2+\partial_{z_2}^2+\partial_{z_3}^2\Rightarrow\partial_{z_1}^2\Rightarrow\partial_z^2\tag{12}$$</p>
-<p>&emsp;&emsp;以及：<br>$$<br>{\rm div}\Rightarrow\partial_{z_1}\Rightarrow\partial_z\tag{13}$$</p>
-<p>&emsp;&emsp;具体数学过程感兴趣的可以查阅相关资料。最终得到导热棒系统方程为：<br>$$<br>\begin{split}<br>c\rho \partial_t T(z,t)=&amp;\lambda \partial_z^2 T(z,t)-c\rho \partial_z(v(z,t)T(z,t))<br>\&amp;+u_{\Omega}(z,t),\ z\in(0,L),\ t&gt;0\end{split}\tag{14}$$</p>
-<p>&emsp;&emsp;一般情况下，导热棒很少存在物质传递，因此通常满足$v(z,t)=0$。并且通过如下坐标变换可以将系统方程标准化：<br>$$<br>z={z\over L},\ t={\lambda \over c\rho L^2}t\tag{15}$$</p>
-<p>&emsp;&emsp;标准化后的系统方程为：<br>$$<br>\partial_t T(z,t)=\partial_z^2 T(z,t)+u_{\Omega}(z,t),\ z\in(0,1),\ t&gt;0\tag{16}$$</p>
-<p>&emsp;&emsp;若$u_{\Omega}(z,t)$是分布式输入（verteilter Eingriff），即输入分布在定义域的某个区间，则它可以表示为$b(z)u(t)$。$b(z)$代表自身产热的作用范围，$u(t)$代表自身产热的热量大小，在之后的学习中我们将控制导热棒的自身产热$u(t)$，使得系统达到想要的状态。式(16)可以写成：<br>$$<br>\partial_t T(z,t)=\partial_z^2 T(z,t)+b(z)u(t),\ z\in(0,1),\ t&gt;0\tag{17}$$</p>
-<p>&emsp;&emsp;除了分布式输入外，还有点输入以及边界输入。点输入为在定义域某点$z_0$的输入，此时$b(z)$表示为$k\cdot\delta(z_0)$的形式。由于$\delta$函数不属于希尔伯特空间，操作起来较为麻烦，因此在实际中通常使用脉冲函数来近似，近似后的输入就变成了分布式输入。边界输入将在后面章节介绍。</p>
+<h3 id="建立系统方程"><a href="#建立系统方程" class="headerlink" title="建立系统方程"></a>建立系统方程</h3><p>&emsp;&emsp;导热棒系统是最简单的一阶分布参数系统。我们假设导热棒长度为$L$，质量为$m$，密度为$\rho$，比热容为$c$。棒上$z$点的温度随时间变化函数为$T(z,t)$，其中$z=(z_1,z_2,z_3)$为棒上任意一点，$z_1,z_2,z_3$分别表示长宽高方向上的坐标，且$t\geq0$。<br>&emsp;&emsp;取导热棒上其中一个小段$\Delta\Omega$，其无穷小体积单元$d\Omega$上的热量可以用比热容定义得到：</p>
+<script type="math/tex; mode=display">
+{\rm d}Q=c\cdot T\cdot {\rm d}m\tag{1}</script><p>&emsp;&emsp;其中质量${\rm d}m$可以通过体积与密度得到：</p>
+<script type="math/tex; mode=display">
+{\rm d}m=\rho \cdot {\rm d}\Omega\tag{2}</script><p>&emsp;&emsp;将式(1)与式(2)合并得到热量与温度的微分表达式：</p>
+<script type="math/tex; mode=display">
+{\rm d}Q=cT{\rm d}m=c\rho T{\rm d}\Omega \tag{3}</script><p>&emsp;&emsp;将式(3)对体积积分便可以得到该小段$\Delta \Omega$的热量为：</p>
+<script type="math/tex; mode=display">
+Q(t)=\int_{\Delta \Omega}c\rho T(z,t){\rm d}\Omega\tag{4}</script><p>&emsp;&emsp;由热力学知识可知，物质热量的变化量等于物质自身产热加上周围物质传递的热能，而热能传递又可分为物质传递以及能量传递。因此使用公式对热量变化进行描述便可以得到系统的微分方程。<br>&emsp;&emsp;热能的能量传递总是由温度高的物体通过表面接触传递给温度低的，并且温度相差越大，能量传递越快。因此能量传递有方向，是一个矢量。它能通过下式描述：</p>
+<script type="math/tex; mode=display">
+\vec{j_L}=-\lambda \cdot {\rm grad}T(z,t)\tag{5}</script><p>&emsp;&emsp;其中$\vec{j_L}$为热流密度，它代表单位时间单位面积上所传递的热量及方向，$\lambda$为材料的导热系数，${\rm grad}T(z,t)$为温度在$z$上的梯度。<br>&emsp;&emsp;物质传递也是矢量，它可以通过下式描述：</p>
+<script type="math/tex; mode=display">
+\vec{j_K}=c\rho T(z,t)\cdot \vec{v}(z,t)\tag{6}</script><p>&emsp;&emsp;其中$\vec{j_K}$与$\vec{j_L}$类似，它代表单位是间单位面积通过物质传递所传递的能量，$c\rho T(z,t)$为单位物质能量，$\vec{v}(z,t)$为棒上$z$点单位面积物质的传输速度及方向。<br>&emsp;&emsp;物质自身产热可以通过$u_\Omega(z,t)$描述，它表示棒上$z$点单位时间所产生的热量。<br>&emsp;&emsp;将所有表达式合起来便得到了该小段$\Delta \Omega$上的平衡方程：</p>
+<script type="math/tex; mode=display">
+{\rm d\over\rm d\mathcal t} \int_{\Delta \Omega}c\rho T(z,t){\rm d}\Omega =-\oint_{\Delta \Gamma}(\vec{j_L}(z,t)+\vec{j_K}(z,t)){\rm d}\vec{\Gamma}+\int_{\Delta \Omega}u_{\Omega}(z,t){\rm d}\Omega\tag{7}</script><p>&emsp;&emsp;其中$\Delta \Gamma$表示$\Delta \Omega$的包络面。式(7)表示$\Delta \Omega$的能量变化等于自身产热减去通过传递流出的热量（即热流密度在包络面的积分）。通过高斯定理可以将$\vec{j_L}$与$\vec{j_K}$在包络面上的面积分转化为其散度（${\rm div}$）在包络面所围体积的体积分，即：</p>
+<script type="math/tex; mode=display">
+\oint_{\Delta \Gamma}\vec{j}{\rm d}\vec{\Gamma}=\int_{\Delta \Omega}{\rm div}\vec{j}{\rm d}\Omega\tag{8}</script><p>&emsp;&emsp;将式(8)代入式(7)得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+{\rm d\over \rm d\mathcal t}\int_{\Delta \Omega}c\rho T(z,t){\rm d}\Omega&=\int_{\Delta \Omega}c\rho {\partial T(z,t)\over \partial t}{\rm d}\Omega\\&=\int_{\Delta \Omega}-{\rm div}(\vec{j_L}(z,t)+\vec{j_K}(z,t))+u_{\Omega}(z,t){\rm d}\Omega
+\end{split}\tag{9}</script><p>&emsp;&emsp;将式(9)积分去掉便得到了导热棒系统方程：</p>
+<script type="math/tex; mode=display">
+c\rho {\partial T(z,t)\over \partial t}=-{\rm div}(\vec{j_L}(z,t)+\vec{j_K}(z,t))+u_{\Omega}(z,t)\tag{10}</script><p>&emsp;&emsp;式(10)对导热棒上的点均成立。由于系统方程是对$T(z,t)$的方程，因此我们将式(5)(6)带入式(10)，得到：</p>
+<script type="math/tex; mode=display">
+c\rho {\partial T(z,t)\over \partial t}=\lambda {\rm div\ grad}T(z,t)-c\rho {\rm div}(\vec{v}(z,t)T(z,t))+u_{\Omega}(z,t)\tag{11}</script><p>&emsp;&emsp;在实际应用中，导热棒的宽和高相比它的长度可以忽略不计。因此我们只保留长度方向坐标$z_1$，并将其表示为$z$，其中：</p>
+<script type="math/tex; mode=display">
+{\rm div\ grad}=\partial_{z_1}^2+\partial_{z_2}^2+\partial_{z_3}^2\Rightarrow\partial_{z_1}^2\Rightarrow\partial_z^2\tag{12}</script><p>&emsp;&emsp;以及：</p>
+<script type="math/tex; mode=display">
+{\rm div}\Rightarrow\partial_{z_1}\Rightarrow\partial_z\tag{13}</script><p>&emsp;&emsp;具体数学过程感兴趣的可以查阅相关资料。最终得到导热棒系统方程为：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+c\rho \partial_t T(z,t)=&\lambda \partial_z^2 T(z,t)-c\rho \partial_z(v(z,t)T(z,t))
+\\&+u_{\Omega}(z,t),\ z\in(0,L),\ t>0\end{split}\tag{14}</script><p>&emsp;&emsp;一般情况下，导热棒很少存在物质传递，因此通常满足$v(z,t)=0$。并且通过如下坐标变换可以将系统方程标准化：</p>
+<script type="math/tex; mode=display">
+z={z\over L},\ t={\lambda \over c\rho L^2}t\tag{15}</script><p>&emsp;&emsp;标准化后的系统方程为：</p>
+<script type="math/tex; mode=display">
+\partial_t T(z,t)=\partial_z^2 T(z,t)+u_{\Omega}(z,t),\ z\in(0,1),\ t>0\tag{16}</script><p>&emsp;&emsp;若$u_{\Omega}(z,t)$是分布式输入（verteilter Eingriff），即输入分布在定义域的某个区间，则它可以表示为$b(z)u(t)$。$b(z)$代表自身产热的作用范围，$u(t)$代表自身产热的热量大小，在之后的学习中我们将控制导热棒的自身产热$u(t)$，使得系统达到想要的状态。式(16)可以写成：</p>
+<script type="math/tex; mode=display">
+\partial_t T(z,t)=\partial_z^2 T(z,t)+b(z)u(t),\ z\in(0,1),\ t>0\tag{17}</script><p>&emsp;&emsp;除了分布式输入外，还有点输入以及边界输入。点输入为在定义域某点$z_0$的输入，此时$b(z)$表示为$k\cdot\delta(z_0)$的形式。由于$\delta$函数不属于希尔伯特空间，操作起来较为麻烦，因此在实际中通常使用脉冲函数来近似，近似后的输入就变成了分布式输入。边界输入将在后面章节介绍。</p>
 <h3 id="边界条件"><a href="#边界条件" class="headerlink" title="边界条件"></a>边界条件</h3><p>&emsp;&emsp;系统方程如式(17)，它是对区间$(0,1)$内所有点的描述，其中每个点的温度$T$都可以通过自身产热以及与周围点的热能传递得到。而对于边界点$T(0,t)$及$T(1,t)$来说，由于我们没有定义区间$(0,1)$以外环境的温度，无法通过系统方程描述它们，从而导致整个系统无法确定。因此需要引入边界条件来限制边界点$T(0,t)$和$T(1,t)$。一般来说，一阶系统的边界条件为：Dirichlet条件、Neumann条件和Robin条件。它们定义分别是：<br>&emsp;&emsp;1. Dirichlet条件：$T(z_0,t)=T_{z_0}(t),\ t&gt;0$<br>&emsp;&emsp;2. Neumann条件：$\partial_zT(z_0,t)=T_{z_0}(t),\ t&gt;0$<br>&emsp;&emsp;3. Robin条件：$\partial_zT(z_0,t)+\lambda T(z_0,t)=T_{z_0}(t),\ t&gt;0$<br>&emsp;&emsp;其中$z_0$为边界点，可取$0$或$1$，$T_{z_0}(t)$为已知函数。这三个条件分别确定了边界点的值（Dirichlet）、导数（Neumann）以及值与导数的关系（Robin）。在应用中它们均通过实际情况确定，并且不同边界点的边界条件可以不同。<br>&emsp;&emsp;若系统输入为边界输入，则边界条件需要包含$u(t)$，它表示通过控制边界点的状态来控制系统。例如：$T(0,t)=u(t)$。</p>
-<h3 id="初始条件"><a href="#初始条件" class="headerlink" title="初始条件"></a>初始条件</h3><p>&emsp;&emsp;求解系统方程除了需要有系统描述，还需要有系统初始的状态。因此引入初始条件：<br>$$<br>T(z,0)=T_{0z}(z),\ z\in[0,1]\tag{18}$$</p>
-<p>&emsp;&emsp;在这里需要注意的是初始条件必须与边界条件一致。比方说边界条件为：$T(1,t)=0$，那么初始条件必须满足：$T_{0z}(1)=0$。</p>
-<h3 id="系统输出"><a href="#系统输出" class="headerlink" title="系统输出"></a>系统输出</h3><p>&emsp;&emsp;系统输出是由传感器测得的温度，它可以是棒上某点的温度，称为点测量（punktförmige Messung），也可以是某个区域上的温度，称为分布式测量（verteilte Messung）。它的表达式如下：<br>$$<br>y(t)=\int_0^1c(z)T(z,t){\rm d}z\tag{19}$$</p>
-<p>&emsp;&emsp;其中$c(z)$代表传感器作用范围。由于点测量会产生一些问题（点测量时，$c(z)$是冲激函数，不属于希尔伯特空间，无法写入系统方程中。同样的，我们也不使用点输入），接下来我们使用的都是分布式测量。</p>
-<h3 id="导热棒系统"><a href="#导热棒系统" class="headerlink" title="导热棒系统"></a>导热棒系统</h3><p>&emsp;&emsp;将系统方程、边界条件以及初始条件合起来，就可以求解出系统状态以及系统输出，下面是一个具体的例子：<br><img src="/images/RSVP_02_Waermeleiter.png" alt="Beispiel Wärmeleiter"><br>&emsp;&emsp;其中$b_1(z)$与$b_2(z)$分别表示$u_1(t)$与$u_2(t)$的作用范围，它们定义如下：<br>$$<br>b_1(z)=\begin{cases}<br>1:0.5\leq z\leq 0.6\<br>0:其他<br>\end{cases}\tag{20}$$</p>
-<p>&emsp;&emsp;以及<br>$$<br>b_1(z)=\begin{cases}<br>0.5:0.15\leq z\leq 0.25\<br>0.5:0.75\leq z\leq 0.85\<br>0:其他<br>\end{cases}\tag{21}$$</p>
-<p>&emsp;&emsp;将它们向量化后得到：<br>$$<br>b^T(z)=\begin{bmatrix}b_1(z) &amp; b_2(z)\end{bmatrix}\tag{22}$$</p>
-<p>&emsp;&emsp;则：<br>$$<br>b^T(z)u(t)=\begin{bmatrix}b_1(z) &amp; b_2(z)\end{bmatrix}\begin{bmatrix}u_1(z) \ u_2(z)\end{bmatrix}\tag{23}$$</p>
-<p>&emsp;&emsp;$c_1(z)$与$c_2(z)$分别表示传感器测量范围，它们定义如下：<br>$$<br>c_1(z)=\begin{cases}<br>1:0.37\leq z\leq 0.43\<br>0:其他<br>\end{cases}\tag{24}$$</p>
-<p>&emsp;&emsp;以及<br>$$<br>c_2(z)=\begin{cases}<br>1:0.67\leq z\leq 0.73\<br>0:其他<br>\end{cases}\tag{25}$$</p>
-<p>&emsp;&emsp;将它们向量化后得到：<br>$$<br>c(z)=\begin{bmatrix} c_1(z) \ c_2(z)<br>\end{bmatrix}\tag{26}$$</p>
-<p>&emsp;&emsp;则：<br>$$<br>y(t)=\int_0^1c(z)x(z,t){\rm d}z=\begin{bmatrix}\int_0^1c_1(z)x(z,t){\rm d}z \ \int_0^1c_2(z)x(z,t){\rm d}z\end{bmatrix}\tag{27}$$</p>
-<p>&emsp;&emsp;假设系统在边界点$z=0$及$z=1$的温度都为常值$0$，且系统状态在$t=0$的初始状态为$x(z,0)=x_0(z)$。则整个系统描述如下：<br>$$<br>\begin{eqnarray}<br>\partial_tx(z,t)&amp;=&amp;\partial_z^2x(z,t)+b^T(z)u(t),\ t&gt;0,\ z\in(0,1)\tag{28}\<br>x(0,t)&amp;=&amp;x(1,t)=0,\ t&gt;0\tag{29}\<br>x(z,0)&amp;=&amp;x_0(z),\ z\in[0,1]\tag{30}\<br>y(t)&amp;=&amp;\int_0^1c(z)x(z,t){\rm d}z,\ t\geq 0\tag{31}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;至此我们就建立了一个导热棒的系统模型。若我们把$x(z,t)$看作状态变量，对$x(z,t)$的操作看成算子，那么就可以把系统模型抽象为更一般的状态方程形式。我们设系统算子为$\mathcal{A}:X\to X$<br>$$<br>\mathcal{A}h={\rm d}_z^2h,\ h\in D(\mathcal{A})\tag{32}$$</p>
-<p>&emsp;&emsp;其中定义域$D(\mathcal{A})$为：<br>$$<br>D(\mathcal{A})={h\in L_2(0,1)|h,{\rm d}_zh绝对连续,{\rm d}_z^2h\in L_2(0,1),且h(0)=h(1)=0}$$</p>
-<p>&emsp;&emsp;整个定义域可以分为两个部分。我们设状态变量所在的状态空间$X=L_2(0,1)$。由于$\mathcal{A}$是空间$X\to X$的线性算子，因此满足$\mathcal{A}h\in L_2(0,1)$，即${\rm d}_z^2h\in L_2(0,1)$。而函数二阶导存在且二次可积的条件为：函数及函数一阶导绝对连续。它们构成了定义域的第一部分。同时状态函数还需要满足边界条件，即$h(0)=h(1)=0$。它构成了定义域的第二部分。<br>&emsp;&emsp;设输入算子（Eingangsoperator）为$\mathcal{B}:\Bbb{C}^p\to X$<br>$$<br>\mathcal{B}u=b^Tu=\sum_{i=1}^{p}b_iu_i,\ b_i\in X,\ u\in {\Bbb C}^p\tag{33}$$</p>
-<p>&emsp;&emsp;设输出算子（Ausgangsoperator）为$\mathcal{C}:X\to\Bbb{C}^m$<br>$$<br>\mathcal{C}x=\int_0^1cx{\rm d}z=\begin{bmatrix}\int_0^1c_1x{\rm d}z \ \vdots \ \int_0^1c_mx{\rm d}z \end{bmatrix},\ c_i\in X,\ x\in X\tag{34}$$</p>
-<p>&emsp;&emsp;由于通常$c_i$与$x$均为实数，满足：<br>$$<br>\int_0^1c_ix{\rm d}z=\int_0^1x\overline{c_i}{\rm d}z=\langle x,c_i\rangle\tag{35}$$</p>
-<p>&emsp;&emsp;因此式(34)可以化为：<br>$$<br>\mathcal{C}x=\begin{bmatrix} \langle x,c_1\rangle \ \vdots \ \langle x,c_m\rangle \end{bmatrix},\ c_i\in X,\ x\in X\tag{36}$$</p>
-<p>&emsp;&emsp;将以上定义的算子全部带入系统描述，可以得到分布参数系统的状态方程为：<br>$$<br>\begin{eqnarray}<br>\dot{x}(t)&amp;=&amp;\mathcal{A}x(t)+\mathcal{B}u(t),\ &amp;t&gt;0,\ x(0)=x_0\in X\tag{37}\<br>y(t)&amp;=&amp;\mathcal{C}x(t),\ &amp;t\geq0\tag{38}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;值得注意的是，在这里没有写出边界条件，是因为系统算子$\mathcal{A}$的定义域$D(\mathcal{A})$中已经将边界条件包含了。在之后的章节我们都将使用这种状态方程的形式对系统进行分析及求解。</p>
+<h3 id="初始条件"><a href="#初始条件" class="headerlink" title="初始条件"></a>初始条件</h3><p>&emsp;&emsp;求解系统方程除了需要有系统描述，还需要有系统初始的状态。因此引入初始条件：</p>
+<script type="math/tex; mode=display">
+T(z,0)=T_{0z}(z),\ z\in[0,1]\tag{18}</script><p>&emsp;&emsp;在这里需要注意的是初始条件必须与边界条件一致。比方说边界条件为：$T(1,t)=0$，那么初始条件必须满足：$T_{0z}(1)=0$。</p>
+<h3 id="系统输出"><a href="#系统输出" class="headerlink" title="系统输出"></a>系统输出</h3><p>&emsp;&emsp;系统输出是由传感器测得的温度，它可以是棒上某点的温度，称为点测量（punktförmige Messung），也可以是某个区域上的温度，称为分布式测量（verteilte Messung）。它的表达式如下：</p>
+<script type="math/tex; mode=display">
+y(t)=\int_0^1c(z)T(z,t){\rm d}z\tag{19}</script><p>&emsp;&emsp;其中$c(z)$代表传感器作用范围。由于点测量会产生一些问题（点测量时，$c(z)$是冲激函数，不属于希尔伯特空间，无法写入系统方程中。同样的，我们也不使用点输入），接下来我们使用的都是分布式测量。</p>
+<h3 id="导热棒系统"><a href="#导热棒系统" class="headerlink" title="导热棒系统"></a>导热棒系统</h3><p>&emsp;&emsp;将系统方程、边界条件以及初始条件合起来，就可以求解出系统状态以及系统输出，下面是一个具体的例子：<br><img src="/images/RSVP_02_Waermeleiter.png" alt="Beispiel Wärmeleiter"><br>&emsp;&emsp;其中$b_1(z)$与$b_2(z)$分别表示$u_1(t)$与$u_2(t)$的作用范围，它们定义如下：</p>
+<script type="math/tex; mode=display">
+b_1(z)=\begin{cases}
+1:0.5\leq z\leq 0.6\\
+0:其他
+\end{cases}\tag{20}</script><p>&emsp;&emsp;以及</p>
+<script type="math/tex; mode=display">
+b_1(z)=\begin{cases}
+0.5:0.15\leq z\leq 0.25\\
+0.5:0.75\leq z\leq 0.85\\
+0:其他
+\end{cases}\tag{21}</script><p>&emsp;&emsp;将它们向量化后得到：</p>
+<script type="math/tex; mode=display">
+b^T(z)=\begin{bmatrix}b_1(z) & b_2(z)\end{bmatrix}\tag{22}</script><p>&emsp;&emsp;则：</p>
+<script type="math/tex; mode=display">
+b^T(z)u(t)=\begin{bmatrix}b_1(z) & b_2(z)\end{bmatrix}\begin{bmatrix}u_1(z) \\ u_2(z)\end{bmatrix}\tag{23}</script><p>&emsp;&emsp;$c_1(z)$与$c_2(z)$分别表示传感器测量范围，它们定义如下：</p>
+<script type="math/tex; mode=display">
+c_1(z)=\begin{cases}
+1:0.37\leq z\leq 0.43\\
+0:其他
+\end{cases}\tag{24}</script><p>&emsp;&emsp;以及</p>
+<script type="math/tex; mode=display">
+c_2(z)=\begin{cases}
+1:0.67\leq z\leq 0.73\\
+0:其他
+\end{cases}\tag{25}</script><p>&emsp;&emsp;将它们向量化后得到：</p>
+<script type="math/tex; mode=display">
+c(z)=\begin{bmatrix} c_1(z) \\ c_2(z)
+\end{bmatrix}\tag{26}</script><p>&emsp;&emsp;则：</p>
+<script type="math/tex; mode=display">
+y(t)=\int_0^1c(z)x(z,t){\rm d}z=\begin{bmatrix}\int_0^1c_1(z)x(z,t){\rm d}z \\ \int_0^1c_2(z)x(z,t){\rm d}z\end{bmatrix}\tag{27}</script><p>&emsp;&emsp;假设系统在边界点$z=0$及$z=1$的温度都为常值$0$，且系统状态在$t=0$的初始状态为$x(z,0)=x_0(z)$。则整个系统描述如下：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\partial_tx(z,t)&=&\partial_z^2x(z,t)+b^T(z)u(t),\ t>0,\ z\in(0,1)\tag{28}\\
+x(0,t)&=&x(1,t)=0,\ t>0\tag{29}\\
+x(z,0)&=&x_0(z),\ z\in[0,1]\tag{30}\\
+y(t)&=&\int_0^1c(z)x(z,t){\rm d}z,\ t\geq 0\tag{31}
+\end{eqnarray}</script><p>&emsp;&emsp;至此我们就建立了一个导热棒的系统模型。若我们把$x(z,t)$看作状态变量，对$x(z,t)$的操作看成算子，那么就可以把系统模型抽象为更一般的状态方程形式。我们设系统算子为$\mathcal{A}:X\to X$</p>
+<script type="math/tex; mode=display">
+\mathcal{A}h={\rm d}_z^2h,\ h\in D(\mathcal{A})\tag{32}</script><p>&emsp;&emsp;其中定义域$D(\mathcal{A})$为：</p>
+<script type="math/tex; mode=display">
+D(\mathcal{A})=\{h\in L_2(0,1)|h,{\rm d}_zh绝对连续,{\rm d}_z^2h\in L_2(0,1),且h(0)=h(1)=0\}</script><p>&emsp;&emsp;整个定义域可以分为两个部分。我们设状态变量所在的状态空间$X=L_2(0,1)$。由于$\mathcal{A}$是空间$X\to X$的线性算子，因此满足$\mathcal{A}h\in L_2(0,1)$，即${\rm d}_z^2h\in L_2(0,1)$。而函数二阶导存在且二次可积的条件为：函数及函数一阶导绝对连续。它们构成了定义域的第一部分。同时状态函数还需要满足边界条件，即$h(0)=h(1)=0$。它构成了定义域的第二部分。<br>&emsp;&emsp;设输入算子（Eingangsoperator）为$\mathcal{B}:\Bbb{C}^p\to X$</p>
+<script type="math/tex; mode=display">
+\mathcal{B}u=b^Tu=\sum_{i=1}^{p}b_iu_i,\ b_i\in X,\ u\in {\Bbb C}^p\tag{33}</script><p>&emsp;&emsp;设输出算子（Ausgangsoperator）为$\mathcal{C}:X\to\Bbb{C}^m$</p>
+<script type="math/tex; mode=display">
+\mathcal{C}x=\int_0^1cx{\rm d}z=\begin{bmatrix}\int_0^1c_1x{\rm d}z \\ \vdots \\ \int_0^1c_mx{\rm d}z \end{bmatrix},\ c_i\in X,\ x\in X\tag{34}</script><p>&emsp;&emsp;由于通常$c_i$与$x$均为实数，满足：</p>
+<script type="math/tex; mode=display">
+\int_0^1c_ix{\rm d}z=\int_0^1x\overline{c_i}{\rm d}z=\langle x,c_i\rangle\tag{35}</script><p>&emsp;&emsp;因此式(34)可以化为：</p>
+<script type="math/tex; mode=display">
+\mathcal{C}x=\begin{bmatrix} \langle x,c_1\rangle \\ \vdots \\ \langle x,c_m\rangle \end{bmatrix},\ c_i\in X,\ x\in X\tag{36}</script><p>&emsp;&emsp;将以上定义的算子全部带入系统描述，可以得到分布参数系统的状态方程为：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\dot{x}(t)&=&\mathcal{A}x(t)+\mathcal{B}u(t),\ &t>0,\ x(0)=x_0\in X\tag{37}\\
+y(t)&=&\mathcal{C}x(t),\ &t\geq0\tag{38}
+\end{eqnarray}</script><p>&emsp;&emsp;值得注意的是，在这里没有写出边界条件，是因为系统算子$\mathcal{A}$的定义域$D(\mathcal{A})$中已经将边界条件包含了。在之后的章节我们都将使用这种状态方程的形式对系统进行分析及求解。</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
 <li>系统模型包含系统方程、边界条件、初始条件以及系统输出四个部分。</li>
 <li>系统方程通过物理平衡方程得到。</li>
@@ -292,7 +357,7 @@ var _hmt = _hmt || [];
 
 
 
-    <a data-url="https://haosutopia.github.io/2018/03/RSVP-02/" data-id="ckflt9wn7000feto9ajq63ln1" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://haosutopia.github.io/2018/03/RSVP-02/" data-id="ckfndebkd000cf2o94a6a6lw2" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -372,7 +437,7 @@ var _hmt = _hmt || [];
         "url": "https://haosutopia.github.io/2018/03/RSVP-02/",
         "description": "&emsp;&emsp;我们在分析一个实际系统前往往需要将它转化为抽象的模型，再通过数学上的方法进行分析。而这其中往往涉及到一些物理化学方面的知识，因此本次学习不是分布参数系统的重点。本次学习将以导热棒为例，使我们对分布参数系统建模有一个初步的印象。
 概述&emsp;&emsp;不管是什么系统，对其进行建模的方法都类似：通过系统中各个物理量的相互作用来建立相应的平衡方程，再对这些方程施加一些外部条",
-        "wordCount": 224
+        "wordCount": 294
     }
 </script>
 

@@ -83,7 +83,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -272,8 +276,9 @@ var _hmt = _hmt || [];
     
 
         <p class="article-excerpt">
-            &emsp;&emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：$$\dot{x}(t)={\cal A}x(t)\tag{1}$$
-指数稳定&emsp;&emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabili
+            &emsp;&emsp;在控制理论中，稳定性始终是一个系统最基本的要求，之后一切的控制都要建立在系统稳定的基础上。与集总参数系统控制类似，我们可以通过增加反馈使系统达到稳定状态，并满足一定特性。分布参数系统状态方程如下：
+
+\dot{x}(t)={\cal A}x(t)\tag{1}指数稳定&emsp;&emsp;首先我们给出分布参数系统的指数稳定（Exponentielle Stabilität
         </p>
     </div>
 </article>
@@ -324,7 +329,10 @@ var _hmt = _hmt || [];
 
         <p class="article-excerpt">
             &emsp;&emsp;分布参数系统是个无限维的系统，在第一章节所提到的early-lumping控制中，我们先将系统过程近似为集总参数系统，再使用现代控制方法对系统进行分析控制。本文将阐述模型近似的过程及相关注意事项。
-模型近似&emsp;&emsp;分布参数系统状态方程如下：$$\begin{eqnarray}\dot{x}(t)&amp;=&amp;\mathcal{A}x(t)+\math
+模型近似&emsp;&emsp;分布参数系统状态方程如下：
+
+\begin{eqnarray}
+\dot{x}(t)&=&\mathcal{A}x(t)+\mathcal{B}u
         </p>
     </div>
 </article>
@@ -420,7 +428,11 @@ var _hmt = _hmt || [];
     
 
         <p class="article-excerpt">
-            &emsp;&emsp;在建立系统方程后，便可以求解系统的状态变量随时间的函数了，当然此时系统需要满足一定条件。本文将以上一章得到的系统状态方程为基础，对一般系统求解进行推导。系统状态方程如下：$$\begin{eqnarray}\dot{x}(t)&amp;=&amp;\mathcal{A}x(t)+\mathcal{B}u(t),\ &amp;t&gt;0,\ x(0)=x_0\in X\ta
+            &emsp;&emsp;在建立系统方程后，便可以求解系统的状态变量随时间的函数了，当然此时系统需要满足一定条件。本文将以上一章得到的系统状态方程为基础，对一般系统求解进行推导。系统状态方程如下：
+
+\begin{eqnarray}
+\dot{x}(t)&=&\mathcal{A}x(t)+\mathcal{B}u(t),\ &t>0,\ x(0)=x_0\in X\tag{1}\\
+y(t)&=&
         </p>
     </div>
 </article>
@@ -564,7 +576,11 @@ var _hmt = _hmt || [];
 
         <p class="article-excerpt">
             &emsp;&emsp;Backstepping（反步控制）是一种设计非线性系统控制器的方法。它通过对子系统的递归方便地求得能使系统稳定的输入。但大多数相关文献中并未考虑系统本身的可控性，因此首先我们假设需要控制的系统是可控的。
-基本思想&emsp;&emsp;Backstepping针对的是能写成如下形式的系统：$$\begin{cases}\dot{x}_1=x_2+f_1(x_1)\\dot
+基本思想&emsp;&emsp;Backstepping针对的是能写成如下形式的系统：
+
+\begin{cases}
+\dot{x}_1=x_2+f_1(x_1)\\
+\
         </p>
     </div>
 </article>

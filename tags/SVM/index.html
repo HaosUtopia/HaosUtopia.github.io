@@ -83,7 +83,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -225,7 +229,10 @@ var _hmt = _hmt || [];
     
 
         <p class="article-excerpt">
-            &emsp;&emsp;到目前为止，我们把SVM优化问题化为了更容易解决的对偶问题，并且使用核函数及正则化来改善它的特性。现在我们只需解决这个对偶问题就可以得到最优间隔分类器，可以说是“万事具备，只欠东风”了。我们先将第三章节得到的对偶问题搬运过来：$$\begin{eqnarray}\max_{\alpha}\ &amp;&amp;\theta_{\cal{D}}(\alpha)=\sum_{i
+            &emsp;&emsp;到目前为止，我们把SVM优化问题化为了更容易解决的对偶问题，并且使用核函数及正则化来改善它的特性。现在我们只需解决这个对偶问题就可以得到最优间隔分类器，可以说是“万事具备，只欠东风”了。我们先将第三章节得到的对偶问题搬运过来：
+
+\begin{eqnarray}
+\max_{\alpha}\ &&\theta_{\cal{D}}(\alpha)=\sum_{i=1}^m\a
         </p>
     </div>
 </article>
@@ -323,7 +330,11 @@ var _hmt = _hmt || [];
 
         <p class="article-excerpt">
             &emsp;&emsp;上一章节我们将SVM的目标转换为了一个带不等式约束条件的优化问题，现在我们的目标就是解决这个优化问题。在此我们先将SVM及最优间隔分类器放一放，来看看一般约束优化问题的求解方法。
-约束优化问题等式约束优化问题&emsp;&emsp;等式优化问题一般描述如下：$$\begin{split}\min_x\ &amp;f(x)\{\rm s.t.}\ &amp;h_i(x)=0,
+约束优化问题等式约束优化问题&emsp;&emsp;等式优化问题一般描述如下：
+
+\begin{split}
+\min_x\ &f(x)\\
+{\rm s.t.}\ &h_i(x)=0,\ i=1
         </p>
     </div>
 </article>
@@ -370,7 +381,7 @@ var _hmt = _hmt || [];
 
         <p class="article-excerpt">
             &emsp;&emsp;支持向量机（Support Vector Machine）是一种强大的监督式学习算法。尽管目前深度学习非常流行，但这种经典的机器学习算法仍然有着非常大的研究价值，并且它在机器学习领域仍占有着一席之地。本次学习材料主要是CS229课程以及一些网上的资料。
-SVM目标&emsp;&emsp;为了引入SVM思想，我们来看一个二分类问题。假设我们有一组训练样本${(x_1,y_1)
+SVM目标&emsp;&emsp;为了引入SVM思想，我们来看一个二分类问题。假设我们有一组训练样本$\{(x_1,y_1
         </p>
     </div>
 </article>

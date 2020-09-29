@@ -92,7 +92,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -236,60 +240,166 @@ var _hmt = _hmt || [];
 
             
 
-            <p>&emsp;&emsp;在求解微分方程的初值问题时，我们通常要考虑解的存在唯一性，以及解受初始条件的影响。一般来说，我们希望问题的解存在且唯一，并且连续地取决于初始条件（通常无法准确得知状态变量初始值，导致实际应用中会产生一定的偏差。因此我们希望当初始值$x(0)$微小变化时，$x(t)$的变化足够小）。我们称这样的问题为适定性问题（wohlgestelltes Problem）。<br>&emsp;&emsp;本文的目标就是得到某些条件，并用它们来判断分布参数模型的初值问题是否为适定性问题。系统状态方程如下：<br>$$<br>\begin{eqnarray}<br>\dot{x}(t)&amp;=&amp;\mathcal{A}x(t)+\mathcal{B}u(t),\ &amp;t&gt;0,\ x(0)=x_0\in X\tag{1}\<br>y(t)&amp;=&amp;\mathcal{C}x(t),\ &amp;t\geq0\tag{2}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;由于其中数学证明较为困难，因此这里只给出一些结论以及方法。</p>
-<h3 id="C-0-半群"><a href="#C-0-半群" class="headerlink" title="$C_0$半群"></a>$C_0$半群</h3><h4 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h4><p>&emsp;&emsp;在<a href="../../../2018/03/RSVP-03/index.html#e13">第三章节式(13)</a>中我们得到了分布参数系统状态变量$x(z,t)$的通解为：<br>$$<br>x(z,t)=\sum_{i=1}^{\infty}e^{\lambda_it}\phi_i(z)x_i^\ast (0)+\sum_{i=1}^{\infty}\int_0^te^{\lambda_i(t-\tau)}\phi_i(z){b_i^\ast }^Tu(\tau){\rm d}\tau\tag{3}$$</p>
-<p>&emsp;&emsp;而集总参数系统中状态变量的通解为：<br>$$<br>x(t)=e^{At}x(0)+\int_0^te^{A(t-\tau)}{\rm b}u(\tau){\rm d}\tau\tag{4}$$</p>
-<p>&emsp;&emsp;比较式(3)与式(4)发现它们能表达为统一形式：<br>$$<br>x(t)={\cal T}(t)x(0)+\int_0^t{\cal T}(t-\tau){\cal B}u(\tau){\rm d}\tau\tag{5}$$</p>
-<p>&emsp;&emsp;式(3)中：<br>$$<br>{\cal T}(t)=\sum_{i=1}^{\infty}e^{\lambda_it}\phi_i\langle\ \cdot\  ,\psi_i\rangle\tag{6}$$</p>
-<p>&emsp;&emsp;式(4)中：<br>$$<br>{\cal T}(t)=e^{At}\tag{7}$$</p>
-<p>&emsp;&emsp;式(6)式(7)有着共同的特性，它们都是$C_0$半群。</p>
-<h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>&emsp;&emsp;$C_0$半群是指数函数$e^{At}$的推广。其定义如下：设$X$为Banach空间（有范数的完备空间），${ {\cal T}(t),t\geq 0}$是$X$上的$C_0$半群，当且仅当它满足：<br>&emsp;&emsp;1. ${\cal T}(0)=I$（$I$是$X$上的单位元）<br>&emsp;&emsp;2. ${\cal T}(t+\tau)={\cal T}(t)\cdot{\cal T}(\tau),\ t\geq 0,\ \tau\geq 0$<br>&emsp;&emsp;3. $\lim_{t\to 0^+}||{\cal T}(t)x_0-x_0||=0,\ \forall x_0\in X$</p>
-<p>&emsp;&emsp;其中条件一、二分别表示$C_0$半群存在幺元（单位元）和结合律，只有群的一半性质，因此是一个半群（群性质为：封闭性，结合律，幺元和逆元）；条件三表示算子是强连续的。因此$C_0$半群也称为强连续算子半群，它的元素都是有界线性算子。它们作用于空间$X$中元素时，得到：<br><span id="e8">$$<br>x(t)={\cal T}(t)x(0)\tag{8}$$</span></p>
-<h4 id="无穷小母元"><a href="#无穷小母元" class="headerlink" title="无穷小母元"></a>无穷小母元</h4><p>&emsp;&emsp;若有算子$\cal A$，它的定义域为空间$X$的子集，即$D({\cal A})\subset X$，并且满足：<br>$$<br>{\cal A}=\lim_{t\to 0^+}{1 \over t}({\cal T}(t)-I)\tag{9}$$</p>
-<p>&emsp;&emsp;则称$\cal A$为$C_0$半群的无穷小母元（infinitesimaler Generator）。若将$\cal A$作用于空间$X$中元素$x(t)$：<br>$$<br>\begin{split}<br>{\cal A}x(t)&amp;=\lim_{\epsilon\to 0^+}{1\over \epsilon}({\cal T}(\epsilon)-{\cal T}(0))x(t)\<br>&amp;=\lim_{\epsilon\to 0^+}{1\over \epsilon}(x(t+\epsilon)-x(t))\<br>&amp;=\dot{x}(t)<br>\end{split}$$</p>
-<p>&emsp;&emsp;我们得到：<br>$$<br>\dot{x}(t)={\cal A}x(t)\tag{10}$$</p>
-<p>&emsp;&emsp;$C_0$半群的无穷小母元可以作为分布参数系统状态方程的系统算子，而无穷小母元和$C_0$半群又是一一对应的（这里不考虑定义域问题）。因此若式(1)中系统算子$\cal A$对应的$C_0$半群存在，就可以将$x(t)$表示为式(8)的形式，那么该系统初值问题就是适定性问题。</p>
+            <p>&emsp;&emsp;在求解微分方程的初值问题时，我们通常要考虑解的存在唯一性，以及解受初始条件的影响。一般来说，我们希望问题的解存在且唯一，并且连续地取决于初始条件（通常无法准确得知状态变量初始值，导致实际应用中会产生一定的偏差。因此我们希望当初始值$x(0)$微小变化时，$x(t)$的变化足够小）。我们称这样的问题为适定性问题（wohlgestelltes Problem）。<br>&emsp;&emsp;本文的目标就是得到某些条件，并用它们来判断分布参数模型的初值问题是否为适定性问题。系统状态方程如下：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\dot{x}(t)&=&\mathcal{A}x(t)+\mathcal{B}u(t),\ &t>0,\ x(0)=x_0\in X\tag{1}\\
+y(t)&=&\mathcal{C}x(t),\ &t\geq0\tag{2}
+\end{eqnarray}</script><p>&emsp;&emsp;由于其中数学证明较为困难，因此这里只给出一些结论以及方法。</p>
+<h3 id="C-0-半群"><a href="#C-0-半群" class="headerlink" title="$C_0$半群"></a>$C_0$半群</h3><h4 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h4><p>&emsp;&emsp;在<a href="../../../2018/03/RSVP-03/index.html#e13">第三章节式(13)</a>中我们得到了分布参数系统状态变量$x(z,t)$的通解为：</p>
+<script type="math/tex; mode=display">
+x(z,t)=\sum_{i=1}^{\infty}e^{\lambda_it}\phi_i(z)x_i^\ast (0)+\sum_{i=1}^{\infty}\int_0^te^{\lambda_i(t-\tau)}\phi_i(z){b_i^\ast }^Tu(\tau){\rm d}\tau\tag{3}</script><p>&emsp;&emsp;而集总参数系统中状态变量的通解为：</p>
+<script type="math/tex; mode=display">
+x(t)=e^{At}x(0)+\int_0^te^{A(t-\tau)}{\rm b}u(\tau){\rm d}\tau\tag{4}</script><p>&emsp;&emsp;比较式(3)与式(4)发现它们能表达为统一形式：</p>
+<script type="math/tex; mode=display">
+x(t)={\cal T}(t)x(0)+\int_0^t{\cal T}(t-\tau){\cal B}u(\tau){\rm d}\tau\tag{5}</script><p>&emsp;&emsp;式(3)中：</p>
+<script type="math/tex; mode=display">
+{\cal T}(t)=\sum_{i=1}^{\infty}e^{\lambda_it}\phi_i\langle\ \cdot\  ,\psi_i\rangle\tag{6}</script><p>&emsp;&emsp;式(4)中：</p>
+<script type="math/tex; mode=display">
+{\cal T}(t)=e^{At}\tag{7}</script><p>&emsp;&emsp;式(6)式(7)有着共同的特性，它们都是$C_0$半群。</p>
+<h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>&emsp;&emsp;$C_0$半群是指数函数$e^{At}$的推广。其定义如下：设$X$为Banach空间（有范数的完备空间），$\{ {\cal T}(t),t\geq 0\}$是$X$上的$C_0$半群，当且仅当它满足：<br>&emsp;&emsp;1. ${\cal T}(0)=I$（$I$是$X$上的单位元）<br>&emsp;&emsp;2. ${\cal T}(t+\tau)={\cal T}(t)\cdot{\cal T}(\tau),\ t\geq 0,\ \tau\geq 0$<br>&emsp;&emsp;3. $\lim_{t\to 0^+}||{\cal T}(t)x_0-x_0||=0,\ \forall x_0\in X$</p>
+<p>&emsp;&emsp;其中条件一、二分别表示$C_0$半群存在幺元（单位元）和结合律，只有群的一半性质，因此是一个半群（群性质为：封闭性，结合律，幺元和逆元）；条件三表示算子是强连续的。因此$C_0$半群也称为强连续算子半群，它的元素都是有界线性算子。它们作用于空间$X$中元素时，得到：<br><span id="e8"><script type="math/tex">x(t)={\cal T}(t)x(0)\tag{8}</script></span></p>
+<h4 id="无穷小母元"><a href="#无穷小母元" class="headerlink" title="无穷小母元"></a>无穷小母元</h4><p>&emsp;&emsp;若有算子$\cal A$，它的定义域为空间$X$的子集，即$D({\cal A})\subset X$，并且满足：</p>
+<script type="math/tex; mode=display">
+{\cal A}=\lim_{t\to 0^+}{1 \over t}({\cal T}(t)-I)\tag{9}</script><p>&emsp;&emsp;则称$\cal A$为$C_0$半群的无穷小母元（infinitesimaler Generator）。若将$\cal A$作用于空间$X$中元素$x(t)$：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+{\cal A}x(t)&=\lim_{\epsilon\to 0^+}{1\over \epsilon}({\cal T}(\epsilon)-{\cal T}(0))x(t)\\
+&=\lim_{\epsilon\to 0^+}{1\over \epsilon}(x(t+\epsilon)-x(t))\\
+&=\dot{x}(t)
+\end{split}</script><p>&emsp;&emsp;我们得到：</p>
+<script type="math/tex; mode=display">
+\dot{x}(t)={\cal A}x(t)\tag{10}</script><p>&emsp;&emsp;$C_0$半群的无穷小母元可以作为分布参数系统状态方程的系统算子，而无穷小母元和$C_0$半群又是一一对应的（这里不考虑定义域问题）。因此若式(1)中系统算子$\cal A$对应的$C_0$半群存在，就可以将$x(t)$表示为式(8)的形式，那么该系统初值问题就是适定性问题。</p>
 <h3 id="适定性问题判定"><a href="#适定性问题判定" class="headerlink" title="适定性问题判定"></a>适定性问题判定</h3><p>&emsp;&emsp;若要判定式(1)的系统初值问题为适定性问题，只需要证明系统算子$\cal A$对应的$C_0$半群存在就行了。通常我们有三种方法：Riesz-Spektral系统判别、Hille-Yoshida定理和Lumer-Phillips定理。</p>
-<h4 id="Riesz-Spektral系统判别"><a href="#Riesz-Spektral系统判别" class="headerlink" title="Riesz-Spektral系统判别"></a>Riesz-Spektral系统判别</h4><p>&emsp;&emsp;若系统为Riesz-Spektral系统，并且系统算子满足$\sup_{i\geq 1}{\rm Re}\lambda_i&lt;\infty$，则根据<a href="../../../2018/03/RSVP-03/">第三章节</a>,系统算子所对应的$C_0$半群为：<br>$$<br>{\cal T}(t)=\sum_{i=1}^{\infty}e^{\lambda_it}\phi_i\langle\ \cdot\  ,\psi_i\rangle$$</p>
-<p>&emsp;&emsp;因此系统算子$\cal A$存在对应的$C_0$半群。</p>
-<h4 id="Hille-Yoshida定理"><a href="#Hille-Yoshida定理" class="headerlink" title="Hille-Yoshida定理"></a>Hille-Yoshida定理</h4><p>&emsp;&emsp;若$\cal A$是定义在空间$X$上的闭线性算子，并且满足：<br>&emsp;&emsp;1. $D({\cal A})$在$X$上稠密<br>&emsp;&emsp;2. 对所有实$\lambda&gt;\omega$且$\lambda\in\rho({\cal A})$，下式对所有正整数$n$均成立：<br>$$<br>||(\lambda I-{\cal A})^{-n}||\leq{M \over (\lambda-\omega)^n},\ M&gt;0\tag{11}$$</p>
-<p>&emsp;&emsp;则$\cal A$存在对应的$C_0$半群${\cal T(t)}$，且满足$||{\cal T}(t)||\leq Me^{\omega t},\ t\geq 0$。在这里式(9)左侧部分可以看作$C_0$半群的泰勒展开，右侧部分看作指数函数的泰勒展开。若$C_0$半群的泰勒展开每一项都小于等于指数函数，则合起来之后就得到了$||{\cal T}(t)||\leq Me^{\omega t}$。</p>
+<h4 id="Riesz-Spektral系统判别"><a href="#Riesz-Spektral系统判别" class="headerlink" title="Riesz-Spektral系统判别"></a>Riesz-Spektral系统判别</h4><p>&emsp;&emsp;若系统为Riesz-Spektral系统，并且系统算子满足$\sup_{i\geq 1}{\rm Re}\lambda_i&lt;\infty$，则根据<a href="../../../2018/03/RSVP-03/">第三章节</a>,系统算子所对应的$C_0$半群为：</p>
+<script type="math/tex; mode=display">
+{\cal T}(t)=\sum_{i=1}^{\infty}e^{\lambda_it}\phi_i\langle\ \cdot\  ,\psi_i\rangle</script><p>&emsp;&emsp;因此系统算子$\cal A$存在对应的$C_0$半群。</p>
+<h4 id="Hille-Yoshida定理"><a href="#Hille-Yoshida定理" class="headerlink" title="Hille-Yoshida定理"></a>Hille-Yoshida定理</h4><p>&emsp;&emsp;若$\cal A$是定义在空间$X$上的闭线性算子，并且满足：<br>&emsp;&emsp;1. $D({\cal A})$在$X$上稠密<br>&emsp;&emsp;2. 对所有实$\lambda&gt;\omega$且$\lambda\in\rho({\cal A})$，下式对所有正整数$n$均成立：</p>
+<script type="math/tex; mode=display">
+||(\lambda I-{\cal A})^{-n}||\leq{M \over (\lambda-\omega)^n},\ M>0\tag{11}</script><p>&emsp;&emsp;则$\cal A$存在对应的$C_0$半群${\cal T(t)}$，且满足$||{\cal T}(t)||\leq Me^{\omega t},\ t\geq 0$。在这里式(9)左侧部分可以看作$C_0$半群的泰勒展开，右侧部分看作指数函数的泰勒展开。若$C_0$半群的泰勒展开每一项都小于等于指数函数，则合起来之后就得到了$||{\cal T}(t)||\leq Me^{\omega t}$。</p>
 <h4 id="Lumer-Phillips定理"><a href="#Lumer-Phillips定理" class="headerlink" title="Lumer-Phillips定理"></a>Lumer-Phillips定理</h4><p>&emsp;&emsp;若$\cal A$是定义在空间$X$上的闭线性算子，并且满足：<br>&emsp;&emsp;1. $D({\cal A})$在$X$上稠密<br>&emsp;&emsp;2. ${\cal A}$是消散的（disspativ）<br>&emsp;&emsp;3. $\lambda I-{\cal A}$映射为$X$，其中$\lambda$为任意正数<br>&emsp;&emsp;则$\cal A$存在对应的$C_0$半群${\cal T}(t)$，且满足$||{\cal T}(t)||\leq 1,\ t\geq 0$。这样的$C_0$半群也叫收缩半群（Kontraktionshalbgruppe）</p>
 <p>&emsp;&emsp;在这里我们不去证明它们。我们只需要使用它们来证明系统算子$\cal A$对应的$C_0$半群存在，就可以判定系统初值问题为适定性问题，它的解存在且唯一，并且连续地取决于初始条件。</p>
-<h3 id="二阶系统适定性条件"><a href="#二阶系统适定性条件" class="headerlink" title="二阶系统适定性条件"></a>二阶系统适定性条件</h3><h4 id="二阶系统"><a href="#二阶系统" class="headerlink" title="二阶系统"></a>二阶系统</h4><p>&emsp;&emsp;二阶系统相对比较复杂，这里我们以弹性梁（Elastischer Balken）系统为例：<br><img src="%5Cimages%5CRSVP_04_Elastischer_Balken.PNG" alt="弹性梁系统"><br>&emsp;&emsp;一般来说，弹性梁系统可以表示为如下形式：<br>$$<br>\begin{eqnarray}<br>\ddot{w}(t)+{\cal D}\dot{w}(t)+{\cal S}w(t)&amp;=&amp;{\cal G}u(t),\ &amp;t&gt;0&amp;\tag{12}\<br>y(t)&amp;=&amp;{\cal H}_0w(t)+{\cal H}_1\dot{w}(t),\ &amp;t\geq 0\tag{13}&amp;<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;其中：<br>&emsp;&emsp;$\circ$ 状态变量$w(t)={w(z,t),\ z\in\Omega}$，表示$z$点处梁的形变量；<br>&emsp;&emsp;$\circ$ 算子${\cal S}h={\rm d}_z^4h:D({\cal S})\subset H\to H$；<br>&emsp;&emsp;$\circ$ 阻尼算子${\cal D}:D({\cal D})\subset H\to H$，通常${\cal D}=0$或${\cal S}^{1\over 2}$；<br>&emsp;&emsp;$\circ$ 输入算子${\cal G}:\Bbb{C}^p\to H$；<br>&emsp;&emsp;$\circ$ 输出算子${\cal H}_0:H\to \Bbb{C}^m$与${\cal H}_1:H\to \Bbb{C}^m$。</p>
-<p>&emsp;&emsp;我们定义状态变量：<br>$$<br>\begin{split}<br>x_1(t)&amp;={w(z,t),\ z\in\Omega}\<br>x_2(t)&amp;={\partial_tw(z,t),\ z\in\Omega}<br>\end{split}$$</p>
-<p>&emsp;&emsp;设系统算子$\cal A$：<br>$$<br>{\cal A}=\begin{bmatrix}0 &amp; I\ -{\cal S} &amp; -{\cal D}\end{bmatrix},\ D({\cal A})=\left{\begin{bmatrix}h_1\h_2\end{bmatrix}\in\begin{bmatrix}D({\cal S}^{ {1\over 2} })\D({\cal S}^{ {1\over 2} })\end{bmatrix}|{\cal S}(h_1+{\cal S}^{-1}{\cal D}h_2)\in H\right}$$</p>
-<p>&emsp;&emsp;输入算子$\cal B$和输出算子$\cal C$：<br>$$<br>{\cal B}=\begin{bmatrix}0\{\cal G}\end{bmatrix},\ {\cal C}=\begin{bmatrix}{\cal H}_0 &amp; {\cal H}_1\end{bmatrix}$$</p>
-<p>&emsp;&emsp;我们就得到了式(1)(2)形式的状态参数方程。现在我们还需要定义状态变量的内积，使得状态空间是个Hilbert空间（有内积的完备空间）。若选择标准内积：<br>$$<br>\begin{split}<br>\left\langle\begin{bmatrix}x_1\x_2\end{bmatrix}\begin{bmatrix}y_1\y_2\end{bmatrix}\right\rangle=&amp;\langle x_1,y_1\rangle_H+\langle x_2,y_2\rangle_H,\<br>&amp;x_1,y_1\in H,\ x_2,y_2\in H<br>\end{split}\tag{14}$$</p>
-<p>&emsp;&emsp;则状态变量$x(t)$的范数平方为：<br>$$<br>\begin{split}<br>||x(t)||^2&amp;=\langle x_1(t),x_1(t)\rangle_H+\langle x_2(t),x_2(t)\rangle_H\<br>&amp;=\int_0^1(w(z,t))^2{\rm d}z+\int_0^1(\partial_tw(z,t))^2{\rm d}z<br>\end{split}\tag{15}$$</p>
-<p>&emsp;&emsp;而根据物理公式，我们可以将弹性梁的动能及势能用$w(z,t)$表示出来：<br>$$<br>\begin{eqnarray}<br>E_{kin}(t)&amp;=&amp;{1\over 2}\int_0^1(\partial_tw(z,t))^2{\rm d}z\tag{16}\<br>E_{pot}(t)&amp;=&amp;{1\over 2}\int_0^1(\partial_z^2w(z,t))^2{\rm d}z\tag{17}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;比较式(15)~(17)，我们发现梁的总能量无法用状态变量的范数平方$||x(t)||^2$来表示。因此我们重新定义内积：<br>$$<br>\begin{split}<br>\left\langle\begin{bmatrix}x_1\x_2\end{bmatrix}\begin{bmatrix}y_1\y_2\end{bmatrix}\right\rangle=&amp;\langle {\cal S}^{1 \over 2}x_1, {\cal S}^{1 \over 2}y_1\rangle_H+\langle x_2,y_2\rangle_H,\<br>&amp;x_1,y_1\in D({\cal S}^{1 \over 2}),\ x_2,y_2\in H<br>\end{split}\tag{18}$$</p>
-<p>&emsp;&emsp;则状态变量$x(t)$的范数平方为：<br>$$<br>\begin{split}<br>||x(t)||^2&amp;=\langle{\cal S}^{1\over 2}x_1(t),{\cal S}^{1\over 2}x_1(t)\rangle_H+\langle x_2(t),x_2(t)\rangle_H\<br>&amp;=\int_0^1(\partial_z^2w(z,t))^2{\rm d}z+\int_0^1(\partial_tw(z,t))^2{\rm d}z\<br>&amp;=2E_{pot}(t)+2E_{kin}(t)<br>\end{split}\tag{19}$$</p>
-<p>&emsp;&emsp;式(19)可知，梁的总能量能使用式(18)内积得到的范数平方能表示，因此式(18)又被称为能量内积（Energie-Skalarprodukt）。为了判定系统算子$\cal A$对应的$C_0$半群存在，我们使用Lumer-Phillips定理。由于系统算子$\cal A$是二阶的，难以直接操作，因此下面分别从条件二与条件三入手进行推导（条件一是普遍满足的）。</p>
-<h4 id="条件二：-cal-A-的消散性"><a href="#条件二：-cal-A-的消散性" class="headerlink" title="条件二：$\cal A$的消散性"></a>条件二：$\cal A$的消散性</h4><p>&emsp;&emsp;消散性是指系统能量只会降低不会升高。式(19)中范数平方可以表示弹性梁系统的总能量，因此设能量函数$V(x)$为：<br>$$<br>V(x)=||x(t)||^2\tag{20}$$</p>
-<p>&emsp;&emsp;将能量函数对$t$求导，得到：<br>$$<br>\begin{split}<br>\dot{V}(x)&amp;=\langle\dot{x},x\rangle+\langle x,\dot{x}\rangle\<br>&amp;=\langle\dot{x},x\rangle+\overline{\langle\dot{x},x\rangle}\<br>&amp;=2{\rm Re}\langle\dot{x},x\rangle\<br>&amp;=2{\rm Re}\langle{\cal A}x,x\rangle<br>\end{split}\tag{21}$$</p>
-<p>&emsp;&emsp;由于系统要求是消散的，因此能量函数的导数要小于等于$0$，我们得到：<br>$$<br>\dot{V}(x)=2{\rm Re}\langle{\cal A}x,x\rangle\leq 0\tag{22}$$</p>
-<p>&emsp;&emsp;此时系统Lyapunov稳定：<br>$$<br>\begin{split}<br>\dot{V}(x)&amp;={\rm d}_t||x(t)||^2=2||x(t)||{\rm d}_t||x(t)||\leq 0\<br>&amp;\Rightarrow {\rm d}_t||x(t)||\leq 0\<br>&amp;\Rightarrow ||x(t)||\leq ||x(0)||<br>\end{split}$$</p>
-<p>&emsp;&emsp;得到系统的解是收缩的（kontraktiv），因此Lumer-Phillips定理最终得到的$C_0$半群也叫收缩半群。综上系统算子$\cal A$消散的条件为：<br>&emsp;&emsp;$\circ$ ${\cal S}^{1\over 2}$存在且唯一<br>&emsp;&emsp;$\circ$ ${\rm Re}\langle{\cal A}x,x\rangle\leq 0$</p>
-<p>&emsp;&emsp;对于第一个条件，我们可以用如下定理得到：<br>$$\cal S为正算子\Leftrightarrow{\cal S}={\cal S}^{1\over 2}\cdot{\cal S}^{1\over 2}$$</p>
-<p>&emsp;&emsp;其中${\cal S}^{1\over 2}$为根算子（Wurzeloperator），它存在唯一，并且也是正算子。其中正算子定义为：若$\cal S$为自伴随算子，且满足：<br>$$\langle{\cal S}h,h\rangle_H&gt;0$$</p>
-<p>&emsp;&emsp;则称$\cal S$为正算子。因此第一个条件可以转化为证明$\cal S$为正算子。<br>&emsp;&emsp;对于第二个条件，我们将$\cal A$的定义带入得到：<br>$$<br>\begin{split}<br>{\rm Re}\langle{\cal A}h,h\rangle&amp;={\rm Re}\left\langle\begin{bmatrix}0 &amp; I \ -{\cal S} &amp; -{\cal D}\end{bmatrix}\begin{bmatrix}h_1\h_2\end{bmatrix},\begin{bmatrix}h_1\h_2\end{bmatrix}\right\rangle\<br>&amp;={\rm Re}\langle{\cal S}^{1\over 2}h_2,{\cal S}^{1\over 2}h_1\rangle_H+{\rm Re}\langle -{\cal S}h_1-{\cal D}h_2,h_2\rangle_H\<br>&amp;={\rm Re}\langle{\cal S}^{1\over 2}h_2,{\cal S}^{1\over 2}h_1\rangle_H-{\rm Re}\langle {\cal S}h_1,h_2\rangle_H-{\rm Re}\langle {\cal D}h_2,h_2\rangle_H\<br>&amp;={\rm Re}\langle{\cal S}^{1\over 2}h_2,{\cal S}^{1\over 2}h_1\rangle_H-{\rm Re}\langle{\cal S}^{1\over 2}h_1,{\cal S}^{1\over 2}h_2\rangle_H-{\rm Re}\langle {\cal D}h_2,h_2\rangle_H\<br>&amp;=-{\rm Re}\langle {\cal D}h_2,h_2\rangle_H\leq 0<br>\end{split}$$</p>
-<p>&emsp;&emsp;其中用到了$\cal S$的正算子性质：<br>$$<br>\begin{split}<br>{\rm Re}\langle {\cal S}h_1,h_2\rangle_H&amp;={\rm Re}\langle{\cal S}^{1\over 2}{\cal S}^{1\over 2}h_1,h_2\rangle_H\<br>&amp;={\rm Re}\langle{\cal S}^{1\over 2}h_1,{\cal S}^{1\over 2}h_2\rangle_H<br>\end{split}$$</p>
-<p>&emsp;&emsp;以及内积的性质：<br>$$<br>\begin{split}<br>{\rm Re}\langle{\cal S}^{1\over 2}h_1,{\cal S}^{1\over 2}h_2\rangle_H&amp;={\rm Re}\overline{\langle{\cal S}^{1\over 2}h_2,{\cal S}^{1\over 2}h_1\rangle}_H\<br>&amp;={\rm Re}\langle{\cal S}^{1\over 2}h_2,{\cal S}^{1\over 2}h_1\rangle_H<br>\end{split}$$</p>
-<p>&emsp;&emsp;第二个条件最后转化为了：<br>$$<br>{\rm Re}\langle {\cal D}h_2,h_2\rangle_H\geq 0\tag{23}$$</p>
-<p>&emsp;&emsp;因此$\cal A$的消散性最终得到了以下两个条件：<br>&emsp;&emsp;$\circ$ $\cal S$为正算子<br>&emsp;&emsp;$\circ$ ${\rm Re}\langle {\cal D}h_2,h_2\rangle_H\geq 0$</p>
-<h4 id="条件三：-lambda-I-cal-A-to-X"><a href="#条件三：-lambda-I-cal-A-to-X" class="headerlink" title="条件三：$\lambda I-{\cal A}\to X$"></a>条件三：$\lambda I-{\cal A}\to X$</h4><p>&emsp;&emsp;若系统算子$\cal A$存在逆算子${\cal A}^{-1}$，则条件“$\lambda I-{\cal A}\to X$”等价于“${\cal A}^{-1}$为有界线性算子”。若不存在逆算子，则未解。因此我们可以将条件三转化${\cal A}^{-1}$存在且为有界线性算子，带入$\cal A$定义来求解${\cal A}^{-1}$：<br>$$<br>\begin{split}<br>{\cal A}x=y&amp;\Rightarrow\begin{bmatrix}0 &amp; I \ -{\cal S} &amp; -{\cal D}\end{bmatrix}\begin{bmatrix}x_1\x_2\end{bmatrix}=\begin{bmatrix}y_1\y_2\end{bmatrix}<br>\end{split}$$</p>
-<p>&emsp;&emsp;将矩阵展开得到：<br>$$<br>\begin{split}<br>&amp;\begin{cases}<br>x_2=y_1\<br>-{\cal S}x_1-{\cal D}x_2=y_2<br>\end{cases}\<br>\Rightarrow &amp;\begin{cases}<br>x_2=y_1\<br>-{\cal S}x_1={\cal D}x_2+y_2={\cal D}y_1+y_2<br>\end{cases}\<br>\Rightarrow &amp;\begin{cases}<br>x_2=y_1\<br>x_1=-{\cal S}^{-1}{\cal D}y_1-{\cal S}^{-1}y_2<br>\end{cases}<br>\end{split}$$</p>
-<p>&emsp;&emsp;化为矩阵形式得到：<br>$$<br>\begin{bmatrix}-{\cal S}^{-1}{\cal D} &amp; -{\cal S}^{-1} \ I &amp; 0\end{bmatrix}\begin{bmatrix}y_1\y_2\end{bmatrix}=\begin{bmatrix}x_1\x_2\end{bmatrix}\Rightarrow{\cal A}^{-1}y=x$$</p>
-<p>&emsp;&emsp;则可以得到系统算子$\cal A$的逆算子${\cal A}^{-1}$表示为：<br>$$<br>{\cal A}^{-1}=\begin{bmatrix}-{\cal S}^{-1}{\cal D} &amp; -{\cal S}^{-1} \ I &amp; 0\end{bmatrix}\tag{24}$$</p>
-<p>&emsp;&emsp;根据式(24)，${\cal A}^{-1}$存在要求${\cal S}^{-1}$存在；${\cal A}^{-1}$为有界线性算子则要求${\cal S}^{-1}{\cal D}$与${\cal S}^{-1}$均为有界线性算子。因此条件$\lambda I-{\cal A}\to X$最终也转化为了两个条件：<br>&emsp;&emsp;$\circ$ ${\cal S}^{-1}$存在且为有界线性算子<br>&emsp;&emsp;$\circ$ ${\cal S}^{-1}{\cal D}$为有界线性算子</p>
+<h3 id="二阶系统适定性条件"><a href="#二阶系统适定性条件" class="headerlink" title="二阶系统适定性条件"></a>二阶系统适定性条件</h3><h4 id="二阶系统"><a href="#二阶系统" class="headerlink" title="二阶系统"></a>二阶系统</h4><p>&emsp;&emsp;二阶系统相对比较复杂，这里我们以弹性梁（Elastischer Balken）系统为例：<br><img src="\images\RSVP_04_Elastischer_Balken.PNG" alt="弹性梁系统"><br>&emsp;&emsp;一般来说，弹性梁系统可以表示为如下形式：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\ddot{w}(t)+{\cal D}\dot{w}(t)+{\cal S}w(t)&=&{\cal G}u(t),\ &t>0&\tag{12}\\
+y(t)&=&{\cal H}_0w(t)+{\cal H}_1\dot{w}(t),\ &t\geq 0\tag{13}&
+\end{eqnarray}</script><p>&emsp;&emsp;其中：<br>&emsp;&emsp;$\circ$ 状态变量$w(t)=\{w(z,t),\ z\in\Omega\}$，表示$z$点处梁的形变量；<br>&emsp;&emsp;$\circ$ 算子${\cal S}h={\rm d}_z^4h:D({\cal S})\subset H\to H$；<br>&emsp;&emsp;$\circ$ 阻尼算子${\cal D}:D({\cal D})\subset H\to H$，通常${\cal D}=0$或${\cal S}^{1\over 2}$；<br>&emsp;&emsp;$\circ$ 输入算子${\cal G}:\Bbb{C}^p\to H$；<br>&emsp;&emsp;$\circ$ 输出算子${\cal H}_0:H\to \Bbb{C}^m$与${\cal H}_1:H\to \Bbb{C}^m$。</p>
+<p>&emsp;&emsp;我们定义状态变量：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+x_1(t)&=\{w(z,t),\ z\in\Omega\}\\
+x_2(t)&=\{\partial_tw(z,t),\ z\in\Omega\}
+\end{split}</script><p>&emsp;&emsp;设系统算子$\cal A$：</p>
+<script type="math/tex; mode=display">
+{\cal A}=\begin{bmatrix}0 & I\\ -{\cal S} & -{\cal D}\end{bmatrix},\ D({\cal A})=\left\{\begin{bmatrix}h_1\\h_2\end{bmatrix}\in\begin{bmatrix}D({\cal S}^{ {1\over 2} })\\D({\cal S}^{ {1\over 2} })\end{bmatrix}|{\cal S}(h_1+{\cal S}^{-1}{\cal D}h_2)\in H\right\}</script><p>&emsp;&emsp;输入算子$\cal B$和输出算子$\cal C$：</p>
+<script type="math/tex; mode=display">
+{\cal B}=\begin{bmatrix}0\\{\cal G}\end{bmatrix},\ {\cal C}=\begin{bmatrix}{\cal H}_0 & {\cal H}_1\end{bmatrix}</script><p>&emsp;&emsp;我们就得到了式(1)(2)形式的状态参数方程。现在我们还需要定义状态变量的内积，使得状态空间是个Hilbert空间（有内积的完备空间）。若选择标准内积：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\left\langle\begin{bmatrix}x_1\\x_2\end{bmatrix}\begin{bmatrix}y_1\\y_2\end{bmatrix}\right\rangle=&\langle x_1,y_1\rangle_H+\langle x_2,y_2\rangle_H,\\
+&x_1,y_1\in H,\ x_2,y_2\in H
+\end{split}\tag{14}</script><p>&emsp;&emsp;则状态变量$x(t)$的范数平方为：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+||x(t)||^2&=\langle x_1(t),x_1(t)\rangle_H+\langle x_2(t),x_2(t)\rangle_H\\
+&=\int_0^1(w(z,t))^2{\rm d}z+\int_0^1(\partial_tw(z,t))^2{\rm d}z
+\end{split}\tag{15}</script><p>&emsp;&emsp;而根据物理公式，我们可以将弹性梁的动能及势能用$w(z,t)$表示出来：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+E_{kin}(t)&=&{1\over 2}\int_0^1(\partial_tw(z,t))^2{\rm d}z\tag{16}\\
+E_{pot}(t)&=&{1\over 2}\int_0^1(\partial_z^2w(z,t))^2{\rm d}z\tag{17}
+\end{eqnarray}</script><p>&emsp;&emsp;比较式(15)~(17)，我们发现梁的总能量无法用状态变量的范数平方$||x(t)||^2$来表示。因此我们重新定义内积：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\left\langle\begin{bmatrix}x_1\\x_2\end{bmatrix}\begin{bmatrix}y_1\\y_2\end{bmatrix}\right\rangle=&\langle {\cal S}^{1 \over 2}x_1, {\cal S}^{1 \over 2}y_1\rangle_H+\langle x_2,y_2\rangle_H,\\
+&x_1,y_1\in D({\cal S}^{1 \over 2}),\ x_2,y_2\in H
+\end{split}\tag{18}</script><p>&emsp;&emsp;则状态变量$x(t)$的范数平方为：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+||x(t)||^2&=\langle{\cal S}^{1\over 2}x_1(t),{\cal S}^{1\over 2}x_1(t)\rangle_H+\langle x_2(t),x_2(t)\rangle_H\\
+&=\int_0^1(\partial_z^2w(z,t))^2{\rm d}z+\int_0^1(\partial_tw(z,t))^2{\rm d}z\\
+&=2E_{pot}(t)+2E_{kin}(t)
+\end{split}\tag{19}</script><p>&emsp;&emsp;式(19)可知，梁的总能量能使用式(18)内积得到的范数平方能表示，因此式(18)又被称为能量内积（Energie-Skalarprodukt）。为了判定系统算子$\cal A$对应的$C_0$半群存在，我们使用Lumer-Phillips定理。由于系统算子$\cal A$是二阶的，难以直接操作，因此下面分别从条件二与条件三入手进行推导（条件一是普遍满足的）。</p>
+<h4 id="条件二：-cal-A-的消散性"><a href="#条件二：-cal-A-的消散性" class="headerlink" title="条件二：$\cal A$的消散性"></a>条件二：$\cal A$的消散性</h4><p>&emsp;&emsp;消散性是指系统能量只会降低不会升高。式(19)中范数平方可以表示弹性梁系统的总能量，因此设能量函数$V(x)$为：</p>
+<script type="math/tex; mode=display">
+V(x)=||x(t)||^2\tag{20}</script><p>&emsp;&emsp;将能量函数对$t$求导，得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\dot{V}(x)&=\langle\dot{x},x\rangle+\langle x,\dot{x}\rangle\\
+&=\langle\dot{x},x\rangle+\overline{\langle\dot{x},x\rangle}\\
+&=2{\rm Re}\langle\dot{x},x\rangle\\
+&=2{\rm Re}\langle{\cal A}x,x\rangle
+\end{split}\tag{21}</script><p>&emsp;&emsp;由于系统要求是消散的，因此能量函数的导数要小于等于$0$，我们得到：</p>
+<script type="math/tex; mode=display">
+\dot{V}(x)=2{\rm Re}\langle{\cal A}x,x\rangle\leq 0\tag{22}</script><p>&emsp;&emsp;此时系统Lyapunov稳定：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\dot{V}(x)&={\rm d}_t||x(t)||^2=2||x(t)||{\rm d}_t||x(t)||\leq 0\\
+&\Rightarrow {\rm d}_t||x(t)||\leq 0\\
+&\Rightarrow ||x(t)||\leq ||x(0)||
+\end{split}</script><p>&emsp;&emsp;得到系统的解是收缩的（kontraktiv），因此Lumer-Phillips定理最终得到的$C_0$半群也叫收缩半群。综上系统算子$\cal A$消散的条件为：<br>&emsp;&emsp;$\circ$ ${\cal S}^{1\over 2}$存在且唯一<br>&emsp;&emsp;$\circ$ ${\rm Re}\langle{\cal A}x,x\rangle\leq 0$</p>
+<p>&emsp;&emsp;对于第一个条件，我们可以用如下定理得到：</p>
+<script type="math/tex; mode=display">\cal S为正算子\Leftrightarrow{\cal S}={\cal S}^{1\over 2}\cdot{\cal S}^{1\over 2}</script><p>&emsp;&emsp;其中${\cal S}^{1\over 2}$为根算子（Wurzeloperator），它存在唯一，并且也是正算子。其中正算子定义为：若$\cal S$为自伴随算子，且满足：</p>
+<script type="math/tex; mode=display">\langle{\cal S}h,h\rangle_H>0</script><p>&emsp;&emsp;则称$\cal S$为正算子。因此第一个条件可以转化为证明$\cal S$为正算子。<br>&emsp;&emsp;对于第二个条件，我们将$\cal A$的定义带入得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+{\rm Re}\langle{\cal A}h,h\rangle&={\rm Re}\left\langle\begin{bmatrix}0 & I \\ -{\cal S} & -{\cal D}\end{bmatrix}\begin{bmatrix}h_1\\h_2\end{bmatrix},\begin{bmatrix}h_1\\h_2\end{bmatrix}\right\rangle\\
+&={\rm Re}\langle{\cal S}^{1\over 2}h_2,{\cal S}^{1\over 2}h_1\rangle_H+{\rm Re}\langle -{\cal S}h_1-{\cal D}h_2,h_2\rangle_H\\
+&={\rm Re}\langle{\cal S}^{1\over 2}h_2,{\cal S}^{1\over 2}h_1\rangle_H-{\rm Re}\langle {\cal S}h_1,h_2\rangle_H-{\rm Re}\langle {\cal D}h_2,h_2\rangle_H\\
+&={\rm Re}\langle{\cal S}^{1\over 2}h_2,{\cal S}^{1\over 2}h_1\rangle_H-{\rm Re}\langle{\cal S}^{1\over 2}h_1,{\cal S}^{1\over 2}h_2\rangle_H-{\rm Re}\langle {\cal D}h_2,h_2\rangle_H\\
+&=-{\rm Re}\langle {\cal D}h_2,h_2\rangle_H\leq 0
+\end{split}</script><p>&emsp;&emsp;其中用到了$\cal S$的正算子性质：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+{\rm Re}\langle {\cal S}h_1,h_2\rangle_H&={\rm Re}\langle{\cal S}^{1\over 2}{\cal S}^{1\over 2}h_1,h_2\rangle_H\\
+&={\rm Re}\langle{\cal S}^{1\over 2}h_1,{\cal S}^{1\over 2}h_2\rangle_H
+\end{split}</script><p>&emsp;&emsp;以及内积的性质：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+{\rm Re}\langle{\cal S}^{1\over 2}h_1,{\cal S}^{1\over 2}h_2\rangle_H&={\rm Re}\overline{\langle{\cal S}^{1\over 2}h_2,{\cal S}^{1\over 2}h_1\rangle}_H\\
+&={\rm Re}\langle{\cal S}^{1\over 2}h_2,{\cal S}^{1\over 2}h_1\rangle_H
+\end{split}</script><p>&emsp;&emsp;第二个条件最后转化为了：</p>
+<script type="math/tex; mode=display">
+{\rm Re}\langle {\cal D}h_2,h_2\rangle_H\geq 0\tag{23}</script><p>&emsp;&emsp;因此$\cal A$的消散性最终得到了以下两个条件：<br>&emsp;&emsp;$\circ$ $\cal S$为正算子<br>&emsp;&emsp;$\circ$ ${\rm Re}\langle {\cal D}h_2,h_2\rangle_H\geq 0$</p>
+<h4 id="条件三：-lambda-I-cal-A-to-X"><a href="#条件三：-lambda-I-cal-A-to-X" class="headerlink" title="条件三：$\lambda I-{\cal A}\to X$"></a>条件三：$\lambda I-{\cal A}\to X$</h4><p>&emsp;&emsp;若系统算子$\cal A$存在逆算子${\cal A}^{-1}$，则条件“$\lambda I-{\cal A}\to X$”等价于“${\cal A}^{-1}$为有界线性算子”。若不存在逆算子，则未解。因此我们可以将条件三转化${\cal A}^{-1}$存在且为有界线性算子，带入$\cal A$定义来求解${\cal A}^{-1}$：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+{\cal A}x=y&\Rightarrow\begin{bmatrix}0 & I \\ -{\cal S} & -{\cal D}\end{bmatrix}\begin{bmatrix}x_1\\x_2\end{bmatrix}=\begin{bmatrix}y_1\\y_2\end{bmatrix}
+\end{split}</script><p>&emsp;&emsp;将矩阵展开得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+&\begin{cases}
+x_2=y_1\\
+-{\cal S}x_1-{\cal D}x_2=y_2
+\end{cases}\\
+\Rightarrow &\begin{cases}
+x_2=y_1\\
+-{\cal S}x_1={\cal D}x_2+y_2={\cal D}y_1+y_2
+\end{cases}\\
+\Rightarrow &\begin{cases}
+x_2=y_1\\
+x_1=-{\cal S}^{-1}{\cal D}y_1-{\cal S}^{-1}y_2
+\end{cases}
+\end{split}</script><p>&emsp;&emsp;化为矩阵形式得到：</p>
+<script type="math/tex; mode=display">
+\begin{bmatrix}-{\cal S}^{-1}{\cal D} & -{\cal S}^{-1} \\ I & 0\end{bmatrix}\begin{bmatrix}y_1\\y_2\end{bmatrix}=\begin{bmatrix}x_1\\x_2\end{bmatrix}\Rightarrow{\cal A}^{-1}y=x</script><p>&emsp;&emsp;则可以得到系统算子$\cal A$的逆算子${\cal A}^{-1}$表示为：</p>
+<script type="math/tex; mode=display">
+{\cal A}^{-1}=\begin{bmatrix}-{\cal S}^{-1}{\cal D} & -{\cal S}^{-1} \\ I & 0\end{bmatrix}\tag{24}</script><p>&emsp;&emsp;根据式(24)，${\cal A}^{-1}$存在要求${\cal S}^{-1}$存在；${\cal A}^{-1}$为有界线性算子则要求${\cal S}^{-1}{\cal D}$与${\cal S}^{-1}$均为有界线性算子。因此条件$\lambda I-{\cal A}\to X$最终也转化为了两个条件：<br>&emsp;&emsp;$\circ$ ${\cal S}^{-1}$存在且为有界线性算子<br>&emsp;&emsp;$\circ$ ${\cal S}^{-1}{\cal D}$为有界线性算子</p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>&emsp;&emsp;通过上面的推导，我们将Lumer-Phillips定理转化为了以下四个条件：<br>&emsp;&emsp;$\circ$ $\cal S$为正算子<br>&emsp;&emsp;$\circ$ ${\rm Re}\langle {\cal D}h_2,h_2\rangle_H\geq 0$<br>&emsp;&emsp;$\circ$ ${\cal S}^{-1}$存在且为有界线性算子<br>&emsp;&emsp;$\circ$ ${\cal S}^{-1}{\cal D}$为有界线性算子</p>
-<p>&emsp;&emsp;在这里我们引入正定算子的概念：若算子$\cal S$为自伴随算子，且满足：<br>$$<br>\langle{\cal S}h,h\rangle_H\geq \epsilon||h||^2_H,\ \epsilon&gt;0,\ \forall h\in D({\cal S})\tag{25}$$</p>
-<p>&emsp;&emsp;则称$\cal S$为正定算子。<br>&emsp;&emsp;若$\cal S$为正定算子，根据定义，显然$\cal S$是正算子；同时可以证明$\cal S^{-1}$为有界线性算子，其过程如下：<br>$$<br>\begin{split}<br>&amp;取h={\cal S}^{-1}h\<br>\Rightarrow &amp;\langle{\cal S}{\cal S}^{-1}h,{\cal S}^{-1}h\rangle_H\geq\epsilon||{\cal S}^{-1}h||^2_H\<br>\Rightarrow &amp;||{\cal S}^{-1}h||^2_H\leq{1\over\epsilon}\langle{\cal S}{\cal S}^{-1}h,{\cal S}^{-1}h\rangle_H\leq{1\over\epsilon}\left(\langle h,h\rangle\langle{\cal S}^{-1}h,{\cal S}^{-1}h\rangle\right)^{1\over 2}={1\over\epsilon}||h||\cdot||{\cal S}^{-1}h||\<br>\Rightarrow &amp;||{\cal S}^{-1}h||_ H\leq{1\over\epsilon}||h||\<br>\Rightarrow &amp;{\cal S}^{-1}有界<br>\end{split}$$</p>
-<p>&emsp;&emsp;上述证明过程中用到了柯西-施瓦茨不等式（Cauchy-Schwarz inequality）：<br>$$<br>|\langle x,y\rangle|^2\leq \langle x,x\rangle\cdot\langle y,y\rangle$$</p>
-<p>&emsp;&emsp;因此可以将条件“$\cal S$为正算子”与“${\cal S}^{-1}$存在且为有界线性算子”合并为一个条件“$\cal S$为正定算子”。最终我们需要证明的条件为：<br>&emsp;&emsp;1. $\cal S$为正定算子<br>&emsp;&emsp;2. ${\rm Re}\langle {\cal D}h_2,h_2\rangle_H\geq 0$<br>&emsp;&emsp;3. ${\cal S}^{-1}{\cal D}$为有界线性算子</p>
+<p>&emsp;&emsp;在这里我们引入正定算子的概念：若算子$\cal S$为自伴随算子，且满足：</p>
+<script type="math/tex; mode=display">
+\langle{\cal S}h,h\rangle_H\geq \epsilon||h||^2_H,\ \epsilon>0,\ \forall h\in D({\cal S})\tag{25}</script><p>&emsp;&emsp;则称$\cal S$为正定算子。<br>&emsp;&emsp;若$\cal S$为正定算子，根据定义，显然$\cal S$是正算子；同时可以证明$\cal S^{-1}$为有界线性算子，其过程如下：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+&取h={\cal S}^{-1}h\\
+\Rightarrow &\langle{\cal S}{\cal S}^{-1}h,{\cal S}^{-1}h\rangle_H\geq\epsilon||{\cal S}^{-1}h||^2_H\\
+\Rightarrow &||{\cal S}^{-1}h||^2_H\leq{1\over\epsilon}\langle{\cal S}{\cal S}^{-1}h,{\cal S}^{-1}h\rangle_H\leq{1\over\epsilon}\left(\langle h,h\rangle\langle{\cal S}^{-1}h,{\cal S}^{-1}h\rangle\right)^{1\over 2}={1\over\epsilon}||h||\cdot||{\cal S}^{-1}h||\\
+\Rightarrow &||{\cal S}^{-1}h||_ H\leq{1\over\epsilon}||h||\\
+\Rightarrow &{\cal S}^{-1}有界
+\end{split}</script><p>&emsp;&emsp;上述证明过程中用到了柯西-施瓦茨不等式（Cauchy-Schwarz inequality）：</p>
+<script type="math/tex; mode=display">
+|\langle x,y\rangle|^2\leq \langle x,x\rangle\cdot\langle y,y\rangle</script><p>&emsp;&emsp;因此可以将条件“$\cal S$为正算子”与“${\cal S}^{-1}$存在且为有界线性算子”合并为一个条件“$\cal S$为正定算子”。最终我们需要证明的条件为：<br>&emsp;&emsp;1. $\cal S$为正定算子<br>&emsp;&emsp;2. ${\rm Re}\langle {\cal D}h_2,h_2\rangle_H\geq 0$<br>&emsp;&emsp;3. ${\cal S}^{-1}{\cal D}$为有界线性算子</p>
 <p>&emsp;&emsp;在实际计算中，我们可以先通过定义得到条件1，并判断条件2。若都成立，则可以说明$\cal A$是消散的。再根据式(22)的推导过程得到$\cal A^{-1}$，并判断条件3。若成立，则可以说明${\cal A}^{-1}$存在且为有界线性算子，并且$\lambda I-{\cal A}\to X$成立。最后综合上述结论，根据Lumer-Phillips定理判断系统的适定性。由于${\cal D}$通常为$0$或${\cal S}^{1\over 2}$，因此条件2、3通常满足，因此实际需要判断的也就是条件1：$\cal S$为正定算子。</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
 <li>$C_0$半群与无穷小母元一一对应，因此可以通过系统算子对应的$C_0$半群是否存在来判断系统初值问题是否为适定性问题。</li>
@@ -303,7 +413,7 @@ var _hmt = _hmt || [];
 
 
 
-    <a data-url="https://haosutopia.github.io/2018/03/RSVP-04/" data-id="ckflt9wny002ceto9h16v93f0" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://haosutopia.github.io/2018/03/RSVP-04/" data-id="ckfndebkz0029f2o972u4entm" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -382,7 +492,7 @@ var _hmt = _hmt || [];
         "dateModified": "2018-04-11",
         "url": "https://haosutopia.github.io/2018/03/RSVP-04/",
         "description": "&emsp;&emsp;在求解微分方程的初值问题时，我们通常要考虑解的存在唯一性，以及解受初始条件的影响。一般来说，我们希望问题的解存在且唯一，并且连续地取决于初始条件（通常无法准确得知状态变量初始值，导致实际应用中会产生一定的偏差。因此我们希望当初始值$x(0)$微小变化时，$x(t)$的变化足够小）。我们称这样的问题为适定性问题（wohlgestelltes Problem）。&emsp;&e",
-        "wordCount": 539
+        "wordCount": 614
     }
 </script>
 

@@ -91,7 +91,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -232,111 +236,116 @@ var _hmt = _hmt || [];
 
             <p>&emsp;&emsp;机器学习中使用最多的算法莫过于神经网络与树形算法了，而树形算法的基础就是决策树（Decision Tree）。决策树是一种基本的分类与回归方法，相对于神经网络这种黑箱，决策树容易理解，并且运行速度快。但由于其结构较为简单，故预测能力有限，无法与强监督学习模型相提并论，需要进一步的优化。</p>
 <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>&emsp;&emsp;决策树的思想与我们在日常生活中进行判断或决策的过程类似。下面以判断“一个人对电脑游戏的喜爱程度”为例：<br><img src="/images/Decision_Tree_01_Example.png" alt="决策树思想"><br>&emsp;&emsp;我们知道，一个人是否喜欢电脑游戏或对电脑游戏的喜爱程度可以通过他/她的年龄、性别、职业等特征来粗略估计。而这些特征的“重要性”是不同的，有些特征对我们判断的帮助更大，因此它们也就更加“重要”（在此例中，若我们发现年龄大的人不喜欢电脑游戏，不论男女和职业，那么年龄对于判断该问题更加“重要”）。在判断中我们会先考虑最“重要”的特征（年龄），再考虑第二“重要”的特征（性别），如此下去，最终得到输出（喜爱程度）。这就是一个最简单的决策树。<br>&emsp;&emsp;上面的例子中我们看出，决策树是一个倒置的树形结构。其中条件判断部分称为内部节点（internal node），决策输出部分称为叶节点（leaf）。虽然在实际中，数据集常常拥有很多特征，决策树也会变得非常庞大，但不可否认该算法使用时的简洁性。根据数据集的输出特性，决策树可以分为两类：分类决策树和回归决策树。分类决策树处理离散输出，而回归决策树处理连续输出。<br>&emsp;&emsp;不难发现，决策树最关键的部分就是各个中间节点。它们对特征取值进行，根据判断结果将样本归入其特定子分支中。中间节点根据判断特征属性分为三种情况：<br>&emsp;&emsp;1. 特征是离散值且不要求生成二叉树（即每个节点只能有两个分支）。此时将特征每个离散值作为一个分支。<br>&emsp;&emsp;2. 特征是离散值且要求生成二叉树。此时将离散值划分为两个子集，每个子集作为一个分支。<br>&emsp;&emsp;3. 特征是连续值。此时需要确定一个特征取值作为分裂点（split point），将特征根据取值大于或小于分裂点分为两种情况，每种情况作为一个分支。<br>&emsp;&emsp;此时决策树的构建就取决于两个核心问题：<strong>如何选择特征？</strong> 以及 <strong>如何选择划分点？</strong> 对此，我们有如下算法来解决这两个问题：ID3、C4.5与CART。</p>
-<h3 id="ID3"><a href="#ID3" class="headerlink" title="ID3"></a>ID3</h3><p>&emsp;&emsp;ID3（Iterative Dichotomiser 3）是一种构建分类决策树的算法。介绍它之前，我们首先要引入信息论中熵（entropy）的概念：熵表示状态的混乱程度，熵越大越混乱，状态的不确定性就越大。对ID3来说，数据集的熵越大，数据集就越“不纯”。若有数据集$D$，将它根据（$m$个）离散输出进行划分，则$D$的熵表示为：<br>$$<br>H(D)=-\sum_{i=1}^{m}p_i\log_2(p_i)$$</p>
-<p>&emsp;&emsp;其中$p_i$表示分类$i$在整个数据集中的概率。若将$D$根据特征$A$划分为$v$个子数据集，每个子数据集的熵亦可由上式求出，则可以求得在经过特征$A$划分后，数据集$D$的期望熵为：<br>$$<br>H(D|A)=\sum_{j=1}^v{|D_j| \over |D|}H(D_j)$$</p>
-<p>&emsp;&emsp;于是划分前后数据集$D$熵的下降值就是该划分的信息增益：<br>$$<br>\Bbb{gain}(D,A)=H(D)-H(D|A)$$</p>
-<p>&emsp;&emsp;在分类问题中，我们希望划分后的子数据集越“纯”，也就是数据集$D$的熵最小，因此我们使用贪婪算法（greedy algorithn），选择信息增益最大的划分。每次划分都会使树长高一层，这样逐步下去，我们就构建了一棵决策树。下面以一个简单的例子来说明划分的选择过程：</p>
+<h3 id="ID3"><a href="#ID3" class="headerlink" title="ID3"></a>ID3</h3><p>&emsp;&emsp;ID3（Iterative Dichotomiser 3）是一种构建分类决策树的算法。介绍它之前，我们首先要引入信息论中熵（entropy）的概念：熵表示状态的混乱程度，熵越大越混乱，状态的不确定性就越大。对ID3来说，数据集的熵越大，数据集就越“不纯”。若有数据集$D$，将它根据（$m$个）离散输出进行划分，则$D$的熵表示为：</p>
+<script type="math/tex; mode=display">
+H(D)=-\sum_{i=1}^{m}p_i\log_2(p_i)</script><p>&emsp;&emsp;其中$p_i$表示分类$i$在整个数据集中的概率。若将$D$根据特征$A$划分为$v$个子数据集，每个子数据集的熵亦可由上式求出，则可以求得在经过特征$A$划分后，数据集$D$的期望熵为：</p>
+<script type="math/tex; mode=display">
+H(D|A)=\sum_{j=1}^v{|D_j| \over |D|}H(D_j)</script><p>&emsp;&emsp;于是划分前后数据集$D$熵的下降值就是该划分的信息增益：</p>
+<script type="math/tex; mode=display">
+\Bbb{gain}(D,A)=H(D)-H(D|A)</script><p>&emsp;&emsp;在分类问题中，我们希望划分后的子数据集越“纯”，也就是数据集$D$的熵最小，因此我们使用贪婪算法（greedy algorithn），选择信息增益最大的划分。每次划分都会使树长高一层，这样逐步下去，我们就构建了一棵决策树。下面以一个简单的例子来说明划分的选择过程：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
-<th align="center">日志数量</th>
-<th align="center">好友数量</th>
-<th align="center">是否使用真实头像</th>
-<th align="center">帐号是否真实</th>
+<th style="text-align:center">日志数量</th>
+<th style="text-align:center">好友数量</th>
+<th style="text-align:center">是否使用真实头像</th>
+<th style="text-align:center">帐号是否真实</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="center">少</td>
-<td align="center">少</td>
-<td align="center">否</td>
-<td align="center">否</td>
+<tbody>
+<tr>
+<td style="text-align:center">少</td>
+<td style="text-align:center">少</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">否</td>
 </tr>
 <tr>
-<td align="center">少</td>
-<td align="center">多</td>
-<td align="center">是</td>
-<td align="center">是</td>
+<td style="text-align:center">少</td>
+<td style="text-align:center">多</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">是</td>
 </tr>
 <tr>
-<td align="center">多</td>
-<td align="center">中</td>
-<td align="center">是</td>
-<td align="center">是</td>
+<td style="text-align:center">多</td>
+<td style="text-align:center">中</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">是</td>
 </tr>
 <tr>
-<td align="center">中</td>
-<td align="center">中</td>
-<td align="center">是</td>
-<td align="center">是</td>
+<td style="text-align:center">中</td>
+<td style="text-align:center">中</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">是</td>
 </tr>
 <tr>
-<td align="center">多</td>
-<td align="center">中</td>
-<td align="center">是</td>
-<td align="center">是</td>
+<td style="text-align:center">多</td>
+<td style="text-align:center">中</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">是</td>
 </tr>
 <tr>
-<td align="center">中</td>
-<td align="center">多</td>
-<td align="center">否</td>
-<td align="center">是</td>
+<td style="text-align:center">中</td>
+<td style="text-align:center">多</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">是</td>
 </tr>
 <tr>
-<td align="center">中</td>
-<td align="center">少</td>
-<td align="center">否</td>
-<td align="center">否</td>
+<td style="text-align:center">中</td>
+<td style="text-align:center">少</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">否</td>
 </tr>
 <tr>
-<td align="center">多</td>
-<td align="center">中</td>
-<td align="center">否</td>
-<td align="center">是</td>
+<td style="text-align:center">多</td>
+<td style="text-align:center">中</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">是</td>
 </tr>
 <tr>
-<td align="center">中</td>
-<td align="center">少</td>
-<td align="center">否</td>
-<td align="center">是</td>
+<td style="text-align:center">中</td>
+<td style="text-align:center">少</td>
+<td style="text-align:center">否</td>
+<td style="text-align:center">是</td>
 </tr>
 <tr>
-<td align="center">少</td>
-<td align="center">少</td>
-<td align="center">是</td>
-<td align="center">否</td>
+<td style="text-align:center">少</td>
+<td style="text-align:center">少</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">否</td>
 </tr>
-<tr>
-<td align="center">&emsp;&emsp;上表中的数据一共有三个特征：日志数量（L），好友数量（F）以及是否使用真实头像（H）。我们需要通过这三个特征来判断帐号是否真实。首先我们计算数据集的熵。数据集共有10个样本，其中7个是真的，3个是假的，因此数据集的熵为：</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
-<td align="center">$$</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
-<td align="center">H(D)=-(0.7\log_20.7+0.3\log_20.3)\approx 0.812$$</td>
-<td align="center"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-</tbody></table>
-<p>&emsp;&emsp;若根据日志数量进行划分，将样本划分为三个子数据集（多：$D_1$、中：$D_2$、少：$D_3$），则三个子数据集的熵分别为：<br>$$<br>\begin{eqnarray}<br>&amp;H(D_1)&amp;=-({0 \over 3}\log_2{0 \over 3}+{3 \over 3}\log_2{3 \over 3})=0\<br>&amp;H(D_2)&amp;=-({1 \over 4}\log_2{1 \over 4}+{3 \over 4}\log_2{3 \over 4})\approx0.811\<br>&amp;H(D_3)&amp;=-({1 \over 3}\log_2{1 \over 3}+{2 \over 3}\log_2{2 \over 3})\approx0.918<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;划分后的期望熵为：<br>$$<br>H(D|L)=0.3H(D_1)+0.4H(D_2)+0.3H(D_3)\approx0.603$$</p>
-<p>&emsp;&emsp;根据日志数量划分的信息增益为：<br>$$<br>\Bbb{gain}(D,L)=H(D)-H(D|L)=0.209$$</p>
-<p>&emsp;&emsp;同理可以得到$F$与$H$的信息增益分别为0.486与-0.034，因此我们选择好友数量作为第一次划分，以此类推就可以得到一棵决策树了。</p>
-<h3 id="C4-5"><a href="#C4-5" class="headerlink" title="C4.5"></a>C4.5</h3><p>&emsp;&emsp;ID3有一个缺陷，就是它只考虑了子数据集的纯度，但忽略了特征本身的混乱程度。举个极端的情况，若前例数据集中每一个样本都有一个不同的账户ID，那么若以此为特征进行划分，就会将样本分为10个子数据集，每个子数据集只有一个样本，纯度最大。因此ID3会选择账户ID作为划分特征，但这是不可取的。<br>&emsp;&emsp;C4.5提供了一种解决方案，它考虑了特征的熵，并以此将信息增益标准化。特征的熵表示为：<br>$$<br>H_A(D)=-\sum_{j=1}^v{|D_j| \over |D|}\log_2({|D_j| \over |D|})$$</p>
-<p>&emsp;&emsp;标准化后的信息增益为：<br>$$<br>\Bbb{gain}_R(D,A)={\Bbb{gain}(D,A) \over H_A(D)}$$</p>
-<p>&emsp;&emsp;之后就与ID3类似，选择信息增益标准化后最大的划分就可以了。接着之前的例子，我们可以将所得的信息增益标准化。特征$L$的熵为：<br>$$<br>H_L(D)=-(0.3\log_20.3+0.4\log_20.4+0.3\log_20.3)\approx1.571$$</p>
-<p>&emsp;&emsp;因此标准化后的信息增益为：<br>$$<br>\Bbb{gain}_R(D,L)={\Bbb{gain}(D,L) \over H_L(D)}={0.209 \over 1.571}\approx0.133$$</p>
-<p>&emsp;&emsp;同理可以得到$F$与$H$标准化后的信息增益分别为0.319与-0.034，因此我们选择好友数量作为第一次划分，以此类推就可以得到一棵决策树了。</p>
-<h3 id="CART"><a href="#CART" class="headerlink" title="CART"></a>CART</h3><p>&emsp;&emsp;CART（Classification And Regression Tree）是一种二叉决策树，可以对数据分类或者回归。与ID3、C4.5类似，CART也是通过选取最优划分来构建决策树的，但它使用的不是信息增益，而是划分的代价函数。<br>&emsp;&emsp;对于<strong>回归问题</strong>，代价函数表示为两个子数据集真实值与预测值的均方差之和：<br>$$<br>{\rm Regression:} J=\sum_i(y^{(i)}-prediction_1)^2+\sum_j(y^{(j)}-prediction_2)^2$$</p>
-<p>&emsp;&emsp;其中预测值为每个子数据集输出的均值。若中间节点将数据集$D$划分为两个子数据集$D_1$、$D_2$，则$prediction_1$为$D_1$的均值，$prediction_2$为$D_2$的均值。<br>&emsp;&emsp;对于<strong>分类问题</strong>，我们使用Gini系数来表示一个数据集的混乱程度：<br>$$<br>G =\sum_i(p_i(1-p_i))=\sum_ip_i-\sum_ip_i^2=1-\sum_ip_i^2$$</p>
-<p>&emsp;&emsp;其中$p_i$为数据集中相同类别数据的比例。若数据集中只存在一个分类，是最好的情况，此时$G=0$。最糟糕的情况就是数据集中所有类别都有相同的比例，此时$G=1-p_i$。<br>&emsp;&emsp;分类问题的代价函数表示为两个子数据集Gini系数的期望：<br>$$<br>{\rm Classification:} J={|D_1| \over |D|}G_1+{|D_2| \over |D|}G_2$$</p>
-<p>&emsp;&emsp;无论回归还是分类问题，当构建决策树时，算法会考虑每个特征，计算它们的代价函数，并选取最小代价的特征及划分点，以此下去即可。</p>
+</tbody>
+</table>
+</div>
+<p>&emsp;&emsp;上表中的数据一共有三个特征：日志数量（L），好友数量（F）以及是否使用真实头像（H）。我们需要通过这三个特征来判断帐号是否真实。首先我们计算数据集的熵。数据集共有10个样本，其中7个是真的，3个是假的，因此数据集的熵为：</p>
+<script type="math/tex; mode=display">
+H(D)=-(0.7\log_20.7+0.3\log_20.3)\approx 0.812</script><p>&emsp;&emsp;若根据日志数量进行划分，将样本划分为三个子数据集（多：$D_1$、中：$D_2$、少：$D_3$），则三个子数据集的熵分别为：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+&H(D_1)&=-({0 \over 3}\log_2{0 \over 3}+{3 \over 3}\log_2{3 \over 3})=0\\
+&H(D_2)&=-({1 \over 4}\log_2{1 \over 4}+{3 \over 4}\log_2{3 \over 4})\approx0.811\\
+&H(D_3)&=-({1 \over 3}\log_2{1 \over 3}+{2 \over 3}\log_2{2 \over 3})\approx0.918
+\end{eqnarray}</script><p>&emsp;&emsp;划分后的期望熵为：</p>
+<script type="math/tex; mode=display">
+H(D|L)=0.3H(D_1)+0.4H(D_2)+0.3H(D_3)\approx0.603</script><p>&emsp;&emsp;根据日志数量划分的信息增益为：</p>
+<script type="math/tex; mode=display">
+\Bbb{gain}(D,L)=H(D)-H(D|L)=0.209</script><p>&emsp;&emsp;同理可以得到$F$与$H$的信息增益分别为0.486与-0.034，因此我们选择好友数量作为第一次划分，以此类推就可以得到一棵决策树了。</p>
+<h3 id="C4-5"><a href="#C4-5" class="headerlink" title="C4.5"></a>C4.5</h3><p>&emsp;&emsp;ID3有一个缺陷，就是它只考虑了子数据集的纯度，但忽略了特征本身的混乱程度。举个极端的情况，若前例数据集中每一个样本都有一个不同的账户ID，那么若以此为特征进行划分，就会将样本分为10个子数据集，每个子数据集只有一个样本，纯度最大。因此ID3会选择账户ID作为划分特征，但这是不可取的。<br>&emsp;&emsp;C4.5提供了一种解决方案，它考虑了特征的熵，并以此将信息增益标准化。特征的熵表示为：</p>
+<script type="math/tex; mode=display">
+H_A(D)=-\sum_{j=1}^v{|D_j| \over |D|}\log_2({|D_j| \over |D|})</script><p>&emsp;&emsp;标准化后的信息增益为：</p>
+<script type="math/tex; mode=display">
+\Bbb{gain}_R(D,A)={\Bbb{gain}(D,A) \over H_A(D)}</script><p>&emsp;&emsp;之后就与ID3类似，选择信息增益标准化后最大的划分就可以了。接着之前的例子，我们可以将所得的信息增益标准化。特征$L$的熵为：</p>
+<script type="math/tex; mode=display">
+H_L(D)=-(0.3\log_20.3+0.4\log_20.4+0.3\log_20.3)\approx1.571</script><p>&emsp;&emsp;因此标准化后的信息增益为：</p>
+<script type="math/tex; mode=display">
+\Bbb{gain}_R(D,L)={\Bbb{gain}(D,L) \over H_L(D)}={0.209 \over 1.571}\approx0.133</script><p>&emsp;&emsp;同理可以得到$F$与$H$标准化后的信息增益分别为0.319与-0.034，因此我们选择好友数量作为第一次划分，以此类推就可以得到一棵决策树了。</p>
+<h3 id="CART"><a href="#CART" class="headerlink" title="CART"></a>CART</h3><p>&emsp;&emsp;CART（Classification And Regression Tree）是一种二叉决策树，可以对数据分类或者回归。与ID3、C4.5类似，CART也是通过选取最优划分来构建决策树的，但它使用的不是信息增益，而是划分的代价函数。<br>&emsp;&emsp;对于<strong>回归问题</strong>，代价函数表示为两个子数据集真实值与预测值的均方差之和：</p>
+<script type="math/tex; mode=display">
+{\rm Regression:} J=\sum_i(y^{(i)}-prediction_1)^2+\sum_j(y^{(j)}-prediction_2)^2</script><p>&emsp;&emsp;其中预测值为每个子数据集输出的均值。若中间节点将数据集$D$划分为两个子数据集$D_1$、$D_2$，则$prediction_1$为$D_1$的均值，$prediction_2$为$D_2$的均值。<br>&emsp;&emsp;对于<strong>分类问题</strong>，我们使用Gini系数来表示一个数据集的混乱程度：</p>
+<script type="math/tex; mode=display">
+G =\sum_i(p_i(1-p_i))=\sum_ip_i-\sum_ip_i^2=1-\sum_ip_i^2</script><p>&emsp;&emsp;其中$p_i$为数据集中相同类别数据的比例。若数据集中只存在一个分类，是最好的情况，此时$G=0$。最糟糕的情况就是数据集中所有类别都有相同的比例，此时$G=1-p_i$。<br>&emsp;&emsp;分类问题的代价函数表示为两个子数据集Gini系数的期望：</p>
+<script type="math/tex; mode=display">
+{\rm Classification:} J={|D_1| \over |D|}G_1+{|D_2| \over |D|}G_2</script><p>&emsp;&emsp;无论回归还是分类问题，当构建决策树时，算法会考虑每个特征，计算它们的代价函数，并选取最小代价的特征及划分点，以此下去即可。</p>
 <h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>&emsp;&emsp;若数据的特征很多，决策树的构建过程就会一直进行下去，这样会产生过拟合问题，因此在实际操作中我们需要指定停止条件，并可以适当对枝叶进行修剪，除此之外还可以使用集成树模型来进一步提升预测效果。</p>
 <h4 id="设置停止条件"><a href="#设置停止条件" class="headerlink" title="设置停止条件"></a>设置停止条件</h4><p>&emsp;&emsp;通常设置的停止条件有如下几种：<br>&emsp;&emsp;1. 叶节点中只有一种类型时停止：这是最直观的方式，仅限于分类问题，并容易导致过拟合。<br>&emsp;&emsp;2. 设置叶节点的最小样本数量：若训练过程中，数据集到达叶节点的样本数量过小，那么我们就舍去这个叶节点。<br>&emsp;&emsp;3. 设置树的最大深度：即限制样本到达叶节点时所通过的中间节点数量。</p>
 <h4 id="修剪"><a href="#修剪" class="headerlink" title="修剪"></a>修剪</h4><p>&emsp;&emsp;对决策树进行修剪可以进一步提高其分类表现。修剪过程中，在不影响准确度的情况下，我们可以将不重要的枝叶移除。这样可以降低决策树的复杂度，并减少过拟合问题。</p>
@@ -353,7 +362,7 @@ var _hmt = _hmt || [];
 
 
 
-    <a data-url="https://haosutopia.github.io/2018/05/Decision-Tree-01/" data-id="ckflt9wn3000beto9d3fz6jwl" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://haosutopia.github.io/2018/05/Decision-Tree-01/" data-id="ckfndebkb0007f2o9f7dc3kfm" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -433,7 +442,7 @@ var _hmt = _hmt || [];
         "url": "https://haosutopia.github.io/2018/05/Decision-Tree-01/",
         "description": "&emsp;&emsp;机器学习中使用最多的算法莫过于神经网络与树形算法了，而树形算法的基础就是决策树（Decision Tree）。决策树是一种基本的分类与回归方法，相对于神经网络这种黑箱，决策树容易理解，并且运行速度快。但由于其结构较为简单，故预测能力有限，无法与强监督学习模型相提并论，需要进一步的优化。
 概述&emsp;&emsp;决策树的思想与我们在日常生活中进行判断或决策的过程类似。下面",
-        "wordCount": 162
+        "wordCount": 179
     }
 </script>
 

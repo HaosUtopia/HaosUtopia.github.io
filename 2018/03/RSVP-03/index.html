@@ -12,12 +12,12 @@
     
     <meta name="keywords" content="分布参数系统" />
     
-    <meta name="description" content="&amp;emsp;&amp;emsp;在建立系统方程后，便可以求解系统的状态变量随时间的函数了，当然此时系统需要满足一定条件。本文将以上一章得到的系统状态方程为基础，对一般系统求解进行推导。系统状态方程如下：$$\begin{eqnarray}\dot{x}(t)&amp;&#x3D;&amp;\mathcal{A}x(t)+\mathcal{B}u(t),\ &amp;t&gt;0,\ x(0)&#x3D;x_0\in X\ta">
+    <meta name="description" content="&amp;emsp;&amp;emsp;在建立系统方程后，便可以求解系统的状态变量随时间的函数了，当然此时系统需要满足一定条件。本文将以上一章得到的系统状态方程为基础，对一般系统求解进行推导。系统状态方程如下：  \begin{eqnarray} \dot{x}(t)&amp;&#x3D;&amp;\mathcal{A}x(t)+\mathcal{B}u(t),\ &amp;t&gt;0,\ x(0)&#x3D;x_0\in X\tag{1}\\ y(t)&amp;&#x3D;&amp;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布参数系统控制（三）：求解模型">
 <meta property="og:url" content="https://haosutopia.github.io/2018/03/RSVP-03/">
 <meta property="og:site_name" content="理想国">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;在建立系统方程后，便可以求解系统的状态变量随时间的函数了，当然此时系统需要满足一定条件。本文将以上一章得到的系统状态方程为基础，对一般系统求解进行推导。系统状态方程如下：$$\begin{eqnarray}\dot{x}(t)&amp;&#x3D;&amp;\mathcal{A}x(t)+\mathcal{B}u(t),\ &amp;t&gt;0,\ x(0)&#x3D;x_0\in X\ta">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;在建立系统方程后，便可以求解系统的状态变量随时间的函数了，当然此时系统需要满足一定条件。本文将以上一章得到的系统状态方程为基础，对一般系统求解进行推导。系统状态方程如下：  \begin{eqnarray} \dot{x}(t)&amp;&#x3D;&amp;\mathcal{A}x(t)+\mathcal{B}u(t),\ &amp;t&gt;0,\ x(0)&#x3D;x_0\in X\tag{1}\\ y(t)&amp;&#x3D;&amp;">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://haosutopia.github.io/images/RSVP.png">
 <meta property="article:published_time" content="2018-03-05T00:35:21.000Z">
@@ -92,7 +92,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -236,40 +240,110 @@ var _hmt = _hmt || [];
 
             
 
-            <p>&emsp;&emsp;在建立系统方程后，便可以求解系统的状态变量随时间的函数了，当然此时系统需要满足一定条件。本文将以上一章得到的系统状态方程为基础，对一般系统求解进行推导。系统状态方程如下：<br>$$<br>\begin{eqnarray}<br>\dot{x}(t)&amp;=&amp;\mathcal{A}x(t)+\mathcal{B}u(t),\ &amp;t&gt;0,\ x(0)=x_0\in X\tag{1}\<br>y(t)&amp;=&amp;\mathcal{C}x(t),\ &amp;t\geq0\tag{2}<br>\end{eqnarray}$$</p>
-<h3 id="状态空间分解"><a href="#状态空间分解" class="headerlink" title="状态空间分解"></a><span id="1">状态空间分解</span></h3><p>&emsp;&emsp;根据<a href="../../../2018/01/RSVP-01/index.html#e13">第一章节式(13)</a>可知，若存在系统算子$\mathcal{A}:X\to X$，则可以通过$\mathcal{A}$的特征元素${\phi_i,i\geq1}$及其伴随算子$\mathcal{A}^\ast $的特征元素${\psi_i,i\geq1}$将空间$X$中任意元素表示成$\phi_i$的无穷线性组合。因此可以将式(1)中的$x$元素进行分解：<br>$$<br>\begin{eqnarray}<br>x(t)&amp;=&amp;\sum_{i=1}^{\infty}\langle x(t),\psi_i\rangle\phi_i=\sum_{i=1}^{\infty}x_i^\ast (t)\phi_i\tag{3}\<br>x(0)&amp;=&amp;\sum_{i=1}^{\infty}\langle x(0),\psi_i\rangle\phi_i=\sum_{i=1}^{\infty}x_i^\ast (0)\phi_i\tag{4}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;其中：<br>$$<br>\begin{eqnarray}<br>x_i^\ast (t)&amp;=&amp;\langle x(t),\psi_i\rangle\tag{5}\<br>x_i^\ast (0)&amp;=&amp;\langle x(0),\psi_i\rangle\tag{6}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;$u$也可以用相同方法分解：<br>$$<br>\begin{split}\mathcal{B}u(t)=\sum_{i=1}^pb_iu_i(t)&amp;=\sum_{i=1}^p\sum_{j=1}^{\infty}\langle b_i,\psi_j\rangle\phi_ju_i(t)\<br>&amp;=\sum_{i=1}^p\sum_{j=1}^{\infty}b_{ij}^\ast \phi_ju_i(t)\<br>&amp;=\sum_{j=1}^{\infty}\phi_j\sum_{i=1}^pb_{ij}^\ast u_i(t)\<br>&amp;=\sum_{i=1}^{\infty}\phi_i{b_i^\ast }^Tu(t)<br>\end{split}\tag{7}$$</p>
-<p>&emsp;&emsp;其中：<br>$$<br>\begin{eqnarray}<br>b_{ij}^\ast &amp;=&amp;\langle b_i,\psi_j\rangle\tag{8}\<br>{b_i^\ast }^T&amp;=&amp;\begin{bmatrix}b_{1i}^\ast &amp; \cdots &amp; b_{pi}^\ast \end{bmatrix}\tag{9}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;将式(3)(7)带入式(1)中得到分解后的状态方程为：<br>$$<br>\sum_{i=1}^{\infty}\dot{x}<em>i^\ast (t)\phi_i=\sum_{i=1}^{\infty}x_i^\ast (t)\mathcal{A}\phi_i+\sum</em>{i=1}^{\infty}\phi_i{b_i^\ast }^Tu(t)\tag{10}$$</p>
-<p>&emsp;&emsp;由于$\phi_i$为$\mathcal{A}$的特征元素，因此满足：$\mathcal{A}\phi_i=\lambda_i\phi_i$。则式(10)中第$i$个分量（$i=1,2,…$）所满足的方程为：<br>$$<br>\dot{x}_i^\ast (t)=\lambda_ix_i^\ast (t)+{b_i^\ast }^Tu(t)\tag{11}$$</p>
-<p>&emsp;&emsp;通过求解常微分方程得到第$i$个分量随时间变化的函数：<br>$$<br>x_i^\ast (t)=e^{\lambda_it}x_i^\ast (0)+\int_0^te^{\lambda_i(t-\tau)}{b_i^\ast }^Tu(\tau){\rm d}\tau\tag{12}$$</p>
-<p>&emsp;&emsp;将式(12)中每个分量带入式(3)得到状态变量$x(z,t)$：</p>
-<p><span id="e13">$$<br>x(z,t)=\sum_{i=1}^{\infty}e^{\lambda_it}\phi_i(z)x_i^\ast (0)+\sum_{i=1}^{\infty}\int_0^te^{\lambda_i(t-\tau)}\phi_i(z){b_i^\ast }^Tu(\tau){\rm d}\tau\tag{13}$$</span></p>
+            <p>&emsp;&emsp;在建立系统方程后，便可以求解系统的状态变量随时间的函数了，当然此时系统需要满足一定条件。本文将以上一章得到的系统状态方程为基础，对一般系统求解进行推导。系统状态方程如下：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\dot{x}(t)&=&\mathcal{A}x(t)+\mathcal{B}u(t),\ &t>0,\ x(0)=x_0\in X\tag{1}\\
+y(t)&=&\mathcal{C}x(t),\ &t\geq0\tag{2}
+\end{eqnarray}</script><h3 id="状态空间分解"><a href="#状态空间分解" class="headerlink" title="状态空间分解"></a><span id="1">状态空间分解</span></h3><p>&emsp;&emsp;根据<a href="../../../2018/01/RSVP-01/index.html#e13">第一章节式(13)</a>可知，若存在系统算子$\mathcal{A}:X\to X$，则可以通过$\mathcal{A}$的特征元素$\{\phi_i,i\geq1\}$及其伴随算子$\mathcal{A}^\ast $的特征元素$\{\psi_i,i\geq1\}$将空间$X$中任意元素表示成$\phi_i$的无穷线性组合。因此可以将式(1)中的$x$元素进行分解：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+x(t)&=&\sum_{i=1}^{\infty}\langle x(t),\psi_i\rangle\phi_i=\sum_{i=1}^{\infty}x_i^\ast (t)\phi_i\tag{3}\\
+x(0)&=&\sum_{i=1}^{\infty}\langle x(0),\psi_i\rangle\phi_i=\sum_{i=1}^{\infty}x_i^\ast (0)\phi_i\tag{4}
+\end{eqnarray}</script><p>&emsp;&emsp;其中：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+x_i^\ast (t)&=&\langle x(t),\psi_i\rangle\tag{5}\\
+x_i^\ast (0)&=&\langle x(0),\psi_i\rangle\tag{6}
+\end{eqnarray}</script><p>&emsp;&emsp;$u$也可以用相同方法分解：</p>
+<script type="math/tex; mode=display">
+\begin{split}\mathcal{B}u(t)=\sum_{i=1}^pb_iu_i(t)&=\sum_{i=1}^p\sum_{j=1}^{\infty}\langle b_i,\psi_j\rangle\phi_ju_i(t)\\
+&=\sum_{i=1}^p\sum_{j=1}^{\infty}b_{ij}^\ast \phi_ju_i(t)\\
+&=\sum_{j=1}^{\infty}\phi_j\sum_{i=1}^pb_{ij}^\ast u_i(t)\\
+&=\sum_{i=1}^{\infty}\phi_i{b_i^\ast }^Tu(t)
+\end{split}\tag{7}</script><p>&emsp;&emsp;其中：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+b_{ij}^\ast &=&\langle b_i,\psi_j\rangle\tag{8}\\
+{b_i^\ast }^T&=&\begin{bmatrix}b_{1i}^\ast & \cdots & b_{pi}^\ast \end{bmatrix}\tag{9}
+\end{eqnarray}</script><p>&emsp;&emsp;将式(3)(7)带入式(1)中得到分解后的状态方程为：</p>
+<script type="math/tex; mode=display">
+\sum_{i=1}^{\infty}\dot{x}_i^\ast (t)\phi_i=\sum_{i=1}^{\infty}x_i^\ast (t)\mathcal{A}\phi_i+\sum_{i=1}^{\infty}\phi_i{b_i^\ast }^Tu(t)\tag{10}</script><p>&emsp;&emsp;由于$\phi_i$为$\mathcal{A}$的特征元素，因此满足：$\mathcal{A}\phi_i=\lambda_i\phi_i$。则式(10)中第$i$个分量（$i=1,2,…$）所满足的方程为：</p>
+<script type="math/tex; mode=display">
+\dot{x}_i^\ast (t)=\lambda_ix_i^\ast (t)+{b_i^\ast }^Tu(t)\tag{11}</script><p>&emsp;&emsp;通过求解常微分方程得到第$i$个分量随时间变化的函数：</p>
+<script type="math/tex; mode=display">
+x_i^\ast (t)=e^{\lambda_it}x_i^\ast (0)+\int_0^te^{\lambda_i(t-\tau)}{b_i^\ast }^Tu(\tau){\rm d}\tau\tag{12}</script><p>&emsp;&emsp;将式(12)中每个分量带入式(3)得到状态变量$x(z,t)$：</p>
+<p><span id="e13"><script type="math/tex">x(z,t)=\sum_{i=1}^{\infty}e^{\lambda_it}\phi_i(z)x_i^\ast (0)+\sum_{i=1}^{\infty}\int_0^te^{\lambda_i(t-\tau)}\phi_i(z){b_i^\ast }^Tu(\tau){\rm d}\tau\tag{13}</script></span></p>
 <p>&emsp;&emsp;我们只需求得系统算子$\mathcal{A}$的谱集及特征元素，带入式(13)便是系统状态变量的解了。再将该解带入式(2)便求得了系统输出$y(t)$。</p>
-<h3 id="Riesz-Spektral系统"><a href="#Riesz-Spektral系统" class="headerlink" title="Riesz-Spektral系统"></a>Riesz-Spektral系统</h3><p>&emsp;&emsp;仔细的话可以发现，我们在式(11)的推导过程中已经无意间给整个系统增加了一个约束条件：$\lambda$不能是连续的。也就是说上述推导只能在$\lambda_i$为一个个孤立的值时才能成立，否则无法求得状态变量。因此我们引入Riesz-Spektral系统来满足这个约束。Riesz-Spektral系统定义为：<br>&emsp;&emsp;1. 系统算子$\mathcal{A}$为Riesz-Spektral算子。<br>&emsp;&emsp;2. 输入算子$\mathcal{B}$为有界算子。<br>&emsp;&emsp;3. 输出算子$\mathcal{C}$为有界算子。<br>&emsp;&emsp;若系统（$\mathcal{C,A,B}$）满足以上三个条件，则系统为Riesz-Spektral系统。<br>&emsp;&emsp;其中Riesz-Spektral算子具体定义见<a href="../../../2018/01/RSVP-01/index.html#2.7">第一章节</a>，它保证了系统算子$\mathcal{A}$的特征值是孤立的。有界算子定义为：若$\mathcal{L}$为有界算子，则存在$M&gt;0$，使得对所有在定义域$X$内的$v$，满足：<br>$$<br>||\mathcal{L}v||_Y\leq M||v||_X$$</p>
-<p>&emsp;&emsp;也就是说不管取定义域内什么元素，算子$\mathcal{L}$作用后所得结果的模永远是有限的，不可能达到无穷。因此$\mathcal{B}$与$\mathcal{C}$为有界算子是显而易见的。若$\mathcal{B}$不是有界算子，那么$x(t)$可能为无穷；若$\mathcal{C}$不是有界算子，那么$y(t)$可能为无穷。通常来说，实际系统都满足有界算子的条件，因此我们关注的重点一般是条件一。在之后的讨论中，若不特殊说明，我们均假设系统为Riesz-Spektral系统。</p>
-<h3 id="谱集与特征元素"><a href="#谱集与特征元素" class="headerlink" title="谱集与特征元素"></a>谱集与特征元素</h3><p>&emsp;&emsp;下面我们将以导热棒系统为例，来求解系统算子的谱集及特征元素。导热棒系统中系统算子$\mathcal{A}:X\to X$定义为：<br>$$<br>\mathcal{A}h={\rm d}_z^2h\tag{14}$$</p>
-<p>$$D(\mathcal{A})={h\in L_2(0,1)|h,{\rm d}_zh绝对连续,{\rm d}_z^2h\in L_2(0,1),且h(0)=h(1)=0}$$</p>
-<p>&emsp;&emsp;对比<a href="../../../2018/01/RSVP-01/index.html#e17">第一章节式(17)</a>可知$\mathcal{A}$为Sturm-Liouville算子，其谱集均由孤立单根的实特征值组成。且$\mathcal{A}$的特征元素$\phi(z)$满足式(14)。由此可以得到求解方程：<br>$$<br>\begin{eqnarray}<br>&amp;\mathcal{A}\phi(z)=\lambda\phi(z)={\rm d}_z^2\phi(z)\tag{15}\<br>&amp;\phi(0)=\phi(1)=0\tag{16}\end{eqnarray}$$</p>
-<p>&emsp;&emsp;式(16)为常微分方程，求解其特征方程：<br>$$<br>p^2-\lambda=0\Longrightarrow p_{1,2}=\pm\sqrt{\lambda}\tag{17}$$</p>
-<p>&emsp;&emsp;根据$\lambda$取值不同分为三种情况：<br>&emsp;&emsp;1. $\lambda&gt;0$<br>$$<br>\begin{eqnarray}\phi(z)&amp;=&amp;Ae^{\sqrt{\lambda}z}+Be^{-\sqrt{\lambda}z}\tag{18}\<br>\Rightarrow\phi(0)&amp;=&amp;A+B=0\tag{19}\<br>\Rightarrow\phi(1)&amp;=&amp;Ae^{\sqrt{\lambda}}+Be^{-\sqrt{\lambda}}\tag{20}\end{eqnarray}$$</p>
-<p>&emsp;&emsp;&emsp;由式(19)(20)得到：$A=B=0$，只有零解，舍去。<br>&emsp;&emsp;2. $\lambda=0$<br>$$<br>\begin{eqnarray}\phi(z)&amp;=&amp;A+Bz\tag{21}\<br>\Rightarrow\phi(0)&amp;=&amp;A=0\tag{22}\<br>\Rightarrow\phi(1)&amp;=&amp;B=0\tag{23}\end{eqnarray}$$</p>
-<p>&emsp;&emsp;&emsp;由式(22)(23)得到：$A=B=0$，只有零解，舍去。<br>&emsp;&emsp;3. $\lambda&lt;0$<br>$$<br>\begin{eqnarray}\phi(z)&amp;=&amp;A\sin(\sqrt{|\lambda|}z)+B\cos(\sqrt{|\lambda|}z)\tag{24}\<br>\Rightarrow\phi(0)&amp;=&amp;B=0\tag{25}\<br>\Rightarrow\phi(1)&amp;=&amp;A\sin(\sqrt{|\lambda|})=0\tag{26}\end{eqnarray}$$</p>
-<p>&emsp;&emsp;&emsp;由式(23)可得：<br>$$<br>\begin{eqnarray}\sqrt{|\lambda_i|}&amp;=&amp;i\pi,\ i=\pm 1,\pm 2…\tag{27}\<br>\Rightarrow|\lambda_i|&amp;=&amp;i^2\pi^2\tag{28}\<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;&emsp;由于$\lambda&lt;0$，得到：<br>$$<br>\lambda_i=-i^2\pi^2\tag{29}$$</p>
-<p>&emsp;&emsp;&emsp;将式(25)(29)带入式(24)得到特征元素：<br>$$<br>\phi_i=A\sin(i\pi z)\tag{30}$$</p>
-<p>&emsp;&emsp;<strong>综上所述</strong>，得到谱集及特征元素为：<br>$$<br>\begin{eqnarray}\lambda_i&amp;=&amp;-i^2\pi^2\tag{31}\<br>\phi_i&amp;=&amp;A\sin(i\pi z)\tag{32}\end{eqnarray}$$</p>
-<p>&emsp;&emsp;由于$\mathcal{A}$为Sturm-Liouville算子，则其伴随算子$\mathcal{A}^\ast $的特征元素与$\mathcal{A}$的特征元素相等：<br>$$<br>\psi_i=\phi_i=A\sin(i\pi z)\tag{33}$$</p>
-<p>&emsp;&emsp;其中$A$是任意取的，将求得结果带回式(13)便能得到$x(z,t)$的解了。我们也可以将特征元素标准化，根据<a href="../../../2018/01/RSVP-01/index.html#e12">第一章节式(12)</a>：<br>$$<br>\begin{split}<br>\langle\phi_i,\psi_i\rangle&amp;=\int_0^1A_i\sin(i\pi z)A_j\sin(j\pi z){\rm d}z\<br>&amp;={1 \over 2}A_iA_j\delta_{ij}=\delta_{ij}<br>\end{split}\tag{34}$$</p>
-<p>&emsp;&emsp;求得$A_i=\sqrt{2}$，则标准特征元素为：<br>$$<br>\phi_i(z)=\sqrt{2}\sin(i\pi z),\ i\in\Bbb{N}\tag{35}$$</p>
-<h3 id="频域求解"><a href="#频域求解" class="headerlink" title="频域求解"></a>频域求解</h3><p>&emsp;&emsp;与集总参数系统类似，分布参数系统也可以在频域中描述。首先将式(1)(2)转化到频域：<br>$$<br>\begin{cases}<br>\dot{x}(t)={\cal A}x(t)+{\cal B}u(t)\<br>y(t)={\cal C}x(t)<br>\end{cases}\Rightarrow<br>\begin{cases}<br>sx(s)={\cal A}x(s)+{\cal B}u(s)\<br>y(s)={\cal C}x(s)<br>\end{cases}$$</p>
-<p>&emsp;&emsp;转换过程中我们将$x(z,t)$转化为$x(z,s)$，而对于算子来说，它们作用的变量均为$z$，因此都保持不变。上式可以变换为：<br>$$<br>(sI-{\cal A})x(s)={\cal B}u(s),\ s\in \rho({\cal A})\tag{36}$$</p>
-<p>&emsp;&emsp;式(36)在状态空间中分解得到：<br>$$<br>\sum_{i=1}^{\infty}(s-\lambda_i)x_i^{\ast}\phi_i=\sum_{i=1}^{\infty}\phi_i{b_i^\ast}^{T}u\tag{37}$$</p>
-<p>&emsp;&emsp;其中第$i$个分量所满足的方程为：<br>$$<br>\begin{eqnarray}<br>&amp;&amp;(s-\lambda_i)x_i^\ast={b_i^\ast}^Tu\<br>\Rightarrow&amp;&amp; x_i^\ast={ {b_i^\ast}^Tu \over (s-\lambda_i)}\tag{38}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;将所有分量合并得到$x(s)$以及$y(s)$：<br>$$<br>\begin{eqnarray}<br>x(s)=\sum_{i=1}^{\infty}x_i^\ast\phi_i=\sum_{i=1}^{\infty}{\phi_i{b_i^\ast}^Tu(s) \over (s-\lambda_i)}\tag{39}\<br>y(s)={\cal C}x(s)=\sum_{i=1}^{\infty}{ {\cal C}\phi_i{b_i^\ast}^T \over (s-\lambda_i)}u(s)\tag{40}<br>\end{eqnarray}$$</p>
-<p>&emsp;&emsp;最终我们提取出系统的传递矩阵（Übertragungsmatrix）：<br>$$<br>F(s)=\sum_{i=1}^{\infty}{ {\cal C}\phi_i{b_i^\ast}^T \over (s-\lambda_i)}\tag{41}$$</p>
-<p>&emsp;&emsp;式(41)为系统传递矩阵的通式，但实际计算中我们通常带入某个具体算子并求解相应微分方程从而得到传递矩阵。求解过程中$z$为微分方程变量，$s$为常数。</p>
+<h3 id="Riesz-Spektral系统"><a href="#Riesz-Spektral系统" class="headerlink" title="Riesz-Spektral系统"></a>Riesz-Spektral系统</h3><p>&emsp;&emsp;仔细的话可以发现，我们在式(11)的推导过程中已经无意间给整个系统增加了一个约束条件：$\lambda$不能是连续的。也就是说上述推导只能在$\lambda_i$为一个个孤立的值时才能成立，否则无法求得状态变量。因此我们引入Riesz-Spektral系统来满足这个约束。Riesz-Spektral系统定义为：<br>&emsp;&emsp;1. 系统算子$\mathcal{A}$为Riesz-Spektral算子。<br>&emsp;&emsp;2. 输入算子$\mathcal{B}$为有界算子。<br>&emsp;&emsp;3. 输出算子$\mathcal{C}$为有界算子。<br>&emsp;&emsp;若系统（$\mathcal{C,A,B}$）满足以上三个条件，则系统为Riesz-Spektral系统。<br>&emsp;&emsp;其中Riesz-Spektral算子具体定义见<a href="../../../2018/01/RSVP-01/index.html#2.7">第一章节</a>，它保证了系统算子$\mathcal{A}$的特征值是孤立的。有界算子定义为：若$\mathcal{L}$为有界算子，则存在$M&gt;0$，使得对所有在定义域$X$内的$v$，满足：</p>
+<script type="math/tex; mode=display">
+||\mathcal{L}v||_Y\leq M||v||_X</script><p>&emsp;&emsp;也就是说不管取定义域内什么元素，算子$\mathcal{L}$作用后所得结果的模永远是有限的，不可能达到无穷。因此$\mathcal{B}$与$\mathcal{C}$为有界算子是显而易见的。若$\mathcal{B}$不是有界算子，那么$x(t)$可能为无穷；若$\mathcal{C}$不是有界算子，那么$y(t)$可能为无穷。通常来说，实际系统都满足有界算子的条件，因此我们关注的重点一般是条件一。在之后的讨论中，若不特殊说明，我们均假设系统为Riesz-Spektral系统。</p>
+<h3 id="谱集与特征元素"><a href="#谱集与特征元素" class="headerlink" title="谱集与特征元素"></a>谱集与特征元素</h3><p>&emsp;&emsp;下面我们将以导热棒系统为例，来求解系统算子的谱集及特征元素。导热棒系统中系统算子$\mathcal{A}:X\to X$定义为：</p>
+<script type="math/tex; mode=display">
+\mathcal{A}h={\rm d}_z^2h\tag{14}</script><script type="math/tex; mode=display">D(\mathcal{A})=\{h\in L_2(0,1)|h,{\rm d}_zh绝对连续,{\rm d}_z^2h\in L_2(0,1),且h(0)=h(1)=0\}</script><p>&emsp;&emsp;对比<a href="../../../2018/01/RSVP-01/index.html#e17">第一章节式(17)</a>可知$\mathcal{A}$为Sturm-Liouville算子，其谱集均由孤立单根的实特征值组成。且$\mathcal{A}$的特征元素$\phi(z)$满足式(14)。由此可以得到求解方程：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+&\mathcal{A}\phi(z)=\lambda\phi(z)={\rm d}_z^2\phi(z)\tag{15}\\
+&\phi(0)=\phi(1)=0\tag{16}\end{eqnarray}</script><p>&emsp;&emsp;式(16)为常微分方程，求解其特征方程：</p>
+<script type="math/tex; mode=display">
+p^2-\lambda=0\Longrightarrow p_{1,2}=\pm\sqrt{\lambda}\tag{17}</script><p>&emsp;&emsp;根据$\lambda$取值不同分为三种情况：<br>&emsp;&emsp;1. $\lambda&gt;0$</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}\phi(z)&=&Ae^{\sqrt{\lambda}z}+Be^{-\sqrt{\lambda}z}\tag{18}\\
+\Rightarrow\phi(0)&=&A+B=0\tag{19}\\
+\Rightarrow\phi(1)&=&Ae^{\sqrt{\lambda}}+Be^{-\sqrt{\lambda}}\tag{20}\end{eqnarray}</script><p>&emsp;&emsp;&emsp;由式(19)(20)得到：$A=B=0$，只有零解，舍去。<br>&emsp;&emsp;2. $\lambda=0$</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}\phi(z)&=&A+Bz\tag{21}\\
+\Rightarrow\phi(0)&=&A=0\tag{22}\\
+\Rightarrow\phi(1)&=&B=0\tag{23}\end{eqnarray}</script><p>&emsp;&emsp;&emsp;由式(22)(23)得到：$A=B=0$，只有零解，舍去。<br>&emsp;&emsp;3. $\lambda&lt;0$</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}\phi(z)&=&A\sin(\sqrt{|\lambda|}z)+B\cos(\sqrt{|\lambda|}z)\tag{24}\\
+\Rightarrow\phi(0)&=&B=0\tag{25}\\
+\Rightarrow\phi(1)&=&A\sin(\sqrt{|\lambda|})=0\tag{26}\end{eqnarray}</script><p>&emsp;&emsp;&emsp;由式(23)可得：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}\sqrt{|\lambda_i|}&=&i\pi,\ i=\pm 1,\pm 2...\tag{27}\\
+\Rightarrow|\lambda_i|&=&i^2\pi^2\tag{28}\\
+\end{eqnarray}</script><p>&emsp;&emsp;&emsp;由于$\lambda&lt;0$，得到：</p>
+<script type="math/tex; mode=display">
+\lambda_i=-i^2\pi^2\tag{29}</script><p>&emsp;&emsp;&emsp;将式(25)(29)带入式(24)得到特征元素：</p>
+<script type="math/tex; mode=display">
+\phi_i=A\sin(i\pi z)\tag{30}</script><p>&emsp;&emsp;<strong>综上所述</strong>，得到谱集及特征元素为：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}\lambda_i&=&-i^2\pi^2\tag{31}\\
+\phi_i&=&A\sin(i\pi z)\tag{32}\end{eqnarray}</script><p>&emsp;&emsp;由于$\mathcal{A}$为Sturm-Liouville算子，则其伴随算子$\mathcal{A}^\ast $的特征元素与$\mathcal{A}$的特征元素相等：</p>
+<script type="math/tex; mode=display">
+\psi_i=\phi_i=A\sin(i\pi z)\tag{33}</script><p>&emsp;&emsp;其中$A$是任意取的，将求得结果带回式(13)便能得到$x(z,t)$的解了。我们也可以将特征元素标准化，根据<a href="../../../2018/01/RSVP-01/index.html#e12">第一章节式(12)</a>：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\langle\phi_i,\psi_i\rangle&=\int_0^1A_i\sin(i\pi z)A_j\sin(j\pi z){\rm d}z\\
+&={1 \over 2}A_iA_j\delta_{ij}=\delta_{ij}
+\end{split}\tag{34}</script><p>&emsp;&emsp;求得$A_i=\sqrt{2}$，则标准特征元素为：</p>
+<script type="math/tex; mode=display">
+\phi_i(z)=\sqrt{2}\sin(i\pi z),\ i\in\Bbb{N}\tag{35}</script><h3 id="频域求解"><a href="#频域求解" class="headerlink" title="频域求解"></a>频域求解</h3><p>&emsp;&emsp;与集总参数系统类似，分布参数系统也可以在频域中描述。首先将式(1)(2)转化到频域：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+\dot{x}(t)={\cal A}x(t)+{\cal B}u(t)\\
+y(t)={\cal C}x(t)
+\end{cases}\Rightarrow
+\begin{cases}
+sx(s)={\cal A}x(s)+{\cal B}u(s)\\
+y(s)={\cal C}x(s)
+\end{cases}</script><p>&emsp;&emsp;转换过程中我们将$x(z,t)$转化为$x(z,s)$，而对于算子来说，它们作用的变量均为$z$，因此都保持不变。上式可以变换为：</p>
+<script type="math/tex; mode=display">
+(sI-{\cal A})x(s)={\cal B}u(s),\ s\in \rho({\cal A})\tag{36}</script><p>&emsp;&emsp;式(36)在状态空间中分解得到：</p>
+<script type="math/tex; mode=display">
+\sum_{i=1}^{\infty}(s-\lambda_i)x_i^{\ast}\phi_i=\sum_{i=1}^{\infty}\phi_i{b_i^\ast}^{T}u\tag{37}</script><p>&emsp;&emsp;其中第$i$个分量所满足的方程为：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+&&(s-\lambda_i)x_i^\ast={b_i^\ast}^Tu\\
+\Rightarrow&& x_i^\ast={ {b_i^\ast}^Tu \over (s-\lambda_i)}\tag{38}
+\end{eqnarray}</script><p>&emsp;&emsp;将所有分量合并得到$x(s)$以及$y(s)$：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+x(s)=\sum_{i=1}^{\infty}x_i^\ast\phi_i=\sum_{i=1}^{\infty}{\phi_i{b_i^\ast}^Tu(s) \over (s-\lambda_i)}\tag{39}\\
+y(s)={\cal C}x(s)=\sum_{i=1}^{\infty}{ {\cal C}\phi_i{b_i^\ast}^T \over (s-\lambda_i)}u(s)\tag{40}
+\end{eqnarray}</script><p>&emsp;&emsp;最终我们提取出系统的传递矩阵（Übertragungsmatrix）：</p>
+<script type="math/tex; mode=display">
+F(s)=\sum_{i=1}^{\infty}{ {\cal C}\phi_i{b_i^\ast}^T \over (s-\lambda_i)}\tag{41}</script><p>&emsp;&emsp;式(41)为系统传递矩阵的通式，但实际计算中我们通常带入某个具体算子并求解相应微分方程从而得到传递矩阵。求解过程中$z$为微分方程变量，$s$为常数。</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
 <li>通过谱集及特征元素可以将系统状态方程写成分量形式求解。</li>
 <li>求解前提为系统为Riesz-Spektral系统。</li>
@@ -282,7 +356,7 @@ var _hmt = _hmt || [];
 
 
 
-    <a data-url="https://haosutopia.github.io/2018/03/RSVP-03/" data-id="ckflt9wn8000heto98ob92qjp" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://haosutopia.github.io/2018/03/RSVP-03/" data-id="ckfndebke000df2o9cwhvfk75" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -360,8 +434,12 @@ var _hmt = _hmt || [];
         "dateCreated": "2018-03-05",
         "dateModified": "2018-04-10",
         "url": "https://haosutopia.github.io/2018/03/RSVP-03/",
-        "description": "&emsp;&emsp;在建立系统方程后，便可以求解系统的状态变量随时间的函数了，当然此时系统需要满足一定条件。本文将以上一章得到的系统状态方程为基础，对一般系统求解进行推导。系统状态方程如下：$$\begin{eqnarray}\dot{x}(t)&amp;=&amp;\mathcal{A}x(t)+\mathcal{B}u(t),\ &amp;t&gt;0,\ x(0)=x_0\in X\ta",
-        "wordCount": 121
+        "description": "&emsp;&emsp;在建立系统方程后，便可以求解系统的状态变量随时间的函数了，当然此时系统需要满足一定条件。本文将以上一章得到的系统状态方程为基础，对一般系统求解进行推导。系统状态方程如下：
+
+\begin{eqnarray}
+\dot{x}(t)&=&\mathcal{A}x(t)+\mathcal{B}u(t),\ &t>0,\ x(0)=x_0\in X\tag{1}\\
+y(t)&=&",
+        "wordCount": 180
     }
 </script>
 

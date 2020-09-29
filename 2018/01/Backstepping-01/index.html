@@ -12,12 +12,12 @@
     
     <meta name="keywords" content="Backstepping" />
     
-    <meta name="description" content="&amp;emsp;&amp;emsp;Backstepping（反步控制）是一种设计非线性系统控制器的方法。它通过对子系统的递归方便地求得能使系统稳定的输入。但大多数相关文献中并未考虑系统本身的可控性，因此首先我们假设需要控制的系统是可控的。 基本思想&amp;emsp;&amp;emsp;Backstepping针对的是能写成如下形式的系统：$$\begin{cases}\dot{x}_1&#x3D;x_2+f_1(x_1)\\dot">
+    <meta name="description" content="&amp;emsp;&amp;emsp;Backstepping（反步控制）是一种设计非线性系统控制器的方法。它通过对子系统的递归方便地求得能使系统稳定的输入。但大多数相关文献中并未考虑系统本身的可控性，因此首先我们假设需要控制的系统是可控的。 基本思想&amp;emsp;&amp;emsp;Backstepping针对的是能写成如下形式的系统：  \begin{cases} \dot{x}_1&#x3D;x_2+f_1(x_1)\\ \">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Backstepping（反步控制）">
 <meta property="og:url" content="https://haosutopia.github.io/2018/01/Backstepping-01/">
 <meta property="og:site_name" content="理想国">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;Backstepping（反步控制）是一种设计非线性系统控制器的方法。它通过对子系统的递归方便地求得能使系统稳定的输入。但大多数相关文献中并未考虑系统本身的可控性，因此首先我们假设需要控制的系统是可控的。 基本思想&amp;emsp;&amp;emsp;Backstepping针对的是能写成如下形式的系统：$$\begin{cases}\dot{x}_1&#x3D;x_2+f_1(x_1)\\dot">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;Backstepping（反步控制）是一种设计非线性系统控制器的方法。它通过对子系统的递归方便地求得能使系统稳定的输入。但大多数相关文献中并未考虑系统本身的可控性，因此首先我们假设需要控制的系统是可控的。 基本思想&amp;emsp;&amp;emsp;Backstepping针对的是能写成如下形式的系统：  \begin{cases} \dot{x}_1&#x3D;x_2+f_1(x_1)\\ \">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://haosutopia.github.io/images/Backstepping.png">
 <meta property="article:published_time" content="2018-01-14T01:20:16.000Z">
@@ -92,7 +92,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -237,34 +241,109 @@ var _hmt = _hmt || [];
             
 
             <p>&emsp;&emsp;Backstepping（反步控制）是一种设计非线性系统控制器的方法。它通过对子系统的递归方便地求得能使系统稳定的输入。但大多数相关文献中并未考虑系统本身的可控性，因此首先我们假设需要控制的系统是可控的。</p>
-<h3 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h3><p>&emsp;&emsp;Backstepping针对的是能写成如下形式的系统：<br>$$<br>\begin{cases}<br>\dot{x}_1=x_2+f_1(x_1)\<br>\dot{x}_2=x_3+f_2(x_1,x_2)\<br>\quad\vdots\<br>\dot{x}<em>i=x</em>{i+1}+f_i(x_1,x_2,…,x_i)\<br>\quad\vdots\<br>\dot{x}_n=u+f_n(x_1,x_2,…,x_n)<br>\end{cases}\tag{1}<br>$$</p>
-<p>&emsp;&emsp;可以发现该形式的系统有如下特征：状态$x_1$只由$x_1,x_2$决定；状态$x_2$由$x_1,x_2,x_3$决定…以此类推，状态$x_i$由$x_1,x_2…x_{i+1}$决定；而状态$x_n$则由系统的所有状态来决定。<br>&emsp;&emsp;这对我们就有了一定的启发。对于状态$x_1$来说，它只由本身与$x_2$决定，因此我们可以把它看作整个非线性系统的一个子系统。在这个系统中只需要控制$x_2$便可以使得$x_1$渐近稳定。再对于状态$x_2$来说，它由$x_1,x_2,x_3$决定，我们再将方程组的前两个方程看作一个子系统。此时$x_1$已经渐近稳定，因此我们只需要控制$x_3$便可以使得$x_2$渐近稳定。以此类推，最终我们就可以得到一个输入$u$，使得之前所有的状态$x_1,x_2…x_n$都渐近稳定，那么整个系统就稳定了。<br>&emsp;&emsp;为了使各个子系统都稳定，我们需要为每个系统设置一个虚拟的控制量，并以此定义一个Lyapunov函数，使得所有子系统的Lyapunov函数都满足渐近稳定条件。<br>&emsp;&emsp;概括来说，Backstepping的基本思想就是：将复杂的非线性系统分解成不超过系统阶数的子系统，然后为每个子系统设计部分Lyapunov函数和中间虚拟控制量，一直“后退”到整个系统，将它们集成起来完成整个控制律的设计。</p>
-<h3 id="基于Backstepping控制器设计"><a href="#基于Backstepping控制器设计" class="headerlink" title="基于Backstepping控制器设计"></a>基于Backstepping控制器设计</h3><p>&emsp;&emsp;在这里我们不直接给出控制器设计的公式，而是希望以探索的方式来得到并理解它。<br>&emsp;&emsp;对于任意一个子系统$\dot{x}<em>i=x</em>{i+1}+f_i(x_1,x_2,…,x_i)$来说，我们把$x_{i+1}$看作是这个系统的输入量，也就是模拟的控制量（实际上它只是整个系统的一个状态而已），再通过确定适当的虚拟反馈$\alpha_i(i=1,2,…,n-1)$来控制$x_{i+1}$，使得这个子系统达到渐近稳定。而正由于系统是渐近稳定，因此状态与反馈之间会存在着误差。在这里我们引入误差变量$z$，期望通过控制的作用，使得$x_{i+1}$与虚拟反馈$a_i$之间具有某种渐进特性，从而实现整个系统的渐近稳定。<br>&emsp;&emsp;误差变量$z$的设定如下：<br>$$<br>\begin{cases}<br>z_1=x_1\<br>z_2=x_2-\alpha_1(x_1)\<br>\quad\vdots\<br>z_i=x_i-\alpha_{i-1}(x_1,x_2,…,x_{i-1})\<br>\quad\vdots\<br>z_n=x_n-\alpha_{n-1}(x_1,x_2,…,x_{n-1})<br>\end{cases}\tag{2}<br>$$</p>
-<p>&emsp;&emsp;其中$\alpha_i$为虚拟反馈量，也是我们要求解的待定量。对于每一个子系统，我们都会构造一个Lyapunov函数，使得每一个状态分量具有适当的渐近稳定特性。在此我们注意到：对于任意一个误差变量$z_i=x_i-\alpha_{i-1}(x_1,x_2,…,x_{i-1})$，$x_i$与$z_i$的渐近稳定特性是相同的（因为我们在设定这个子系统前已经通过前边的子系统将$x_1$到$x_{i-1}$都控制为渐近稳定了）。因此为了渐近稳定原系统，我们只需要将误差变量$z$渐近稳定即可。而$x_1$由于是第一个子系统的状态量，并没有反馈，因此我们直接将其设为$z_1$。至此，我们设计目标就由$x$的渐近稳定转变为$z$的渐近稳定了。</p>
-<h4 id="分部推导"><a href="#分部推导" class="headerlink" title="分部推导"></a>分部推导</h4><p>&emsp;&emsp;首先看第一个子系统，将其以$z$为状态表示，得到：<br>$$<br>\begin{split}<br>\dot{z}_1&amp;=\dot{x}_1\<br>&amp;=x_2+f_1(x_1)\<br>&amp;=z_2+\alpha_1(x_1)+f_1(x_1)<br>\end{split}\tag{3}<br>$$</p>
-<p>&emsp;&emsp;定义该系统的Lyapunov方程：<br>$$<br>V_1=\frac{1}{2}z_1^2\tag{4}<br>$$</p>
-<p>&emsp;&emsp;$V_1$可以算是最简单直接，也是最常见的Lyapunov方程了，我们能够轻易看出它是正定的。但为了使该系统稳定，我们还需要使它的导数为一个负定的函数。将$V_1$求导：<br>$$<br>\dot{V}_1=z_1\dot{z}_1=z_1z_2+z_1(\alpha_1(x_1)+f_1(x_1))\tag{5}<br>$$</p>
-<p>&emsp;&emsp;为了使$\dot{V}_1$负定，我们取：<br>$$<br>\alpha_1(x_1)=-x_1-f_1(x_1)\tag{6}<br>$$</p>
-<p>&emsp;&emsp;由于$z_1=x_1$，因此虚拟反馈$\alpha_1(x_1)$可以使用$z_1$的函数$\tilde{\alpha}_1(z_1)$表示：<br>$$<br>\alpha_1(x_1)=-z_1-f_1(z_1)\tag{7}=\tilde{\alpha}_1(z_1)<br>$$</p>
-<p>&emsp;&emsp;此时：<br>$$<br>\begin{split}<br>\dot{z}_1&amp;=z_2+\tilde{\alpha}_1(z_1)+f_1(x_1)\<br>&amp;=z_2-z_1<br>\end{split}\tag{8}<br>$$</p>
-<p>&emsp;&emsp;将式(7)带入式(5)得到$\dot{V}_1$：<br>$$<br>\dot{V}_1=-z_1^2+z_1z_2\tag{9}<br>$$</p>
-<p>&emsp;&emsp;可以发现，$\dot{V}_1$在$z_2=0$，即$x_2=a_1(z_1)$的条件下为负定，此时该子系统渐近稳定。但一般情况下$z_2\not=0$，因此我们需要对下一个子系统进行设计，使得$z_2$具有期望的渐近特性。<br>&emsp;&emsp;因此将第二个子系统以$z$为状态表示，由式(2)与式(1)得到：<br>$$<br>\begin{split}<br>\dot{z}_2&amp;=\dot{x}_2-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1\<br>&amp;=x_3+f_2(x_1,x_2)-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1\<br>&amp;=z_3+\alpha_2(x_1,x_2)+f_2(x_1,x_2)-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1<br>\end{split}\tag{10}<br>$$</p>
-<p>&emsp;&emsp;由于：<br>$$<br>\begin{eqnarray}<br>x_1&amp;=&amp;z_1\tag{11}\<br>x_2&amp;=&amp;\tilde{\alpha}_1(z_1)+z_2\tag{12}\<br>\end{eqnarray}<br>$$</p>
-<p>&emsp;&emsp;因此$\alpha_2(x_1,x_2)$与$f_2(x_1,x_2)$可以完全用z1、z2表示。设：<br>$$<br>\begin{eqnarray}<br>\tilde{\alpha}_2(z_1,z_2)&amp;=&amp;\alpha_2(x_1,x_2)\tag{13}\<br>\tilde{f}_2(z_1,z_2)&amp;=&amp;f_2(x_1,x_2)-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1\tag{14}<br>\end{eqnarray}<br>$$</p>
-<p>&emsp;&emsp;带入式(10)得到：<br>$$<br>\dot{z}_2=z_3+\tilde{\alpha}_2(z_1,z_2)+\tilde{f}_2(z_1,z_2)\tag{15}<br>$$</p>
-<p>&emsp;&emsp;和第一个子系统一样，我们需要设置它的Lyapunov方程。该是子系统基于第一个子系统的，它包含了$z_1,z_2$两个状态，因此我们将该系统Lyapunov方程设为：<br>$$<br>V_2=V_1+\frac{1}{2}z_2^2=\frac{1}{2}z_1^2+\frac{1}{2}z_2^2\tag{16}<br>$$</p>
-<p>&emsp;&emsp;同样它也是一个正定函数。对其求导得到：<br>$$<br>\begin{split}<br>\dot{V}_2&amp;=\dot{V}_1+z_2\dot{z}_2\<br>&amp;=-z_1^2+z_1z_2+z_2z_3+z_2(\tilde{\alpha}_2(z_1,z_2)+\tilde{f}_2(z_1,z_2))<br>\end{split}\tag{17}<br>$$</p>
-<p>&emsp;&emsp;在这个子系统中我们使用$z_3$来控制$z_1,z_2$，因此需要将$z_1z_2$这项消去，并且增加一项$-z_2^2$。取：<br>$$<br>\tilde{\alpha}_2(z_1,z_2)=-z_1-z_2-\tilde{f}_2(z_1,z_2)\tag{18}<br>$$</p>
-<p>&emsp;&emsp;此时：<br>$$<br>\begin{split}<br>\dot{z}_2&amp;=z_3+\tilde{\alpha}_2(z_1,z_2)+\tilde{f}_2(z_1,z_2)\<br>&amp;=z_3-z_1-z_2<br>\end{split}\tag{19}<br>$$</p>
-<p>&emsp;&emsp;带入式(17)得到$\dot{V}_2$：<br>$$<br>\dot{V}_2=-z_1^2-z_2^2+z_2z_3\tag{20}<br>$$</p>
-<p>&emsp;&emsp;同样，它在$z_3=0$，即$x_3=\tilde{\alpha}_2(z_1,z_2)$的条件下为负定，此时该子系统渐近稳定。但一般情况下$z_3\not=0$，因此我们需要对下一个子系统进行设计，使得$z_3$具有期望的渐近特性。如此下去我们便得可以得到Backstepping控制器设计的一般公式。</p>
-<h4 id="一般形式"><a href="#一般形式" class="headerlink" title="一般形式"></a>一般形式</h4><p>&emsp;&emsp;对于第$i$个子系统，我们可以将它表示为：<br>$$<br>\begin{cases}<br>\tilde{\alpha}<em>i(z_1,z_2,…,z_i)=-z_{i-1}-z_i-\tilde{f}_i(z_1,z_2,…z_i)\\<br>\dot{z}_i=-z</em>{i-1}-z_i+z_{i+1}\\<br>\dot{V}<em>i=-(z_1^2+z_2^2+…+z_i^2)+z_iz</em>{i+1}<br>\end{cases}\tag{21}<br>$$</p>
-<p>&emsp;&emsp;此时我们只需要控制$z_{i+1}$渐进稳定于0就可以了。<br>&emsp;&emsp;一直重复这个过程，直到最终我们将系统“后退”到整个系统时：<br>$$<br>\begin{split}<br>\dot{z}<em>n&amp;=\dot{x}<em>n-\sum</em>{i=1}^{n-1}\frac{\partial\tilde{\alpha}</em>{n-1}}{\partial z_i}\dot{z}<em>i\<br>&amp;=u+f_n(x_1,x_2,…,x_n)-\sum</em>{i=1}^{n-1}\frac{\partial\tilde{\alpha}_{n-1}}{\partial z_i}\dot{z}_i\<br>&amp;=u+\tilde{f}_n(z_1,z_2,…z_n)<br>\end{split}\tag{22}<br>$$</p>
-<p>&emsp;&emsp;系统的Lyapunov方程为：<br>$$<br>V_n=V_{n-1}+\frac{1}{2}z_n^2\tag{23}<br>$$</p>
-<p>&emsp;&emsp;$V_{n-1}$为正定函数，因此$V_n$也为正定。将其求导得：<br>$$<br>\begin{split}<br>\dot{V}<em>n&amp;=\dot{V}</em>{n-1}+z_n\dot{z}<em>n\<br>&amp;=-(z_1^2+z_2^2+…+z</em>{n-1}^2)+z_{n-1}z_n+z_n[u+\tilde{f}_n(z_1,z_2,…z_n)]<br>\end{split}\tag{24}<br>$$</p>
-<p>&emsp;&emsp;选取整个系统的输入为：<br>$$<br>u=\tilde{\alpha}_n(z_1,z_2,…,z_n)=-z_{n-1}-z_n-\tilde{f}_n(z_1,z_2,…z_n)\tag{25}<br>$$</p>
-<p>&emsp;&emsp;则由上述关系式(22)、(24)及(25)得：<br>$$<br>\begin{cases}<br>\dot{z}<em>n=-z</em>{n-1}-z_n\\<br>\dot{V}_n=-(z_1^2+z_2^2+…+z_n^2)<br>\end{cases}\tag{26}<br>$$</p>
-<p>&emsp;&emsp;可以得到$\dot{V}<em>n$在$u=-z</em>{n-1}-z_n-\tilde{f}_n(z_1,z_2,…z_n)$的条件下是负定的，因此误差变量$z$是渐进稳定的，从而得出整个系统是渐近稳定的。至此我们就成功地使用Backstepping设计了一个非线性系统的控制器！</p>
+<h3 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h3><p>&emsp;&emsp;Backstepping针对的是能写成如下形式的系统：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+\dot{x}_1=x_2+f_1(x_1)\\
+\dot{x}_2=x_3+f_2(x_1,x_2)\\
+\quad\vdots\\
+\dot{x}_i=x_{i+1}+f_i(x_1,x_2,...,x_i)\\
+\quad\vdots\\
+\dot{x}_n=u+f_n(x_1,x_2,...,x_n)
+\end{cases}\tag{1}</script><p>&emsp;&emsp;可以发现该形式的系统有如下特征：状态$x_1$只由$x_1,x_2$决定；状态$x_2$由$x_1,x_2,x_3$决定…以此类推，状态$x_i$由$x_1,x_2…x_{i+1}$决定；而状态$x_n$则由系统的所有状态来决定。<br>&emsp;&emsp;这对我们就有了一定的启发。对于状态$x_1$来说，它只由本身与$x_2$决定，因此我们可以把它看作整个非线性系统的一个子系统。在这个系统中只需要控制$x_2$便可以使得$x_1$渐近稳定。再对于状态$x_2$来说，它由$x_1,x_2,x_3$决定，我们再将方程组的前两个方程看作一个子系统。此时$x_1$已经渐近稳定，因此我们只需要控制$x_3$便可以使得$x_2$渐近稳定。以此类推，最终我们就可以得到一个输入$u$，使得之前所有的状态$x_1,x_2…x_n$都渐近稳定，那么整个系统就稳定了。<br>&emsp;&emsp;为了使各个子系统都稳定，我们需要为每个系统设置一个虚拟的控制量，并以此定义一个Lyapunov函数，使得所有子系统的Lyapunov函数都满足渐近稳定条件。<br>&emsp;&emsp;概括来说，Backstepping的基本思想就是：将复杂的非线性系统分解成不超过系统阶数的子系统，然后为每个子系统设计部分Lyapunov函数和中间虚拟控制量，一直“后退”到整个系统，将它们集成起来完成整个控制律的设计。</p>
+<h3 id="基于Backstepping控制器设计"><a href="#基于Backstepping控制器设计" class="headerlink" title="基于Backstepping控制器设计"></a>基于Backstepping控制器设计</h3><p>&emsp;&emsp;在这里我们不直接给出控制器设计的公式，而是希望以探索的方式来得到并理解它。<br>&emsp;&emsp;对于任意一个子系统$\dot{x}_i=x_{i+1}+f_i(x_1,x_2,…,x_i)$来说，我们把$x_{i+1}$看作是这个系统的输入量，也就是模拟的控制量（实际上它只是整个系统的一个状态而已），再通过确定适当的虚拟反馈$\alpha_i(i=1,2,…,n-1)$来控制$x_{i+1}$，使得这个子系统达到渐近稳定。而正由于系统是渐近稳定，因此状态与反馈之间会存在着误差。在这里我们引入误差变量$z$，期望通过控制的作用，使得$x_{i+1}$与虚拟反馈$a_i$之间具有某种渐进特性，从而实现整个系统的渐近稳定。<br>&emsp;&emsp;误差变量$z$的设定如下：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+z_1=x_1\\
+z_2=x_2-\alpha_1(x_1)\\
+\quad\vdots\\
+z_i=x_i-\alpha_{i-1}(x_1,x_2,...,x_{i-1})\\
+\quad\vdots\\
+z_n=x_n-\alpha_{n-1}(x_1,x_2,...,x_{n-1})
+\end{cases}\tag{2}</script><p>&emsp;&emsp;其中$\alpha_i$为虚拟反馈量，也是我们要求解的待定量。对于每一个子系统，我们都会构造一个Lyapunov函数，使得每一个状态分量具有适当的渐近稳定特性。在此我们注意到：对于任意一个误差变量$z_i=x_i-\alpha_{i-1}(x_1,x_2,…,x_{i-1})$，$x_i$与$z_i$的渐近稳定特性是相同的（因为我们在设定这个子系统前已经通过前边的子系统将$x_1$到$x_{i-1}$都控制为渐近稳定了）。因此为了渐近稳定原系统，我们只需要将误差变量$z$渐近稳定即可。而$x_1$由于是第一个子系统的状态量，并没有反馈，因此我们直接将其设为$z_1$。至此，我们设计目标就由$x$的渐近稳定转变为$z$的渐近稳定了。</p>
+<h4 id="分部推导"><a href="#分部推导" class="headerlink" title="分部推导"></a>分部推导</h4><p>&emsp;&emsp;首先看第一个子系统，将其以$z$为状态表示，得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\dot{z}_1&=\dot{x}_1\\
+&=x_2+f_1(x_1)\\
+&=z_2+\alpha_1(x_1)+f_1(x_1)
+\end{split}\tag{3}</script><p>&emsp;&emsp;定义该系统的Lyapunov方程：</p>
+<script type="math/tex; mode=display">
+V_1=\frac{1}{2}z_1^2\tag{4}</script><p>&emsp;&emsp;$V_1$可以算是最简单直接，也是最常见的Lyapunov方程了，我们能够轻易看出它是正定的。但为了使该系统稳定，我们还需要使它的导数为一个负定的函数。将$V_1$求导：</p>
+<script type="math/tex; mode=display">
+\dot{V}_1=z_1\dot{z}_1=z_1z_2+z_1(\alpha_1(x_1)+f_1(x_1))\tag{5}</script><p>&emsp;&emsp;为了使$\dot{V}_1$负定，我们取：</p>
+<script type="math/tex; mode=display">
+\alpha_1(x_1)=-x_1-f_1(x_1)\tag{6}</script><p>&emsp;&emsp;由于$z_1=x_1$，因此虚拟反馈$\alpha_1(x_1)$可以使用$z_1$的函数$\tilde{\alpha}_1(z_1)$表示：</p>
+<script type="math/tex; mode=display">
+\alpha_1(x_1)=-z_1-f_1(z_1)\tag{7}=\tilde{\alpha}_1(z_1)</script><p>&emsp;&emsp;此时：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\dot{z}_1&=z_2+\tilde{\alpha}_1(z_1)+f_1(x_1)\\
+&=z_2-z_1
+\end{split}\tag{8}</script><p>&emsp;&emsp;将式(7)带入式(5)得到$\dot{V}_1$：</p>
+<script type="math/tex; mode=display">
+\dot{V}_1=-z_1^2+z_1z_2\tag{9}</script><p>&emsp;&emsp;可以发现，$\dot{V}_1$在$z_2=0$，即$x_2=a_1(z_1)$的条件下为负定，此时该子系统渐近稳定。但一般情况下$z_2\not=0$，因此我们需要对下一个子系统进行设计，使得$z_2$具有期望的渐近特性。<br>&emsp;&emsp;因此将第二个子系统以$z$为状态表示，由式(2)与式(1)得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\dot{z}_2&=\dot{x}_2-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1\\
+&=x_3+f_2(x_1,x_2)-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1\\
+&=z_3+\alpha_2(x_1,x_2)+f_2(x_1,x_2)-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1
+\end{split}\tag{10}</script><p>&emsp;&emsp;由于：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+x_1&=&z_1\tag{11}\\
+x_2&=&\tilde{\alpha}_1(z_1)+z_2\tag{12}\\
+\end{eqnarray}</script><p>&emsp;&emsp;因此$\alpha_2(x_1,x_2)$与$f_2(x_1,x_2)$可以完全用z1、z2表示。设：</p>
+<script type="math/tex; mode=display">
+\begin{eqnarray}
+\tilde{\alpha}_2(z_1,z_2)&=&\alpha_2(x_1,x_2)\tag{13}\\
+\tilde{f}_2(z_1,z_2)&=&f_2(x_1,x_2)-\frac{\partial\tilde{\alpha}_1}{\partial z_1}\dot{z}_1\tag{14}
+\end{eqnarray}</script><p>&emsp;&emsp;带入式(10)得到：</p>
+<script type="math/tex; mode=display">
+\dot{z}_2=z_3+\tilde{\alpha}_2(z_1,z_2)+\tilde{f}_2(z_1,z_2)\tag{15}</script><p>&emsp;&emsp;和第一个子系统一样，我们需要设置它的Lyapunov方程。该是子系统基于第一个子系统的，它包含了$z_1,z_2$两个状态，因此我们将该系统Lyapunov方程设为：</p>
+<script type="math/tex; mode=display">
+V_2=V_1+\frac{1}{2}z_2^2=\frac{1}{2}z_1^2+\frac{1}{2}z_2^2\tag{16}</script><p>&emsp;&emsp;同样它也是一个正定函数。对其求导得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\dot{V}_2&=\dot{V}_1+z_2\dot{z}_2\\
+&=-z_1^2+z_1z_2+z_2z_3+z_2(\tilde{\alpha}_2(z_1,z_2)+\tilde{f}_2(z_1,z_2))
+\end{split}\tag{17}</script><p>&emsp;&emsp;在这个子系统中我们使用$z_3$来控制$z_1,z_2$，因此需要将$z_1z_2$这项消去，并且增加一项$-z_2^2$。取：</p>
+<script type="math/tex; mode=display">
+\tilde{\alpha}_2(z_1,z_2)=-z_1-z_2-\tilde{f}_2(z_1,z_2)\tag{18}</script><p>&emsp;&emsp;此时：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\dot{z}_2&=z_3+\tilde{\alpha}_2(z_1,z_2)+\tilde{f}_2(z_1,z_2)\\
+&=z_3-z_1-z_2
+\end{split}\tag{19}</script><p>&emsp;&emsp;带入式(17)得到$\dot{V}_2$：</p>
+<script type="math/tex; mode=display">
+\dot{V}_2=-z_1^2-z_2^2+z_2z_3\tag{20}</script><p>&emsp;&emsp;同样，它在$z_3=0$，即$x_3=\tilde{\alpha}_2(z_1,z_2)$的条件下为负定，此时该子系统渐近稳定。但一般情况下$z_3\not=0$，因此我们需要对下一个子系统进行设计，使得$z_3$具有期望的渐近特性。如此下去我们便得可以得到Backstepping控制器设计的一般公式。</p>
+<h4 id="一般形式"><a href="#一般形式" class="headerlink" title="一般形式"></a>一般形式</h4><p>&emsp;&emsp;对于第$i$个子系统，我们可以将它表示为：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+\tilde{\alpha}_i(z_1,z_2,...,z_i)=-z_{i-1}-z_i-\tilde{f}_i(z_1,z_2,...z_i)\\\\
+\dot{z}_i=-z_{i-1}-z_i+z_{i+1}\\\\
+\dot{V}_i=-(z_1^2+z_2^2+...+z_i^2)+z_iz_{i+1}
+\end{cases}\tag{21}</script><p>&emsp;&emsp;此时我们只需要控制$z_{i+1}$渐进稳定于0就可以了。<br>&emsp;&emsp;一直重复这个过程，直到最终我们将系统“后退”到整个系统时：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\dot{z}_n&=\dot{x}_n-\sum_{i=1}^{n-1}\frac{\partial\tilde{\alpha}_{n-1}}{\partial z_i}\dot{z}_i\\
+&=u+f_n(x_1,x_2,...,x_n)-\sum_{i=1}^{n-1}\frac{\partial\tilde{\alpha}_{n-1}}{\partial z_i}\dot{z}_i\\
+&=u+\tilde{f}_n(z_1,z_2,...z_n)
+\end{split}\tag{22}</script><p>&emsp;&emsp;系统的Lyapunov方程为：</p>
+<script type="math/tex; mode=display">
+V_n=V_{n-1}+\frac{1}{2}z_n^2\tag{23}</script><p>&emsp;&emsp;$V_{n-1}$为正定函数，因此$V_n$也为正定。将其求导得：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+\dot{V}_n&=\dot{V}_{n-1}+z_n\dot{z}_n\\
+&=-(z_1^2+z_2^2+...+z_{n-1}^2)+z_{n-1}z_n+z_n[u+\tilde{f}_n(z_1,z_2,...z_n)]
+\end{split}\tag{24}</script><p>&emsp;&emsp;选取整个系统的输入为：</p>
+<script type="math/tex; mode=display">
+u=\tilde{\alpha}_n(z_1,z_2,...,z_n)=-z_{n-1}-z_n-\tilde{f}_n(z_1,z_2,...z_n)\tag{25}</script><p>&emsp;&emsp;则由上述关系式(22)、(24)及(25)得：</p>
+<script type="math/tex; mode=display">
+\begin{cases}
+\dot{z}_n=-z_{n-1}-z_n\\\\
+\dot{V}_n=-(z_1^2+z_2^2+...+z_n^2)
+\end{cases}\tag{26}</script><p>&emsp;&emsp;可以得到$\dot{V}_n$在$u=-z_{n-1}-z_n-\tilde{f}_n(z_1,z_2,…z_n)$的条件下是负定的，因此误差变量$z$是渐进稳定的，从而得出整个系统是渐近稳定的。至此我们就成功地使用Backstepping设计了一个非线性系统的控制器！</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
 <li>Backstepping用来控制结构为(1)的非线性系统。</li>
 <li>Backstepping是一种由前往后递推的设计方法，通过设置虚拟反馈控制子系统，并且前边的子系统必须通过后边子系统的虚拟控制才能达到稳定，以此层层递推。</li>
@@ -277,7 +356,7 @@ var _hmt = _hmt || [];
 
 
 
-    <a data-url="https://haosutopia.github.io/2018/01/Backstepping-01/" data-id="ckflt9wn10006eto90tqge8xk" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://haosutopia.github.io/2018/01/Backstepping-01/" data-id="ckfndebk70003f2o9090c60mo" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -356,8 +435,12 @@ var _hmt = _hmt || [];
         "dateModified": "2018-03-01",
         "url": "https://haosutopia.github.io/2018/01/Backstepping-01/",
         "description": "&emsp;&emsp;Backstepping（反步控制）是一种设计非线性系统控制器的方法。它通过对子系统的递归方便地求得能使系统稳定的输入。但大多数相关文献中并未考虑系统本身的可控性，因此首先我们假设需要控制的系统是可控的。
-基本思想&emsp;&emsp;Backstepping针对的是能写成如下形式的系统：$$\begin{cases}\dot{x}_1=x_2+f_1(x_1)\\dot",
-        "wordCount": 27
+基本思想&emsp;&emsp;Backstepping针对的是能写成如下形式的系统：
+
+\begin{cases}
+\dot{x}_1=x_2+f_1(x_1)\\
+\",
+        "wordCount": 75
     }
 </script>
 

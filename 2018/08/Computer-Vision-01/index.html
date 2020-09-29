@@ -91,7 +91,11 @@ var _hmt = _hmt || [];
     
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.2.0"></head>
 
 <body>
     <div id="wrap">
@@ -232,27 +236,60 @@ var _hmt = _hmt || [];
 
             <p>&emsp;&emsp;计算机视觉，顾名思义就是使计算机能够像人眼一样“看”东西的科学。一张图片，人可以将它抽象并快速提取其中的有效信息。而对于计算机来说，图片就是一个特殊的矩阵，需要通过一系列算法来得到相关信息。本次学习材料主要是TUM Computer Vision课堂内容以及一些相关论文。</p>
 <h3 id="图像表示"><a href="#图像表示" class="headerlink" title="图像表示"></a>图像表示</h3><p>&emsp;&emsp;首先介绍一下图像的基本知识。图像一般可分为彩色图和灰度图：彩色图每个点的颜色可以通过RGB三种颜色混合而成，因此彩色图通常有RGB三个通道；而灰度图每个点只有一个灰度值。</p>
-<p><img src="/images/Computer_Vision_Image.jpg" alt="彩色图与灰度图"><br>&emsp;&emsp;彩色图可以将三个通道合并，转化为灰度图，其公式如下：<br>$$<br>I=0.299R+0.587G+0.114B$$</p>
-<p>&emsp;&emsp;在现实中，人眼看到的东西都是连续的，但在计算机中我们需要将其离散化，并赋予每个点坐标与数值。其示意图如下：<br><img src="/images/Computer_Vision_Coordinate.jpg" alt="图像表示"><br>&emsp;&emsp;图像在计算机中的坐标原点为图像左上角，其$x,y$轴与通常坐标系不同，在将来的操作中需要格外注意。这里我们将图像的矩阵表示为$I$，而图中某点的数值表示为$I(x,y)$，其取值范围通常为$[0,1]$或$[0,255]$。在之后的讨论中，我们默认对灰度图进行操作。</p>
-<h3 id="梯度计算"><a href="#梯度计算" class="headerlink" title="梯度计算"></a>梯度计算</h3><p>&emsp;&emsp;梯度在连续函数中可以通过求导计算，但在离散函数中只能通过一些方法来近似。其中最直接的方法就是将离散点与相邻点的差值作为该点梯度：<br>$$<br>\nabla I(x,y)=\begin{bmatrix}{ {\Bbb d} \over {\Bbb d}x}I(x,y) \ { {\Bbb d} \over {\Bbb d}y}I(x,y) \end{bmatrix} = \begin{bmatrix}I(x+1,y)-I(x,y) \ I(x,y+1)-I(x,y)\end{bmatrix}$$</p>
-<p>&emsp;&emsp;这种方法虽然简单，但误差较大。在实际中，我们计算梯度的思路是：先将离散函数通过辅助函数连续化，再对连续化后的函数进行求导得到梯度。<br>&emsp;&emsp;其中连续化是将连续的辅助函数与离散函数卷积，得到一个重构的连续函数。在这里我们以一维数据为例，其中连续函数用$f(x)$表示，离散函数用$f[x]$表示：<br>$$<br>f(x)\approx\sum_{k=-\infty}^{\infty}f[k]h(x-k)=f[x]\ast h(x)$$</p>
-<p>&emsp;&emsp;对$f(x)$求导便可以得到函数的梯度：<br>$$<br>f’(x)\approx{ {\Bbb d} \over {\Bbb d}x}(f[x]\ast h(x))=\sum_{k=-\infty}^{\infty}f[k]h’(x-k)=f[x]\ast h’(x)$$</p>
-<p>&emsp;&emsp;则图像上每一点的梯度为：<br>$$<br>f’[x]=f[x]\ast h’[x]=\sum_{k=-\infty}^{\infty}f[x-k]h’[k]$$</p>
-<p>&emsp;&emsp;实际中我们无法做无穷次的累加，因此采用近似的方式得到函数及其导数：<br>$$<br>\begin{split}<br>f[x]&amp;=\sum_{k=-n}^{n}f[x-k]h[k]\<br>f’[x]&amp;=\sum_{k=-n}^{n}f[x-k]h’[k]<br>\end{split}$$</p>
-<p>&emsp;&emsp;其中辅助函数$h(x)$我们可以选择高斯函数或Sinc函数。</p>
-<h4 id="高斯函数"><a href="#高斯函数" class="headerlink" title="高斯函数"></a>高斯函数</h4><p>&emsp;&emsp;高斯函数一般表达式如下：<br>$$<br>g(x)=Ce^{-x^2 \over 2\sigma^2}$$</p>
-<p>&emsp;&emsp;其图像及导数图像如下：<br><img src="/images/Computer_Vision_Gauss.jpg" alt="高斯函数（左）及其导数（右）图像"></p>
+<p><img src="/images/Computer_Vision_Image.jpg" alt="彩色图与灰度图"><br>&emsp;&emsp;彩色图可以将三个通道合并，转化为灰度图，其公式如下：</p>
+<script type="math/tex; mode=display">
+I=0.299R+0.587G+0.114B</script><p>&emsp;&emsp;在现实中，人眼看到的东西都是连续的，但在计算机中我们需要将其离散化，并赋予每个点坐标与数值。其示意图如下：<br><img src="/images/Computer_Vision_Coordinate.jpg" alt="图像表示"><br>&emsp;&emsp;图像在计算机中的坐标原点为图像左上角，其$x,y$轴与通常坐标系不同，在将来的操作中需要格外注意。这里我们将图像的矩阵表示为$I$，而图中某点的数值表示为$I(x,y)$，其取值范围通常为$[0,1]$或$[0,255]$。在之后的讨论中，我们默认对灰度图进行操作。</p>
+<h3 id="梯度计算"><a href="#梯度计算" class="headerlink" title="梯度计算"></a>梯度计算</h3><p>&emsp;&emsp;梯度在连续函数中可以通过求导计算，但在离散函数中只能通过一些方法来近似。其中最直接的方法就是将离散点与相邻点的差值作为该点梯度：</p>
+<script type="math/tex; mode=display">
+\nabla I(x,y)=\begin{bmatrix}{ {\Bbb d} \over {\Bbb d}x}I(x,y) \\ { {\Bbb d} \over {\Bbb d}y}I(x,y) \end{bmatrix} = \begin{bmatrix}I(x+1,y)-I(x,y) \\ I(x,y+1)-I(x,y)\end{bmatrix}</script><p>&emsp;&emsp;这种方法虽然简单，但误差较大。在实际中，我们计算梯度的思路是：先将离散函数通过辅助函数连续化，再对连续化后的函数进行求导得到梯度。<br>&emsp;&emsp;其中连续化是将连续的辅助函数与离散函数卷积，得到一个重构的连续函数。在这里我们以一维数据为例，其中连续函数用$f(x)$表示，离散函数用$f[x]$表示：</p>
+<script type="math/tex; mode=display">
+f(x)\approx\sum_{k=-\infty}^{\infty}f[k]h(x-k)=f[x]\ast h(x)</script><p>&emsp;&emsp;对$f(x)$求导便可以得到函数的梯度：</p>
+<script type="math/tex; mode=display">
+f'(x)\approx{ {\Bbb d} \over {\Bbb d}x}(f[x]\ast h(x))=\sum_{k=-\infty}^{\infty}f[k]h'(x-k)=f[x]\ast h'(x)</script><p>&emsp;&emsp;则图像上每一点的梯度为：</p>
+<script type="math/tex; mode=display">
+f'[x]=f[x]\ast h'[x]=\sum_{k=-\infty}^{\infty}f[x-k]h'[k]</script><p>&emsp;&emsp;实际中我们无法做无穷次的累加，因此采用近似的方式得到函数及其导数：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+f[x]&=\sum_{k=-n}^{n}f[x-k]h[k]\\
+f'[x]&=\sum_{k=-n}^{n}f[x-k]h'[k]
+\end{split}</script><p>&emsp;&emsp;其中辅助函数$h(x)$我们可以选择高斯函数或Sinc函数。</p>
+<h4 id="高斯函数"><a href="#高斯函数" class="headerlink" title="高斯函数"></a>高斯函数</h4><p>&emsp;&emsp;高斯函数一般表达式如下：</p>
+<script type="math/tex; mode=display">
+g(x)=Ce^{-x^2 \over 2\sigma^2}</script><p>&emsp;&emsp;其图像及导数图像如下：<br><img src="/images/Computer_Vision_Gauss.jpg" alt="高斯函数（左）及其导数（右）图像"></p>
 <p>&emsp;&emsp;图中红线表示相邻采样点的取值。可以发现，高斯函数会对相邻采样点取值有影响，从而产生一些偏差。</p>
-<h4 id="Sinc函数"><a href="#Sinc函数" class="headerlink" title="Sinc函数"></a>Sinc函数</h4><p>&emsp;&emsp;Sinc函数表达式如下：<br>$$<br>h(x)={\rm sinc}(x)={\sin(\pi x) \over \pi x}, {\rm sinc}(0)=1$$</p>
-<p>&emsp;&emsp;其图像及其导数图像如下：<br><img src="/images/Computer_Vision_Sinc.jpg" alt="Sinc函数（左）及其导数（右）图像"></p>
+<h4 id="Sinc函数"><a href="#Sinc函数" class="headerlink" title="Sinc函数"></a>Sinc函数</h4><p>&emsp;&emsp;Sinc函数表达式如下：</p>
+<script type="math/tex; mode=display">
+h(x)={\rm sinc}(x)={\sin(\pi x) \over \pi x}, {\rm sinc}(0)=1</script><p>&emsp;&emsp;其图像及其导数图像如下：<br><img src="/images/Computer_Vision_Sinc.jpg" alt="Sinc函数（左）及其导数（右）图像"></p>
 <p>&emsp;&emsp;从图中可以发现，Sinc函数在相邻采样点取值均为0，克服了高斯函数的缺陷。但其导数图像衰弱程度比高斯函数慢很多。<br>&emsp;&emsp;因此通常我们在连续化原函数时使用Sinc函数，在计算梯度时使用高斯函数。</p>
-<h4 id="Sobel滤波器"><a href="#Sobel滤波器" class="headerlink" title="Sobel滤波器"></a>Sobel滤波器</h4><p>&emsp;&emsp;将上述一维的数据拓展为二维，使用高斯函数作为辅助函数，我们得到：<br>$$<br>\begin{split}<br>&amp;I(x,y)\approx I[x,y]\ast h(x,y)=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g(x-k)g(y-l)\<br>&amp;{ {\rm d} \over {\rm d}x}I(x,y) \approx I[x,y]\ast { {\rm d} \over {\rm d}x}h(x,y)=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g’(x-k)g(y-l)\<br>&amp;{ {\rm d} \over {\rm d}y}I(x,y) \approx I[x,y]\ast { {\rm d} \over {\rm d}y}h(x,y)=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g(x-k)g’(y-l)<br>\end{split}$$</p>
-<p>&emsp;&emsp;则图像上每一点的梯度为:<br>$$<br>\begin{split}<br>&amp;{ {\rm d} \over {\rm d}x}I[x,y]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g’[x-k]g[y-l]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x-k.y-l]g’[k]g[l]\<br>&amp;{ {\rm d} \over {\rm d}y}I[x,y]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g[x-k]g’[y-l]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x-k.y-l]g[k]g’[l]<br>\end{split}$$</p>
-<p>&emsp;&emsp;近似后得到：<br>$$<br>\begin{split}<br>{ {\rm d} \over {\rm d}x}I[x,y]=\sum_{k=-1}^{1}\sum_{l=-1}^{1}I[x-k.y-l]g’[k]g[l]\<br>{ {\rm d} \over {\rm d}y}I[x,y]=\sum_{k=-1}^{1}\sum_{l=-1}^{1}I[x-k.y-l]g[k]g’[l]<br>\end{split}$$</p>
-<p>&emsp;&emsp;上式可以发现，图像中点的梯度就相当于其相邻像素点取值分别乘以相应权重再相加，因此可以将这些权重表示为一个矩阵。为了使权重相加为1，我们取：<br>$$<br>C=(1+2e^{-{1 \over 2\sigma^2 } })^{-1}$$</p>
-<p>&emsp;&emsp;当$\sigma=\sqrt{1 \over 2\log2}$时：<br>$$<br>\begin{split}<br>&amp;g’[k]g[l]\Rightarrow {1 \over 8}\log2\begin{bmatrix}+1 &amp; \ \ 0\  &amp; -1\+2 &amp; \ \ 0\  &amp; -2\+1 &amp; \ \ 0\  &amp; -1\end{bmatrix}\<br>&amp;g[k]g’[l]\Rightarrow {1 \over 8}\log2\begin{bmatrix}+1 &amp; +2 &amp; +1\0 &amp; 0 &amp; 0\-1 &amp; -2 &amp; -1\end{bmatrix}<br>\end{split}$$</p>
-<p>&emsp;&emsp;为了方便计算，我们将上式整数化，得到横向与纵向Sobel滤波器分别为：<br>$$<br>\begin{split}<br>横向{\rm Sobel}滤波器：\begin{bmatrix}+1 &amp; \ \ 0\  &amp; -1\+2 &amp; \ \ 0\  &amp; -2\+1 &amp; \ \ 0\  &amp; -1\end{bmatrix}\<br>纵向{\rm Sobel}滤波器：\begin{bmatrix}+1 &amp; +2 &amp; +1\0 &amp; 0 &amp; 0\-1 &amp; -2 &amp; -1\end{bmatrix}<br>\end{split}$$</p>
-<p>&emsp;&emsp;在实际应用中我们只需要将图像矩阵与Sobel滤波器卷积就可以得到图像的梯度矩阵了。</p>
+<h4 id="Sobel滤波器"><a href="#Sobel滤波器" class="headerlink" title="Sobel滤波器"></a>Sobel滤波器</h4><p>&emsp;&emsp;将上述一维的数据拓展为二维，使用高斯函数作为辅助函数，我们得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+&I(x,y)\approx I[x,y]\ast h(x,y)=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g(x-k)g(y-l)\\
+&{ {\rm d} \over {\rm d}x}I(x,y) \approx I[x,y]\ast { {\rm d} \over {\rm d}x}h(x,y)=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g'(x-k)g(y-l)\\
+&{ {\rm d} \over {\rm d}y}I(x,y) \approx I[x,y]\ast { {\rm d} \over {\rm d}y}h(x,y)=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g(x-k)g'(y-l)
+\end{split}</script><p>&emsp;&emsp;则图像上每一点的梯度为:</p>
+<script type="math/tex; mode=display">
+\begin{split}
+&{ {\rm d} \over {\rm d}x}I[x,y]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g'[x-k]g[y-l]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x-k.y-l]g'[k]g[l]\\
+&{ {\rm d} \over {\rm d}y}I[x,y]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x.y]g[x-k]g'[y-l]=\sum_{k=-\infty}^{\infty}\sum_{l=-\infty}^{\infty}I[x-k.y-l]g[k]g'[l]
+\end{split}</script><p>&emsp;&emsp;近似后得到：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+{ {\rm d} \over {\rm d}x}I[x,y]=\sum_{k=-1}^{1}\sum_{l=-1}^{1}I[x-k.y-l]g'[k]g[l]\\
+{ {\rm d} \over {\rm d}y}I[x,y]=\sum_{k=-1}^{1}\sum_{l=-1}^{1}I[x-k.y-l]g[k]g'[l]
+\end{split}</script><p>&emsp;&emsp;上式可以发现，图像中点的梯度就相当于其相邻像素点取值分别乘以相应权重再相加，因此可以将这些权重表示为一个矩阵。为了使权重相加为1，我们取：</p>
+<script type="math/tex; mode=display">
+C=(1+2e^{-{1 \over 2\sigma^2 } })^{-1}</script><p>&emsp;&emsp;当$\sigma=\sqrt{1 \over 2\log2}$时：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+&g'[k]g[l]\Rightarrow {1 \over 8}\log2\begin{bmatrix}+1 & \ \ 0\  & -1\\+2 & \ \ 0\  & -2\\+1 & \ \ 0\  & -1\end{bmatrix}\\
+&g[k]g'[l]\Rightarrow {1 \over 8}\log2\begin{bmatrix}+1 & +2 & +1\\0 & 0 & 0\\-1 & -2 & -1\end{bmatrix}
+\end{split}</script><p>&emsp;&emsp;为了方便计算，我们将上式整数化，得到横向与纵向Sobel滤波器分别为：</p>
+<script type="math/tex; mode=display">
+\begin{split}
+横向{\rm Sobel}滤波器：\begin{bmatrix}+1 & \ \ 0\  & -1\\+2 & \ \ 0\  & -2\\+1 & \ \ 0\  & -1\end{bmatrix}\\
+纵向{\rm Sobel}滤波器：\begin{bmatrix}+1 & +2 & +1\\0 & 0 & 0\\-1 & -2 & -1\end{bmatrix}
+\end{split}</script><p>&emsp;&emsp;在实际应用中我们只需要将图像矩阵与Sobel滤波器卷积就可以得到图像的梯度矩阵了。</p>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ol>
 <li>图像在计算机中表示为矩阵形式。</li>
 <li>图像梯度通过Sobel滤波器估计：横向滤波器计算$x$轴方向导数；纵向滤波器计算$y$轴方向导数。</li>
@@ -264,7 +301,7 @@ var _hmt = _hmt || [];
 
 
 
-    <a data-url="https://haosutopia.github.io/2018/08/Computer-Vision-01/" data-id="ckflt9wn20007eto93ifsckfl" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://haosutopia.github.io/2018/08/Computer-Vision-01/" data-id="ckfndebka0006f2o9gais2bq3" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -344,7 +381,7 @@ var _hmt = _hmt || [];
         "url": "https://haosutopia.github.io/2018/08/Computer-Vision-01/",
         "description": "&emsp;&emsp;计算机视觉，顾名思义就是使计算机能够像人眼一样“看”东西的科学。一张图片，人可以将它抽象并快速提取其中的有效信息。而对于计算机来说，图片就是一个特殊的矩阵，需要通过一系列算法来得到相关信息。本次学习材料主要是TUM Computer Vision课堂内容以及一些相关论文。
 图像表示&emsp;&emsp;首先介绍一下图像的基本知识。图像一般可分为彩色图和灰度图：彩色图每个点",
-        "wordCount": 199
+        "wordCount": 227
     }
 </script>
 
